@@ -1,0 +1,21 @@
+:root {
+    /* Colores principales */
+    --color-background: #FFF8F0;
+    --color-primary: #B22222;
+    --color-secondary: #D94F4F;
+    --color-brown: #8B5E3C;
+
+    /* Colores de texto */
+    --color-text: #333333;
+    --color-dark: #111111;
+
+    /* Tipografía */
+    --font-main: "Sansita Swashed", cursive;
+
+    /* Variables adicionales usadas por estilos específicos */
+    --font-title: var(--font-main);
+    --font-body: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+    /* Bordes y radios */
+    --radius: 8px;
+}
