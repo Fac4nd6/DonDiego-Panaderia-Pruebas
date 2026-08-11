@@ -70,9 +70,9 @@ Los cambios se realizan en las ramas individuales y posteriormente se envían me
 ## 👥 Equipo
 
 * Facu
-* Mati
-* Cony
 * Cano
+* Cony
+* Mati
 
 ---
 
