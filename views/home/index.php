@@ -1,11 +1,11 @@
-<!DOCTYPE html>
-<html lang="es">
+<?php
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Don Diego</title>
-</head>
+$pageCss = "home.css";
+
+require '../layouts/head.php';
+require '../layouts/header.php';
+
+?>
 
 <body>
     <nav>
@@ -24,11 +24,11 @@
             </div>
 
             <div class="hero-image">
-                <img src="img/hero.jpg" alt="Productos de Don Diego">
+                <img src="/DonDiego-Panaderia-Pruebas/public/img/hero.jpg" alt="Productos de Don Diego">
             </div>
         </section>
 
-            <!-- Catálogo de productos destacados -->
+        <!-- Catálogo de productos destacados -->
 
         <section class="productos">
             <h2>Productos destacados</h2>
@@ -40,21 +40,21 @@
             <!-- Información -->
         </section>
 
-            <!-- Productos recomendados para el usuario -->
+        <!-- Productos recomendados para el usuario -->
 
         <section class="recommended">
             <h2>Recomendado para vos</h2>
 
             <div class="products">
                 <article class="product">
-                    <img src="img/producto1.jpg" alt="Torta de chocolate">
+                    <img src="/DonDiego-Panaderia-Pruebas/public/img/producto1.jpg" alt="Torta de chocolate">
                     <h3>Torta de chocolate</h3>
                     <p>$450</p>
                     <button>Agregar al carrito</button>
                 </article>
 
                 <article class="product">
-                    <img src="img/producto2.jpg" alt="Alfajor de chocolate">
+                    <img src="/DonDiego-Panaderia-Pruebas/public/img/producto2.jpg" alt="Alfajor de chocolate">
                     <h3>Alfajor de chocolate</h3>
                     <p>$100</p>
                     <button>Agregar al carrito</button>
