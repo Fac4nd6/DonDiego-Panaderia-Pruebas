@@ -1,3 +1,6 @@
+
+/* Sección de héroe */
+
 .hero {
     min-height: 500px;
     display: flex;
@@ -59,4 +62,80 @@
     max-width: 500px;
     height: auto;
     object-fit: contain;
+}
+
+/* Sección de productos destacados */
+
+.productos-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+
+    margin: 40px 8%;
+}
+
+.producto-card {
+    background: white;
+    overflow: hidden;
+    border-radius: var(--radius-img);
+
+    /* Separación interna */
+    padding-bottom: 10px;
+}
+
+.producto-card img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+
+    display: block;
+
+}
+
+.productos{
+
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+.productos h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-family: var(--font-title);
+}
+
+.producto-info {
+    padding: 12px 15px;
+}
+
+.producto-info h3 {
+    margin: 0;
+    font-size: 14px;
+}
+
+.producto-info p {
+    margin: 5px 0 0;
+    font-weight: bold;
+}
+
+/* Botón de catálogo completo */
+
+.catalogo-button {
+    display: block;
+    width: fit-content;
+    margin: 40px auto 0;
+
+    padding: 14px 28px;
+
+    background-color: var(--color-primary);
+    color: var(--color-background);
+
+    text-decoration: none;
+    font-weight: bold;
+
+    border-radius: var(--radius);
+}
+
+.catalogo-button:hover {
+    background-color: var(--color-secondary);
 }
