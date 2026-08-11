@@ -139,6 +139,8 @@
 .catalogo-button:hover {
     background-color: var(--color-secondary);
 }
+
+
 .recommended h2{
     text-align: center;
     margin-bottom: 30px;
