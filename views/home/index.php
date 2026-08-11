@@ -24,7 +24,7 @@ require '../layouts/header.php';
             </div>
 
             <div class="hero-image">
-                <img src="/DonDiego-Panaderia-Pruebas/public/img/hero.jpg" alt="Productos de Don Diego">
+                <img src="../../public/img/dondiego-algorico.jpeg" alt="Productos de Don Diego">
             </div>
         </section>
 
@@ -108,18 +108,26 @@ require '../layouts/header.php';
 
             <div class="products">
                 <article class="product">
-                    <img src="/DonDiego-Panaderia-Pruebas/public/img/producto1.jpg" alt="Torta de chocolate">
+                    <img src="../../public/img/torta-chocolate.avif" alt="Torta de chocolate">
                     <h3>Torta de chocolate</h3>
                     <p>$450</p>
                     <button>Agregar al carrito</button>
                 </article>
 
                 <article class="product">
-                    <img src="/DonDiego-Panaderia-Pruebas/public/img/producto2.jpg" alt="Alfajor de chocolate">
+                    <img src="../../public/img/alfajores.avif" alt="Alfajor de chocolate">
                     <h3>Alfajor de chocolate</h3>
                     <p>$100</p>
                     <button>Agregar al carrito</button>
                 </article>
+                
+                <article class="product">
+                    <img src="../../public/img/brownie.avif" alt="Alfajor de chocolate">
+                    <h3>Brownie Chocolate</h3>
+                    <p>$250</p>
+                    <button>Agregar al carrito</button>
+                </article>
+                
             </div>
         </section>
 
