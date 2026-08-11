@@ -36,15 +36,3 @@ select {
 button {
     cursor: pointer;
 }
-
-.recommended h2{
-    text-align: center;
-    margin-bottom: 30px;
-    width: 100%;
-    font-family: var(--font-main);
-}
-.products {
-    display: flex;
-    justify-content: center;
-    gap: 40px;
-}
