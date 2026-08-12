@@ -161,18 +161,26 @@ h3,p {
     padding: 30px;
     box-sizing: border-box;
     border-radius: var(--radius);
+    
 }
-.mapa{
+.info-local {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0;
+}
+
+.mapa {
     width: 250px;
     height: 350px;
     border: 0;
-
-}
-.local{
-    width: 45%;
-    height: auto;
 }
 
+.local {
+    width: auto;
+    height: 350px;
+    object-fit: cover;
+}
 
 .separador {
     border: none;
@@ -182,3 +190,4 @@ h3,p {
     margin: 40px auto;
     border-radius: 3px;
 }
+
