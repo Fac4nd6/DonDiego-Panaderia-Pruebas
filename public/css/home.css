@@ -110,8 +110,10 @@
 /* Botón de catálogo completo */
 
 .catalogo-button {
+    text-align: center;
     display: block;
-    width: fit-content;
+    width: 90%;
+    height: 75px;
     margin: 40px auto 0;
 
     padding: 14px 28px;
@@ -142,4 +144,34 @@ h3,p {
     margin: 0;
     font-size: 25px;
     font-weight: bold;
+}
+.conocenos{
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../img/dondiego-concoenos.jpeg');
+    height: 600px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.informacion {
+    width: 80%;
+    height: 90%;
+    background-color: var(--color-background);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    padding: 30px;
+    box-sizing: border-box;
+    border-radius: var(--radius);
+}
+.mapa{
+    width: 250px;
+    height: 350px;
+    border: 0;
+
+}
+.local{
+    width: 45%;
+    height: auto;
 }
