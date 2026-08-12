@@ -34,7 +34,7 @@ require '../layouts/header.php';
 
         <section class="productos">
             <h2>Productos</h2>
-
+            <hr class="separador">
             <div class="productos-grid">
 
                 <article class="producto-card">
@@ -104,27 +104,31 @@ require '../layouts/header.php';
 
         <section class="recommended">
             <h2>Recomendado para vos</h2>
-            <hr>
+            <hr class="separador">
 
             <div class="productos-grid">
                 <article class="producto-card">
                     <img src="../../public/img/torta-chocolate.avif" alt="Torta de chocolate">
-                    <h3>Torta de chocolate</h3>
-                    <p>$450</p>
-
+                    <div class="producto-info">
+                        <h3>Torta de chocolate</h3>
+                        <p>$450</p>
+                    </div>
                 </article>
 
                 <article class="producto-card">
                     <img src="../../public/img/alfajores.avif" alt="Alfajor de chocolate">
-                    <h3>Alfajor de chocolate</h3>
-                    <p>$100</p>
+                    <div class="producto-info">
+                        <h3>Alfajor de chocolate</h3>
+                        <p>$100</p>
+                    </div>
                 </article>
                 
                 <article class="producto-card">
                     <img src="../../public/img/brownie.avif" alt="Alfajor de chocolate">
-                    <h3>Brownie Chocolate</h3>
-                    <p>$250</p>
-                    
+                    <div class="producto-info">
+                        <h3>Brownie Chocolate</h3>
+                        <p>$250</p>
+                    </div>
                 </article>
                 
             </div>
@@ -135,7 +139,7 @@ require '../layouts/header.php';
             <div class="informacion">
                 <div class="info-texto">
                     <h2>Animate y visitanos</h2>
-                    <p>Uruguay 1796<p>
+                    <p>Uruguay 1796</p>
                     <p>de 6:00 a 20:00 hs</p>
                     <P>+598 95 005 706</p>
                     <P>473 49 924</p>
