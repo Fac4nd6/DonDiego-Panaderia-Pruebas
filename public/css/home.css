@@ -1,3 +1,6 @@
+
+/* Sección de héroe */
+
 .hero {
     min-height: 500px;
     display: flex;
@@ -16,9 +19,9 @@
 
 .hero-content h1 {
     font-family: var(--font-title);
-    font-size: 64px;
+    font-size: 100px;
     color: var(--color-background);
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .hero-content p {
@@ -33,8 +36,8 @@
 
     padding: 14px 28px;
 
-    background-color: var(--color-background);
-    color: var(--color-primary);
+    background-color: var(--color-dark);
+    color: var(--color-background);
 
     text-decoration: none;
     font-weight: bold;
@@ -59,4 +62,225 @@
     max-width: 500px;
     height: auto;
     object-fit: contain;
+}
+
+/* Sección de productos destacados */
+
+.productos-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+
+    margin: 40px 8%;
+}
+
+.producto-card {
+    background: white;
+    overflow: hidden;
+    border-radius: var(--radius-img);
+
+    /* Separación interna */
+    padding-bottom: 10px;
+}
+
+.producto-card img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+
+    display: block;
+
+}
+
+.productos{
+
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+
+.producto-info {
+    padding: 12px 15px;
+    
+}
+
+
+
+
+/* Botón de catálogo completo */
+
+.catalogo-button {
+    text-align: center;
+    display: block;
+    width: 90%;
+    height: 75px;
+    margin: 40px auto 0;
+
+    padding: 14px 28px;
+
+    background-color: var(--color-primary);
+    color: var(--color-background);
+
+    text-decoration: none;
+    font-weight: bold;
+
+    border-radius: var(--radius);
+}
+
+.catalogo-button:hover {
+    background-color: var(--color-secondary);
+}
+
+
+h2{
+    font-size: 32px;
+    text-align: center;
+    margin-bottom: 30px;
+    width: 100%;
+    font-family: var(--font-main);
+}   
+
+h3,p {
+    margin: 0;
+    font-size: 25px;
+    font-weight: bold;
+}
+.conocenos{
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../img/dondiego-concoenos.jpeg');
+    height: 600px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.informacion {
+    width: 80%;
+    height: 90%;
+    background-color: var(--color-background);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    padding: 30px;
+    box-sizing: border-box;
+    border-radius: var(--radius);
+}
+.mapa{
+    width: 250px;
+    height: 350px;
+    border: 0;
+
+}
+.local{
+    width: 45%;
+    height: auto;
+}
+
+.footer {
+    background-color: var(--color-primary);
+    color: var(--color-background);
+    padding: 30px 8% 20px;
+}
+
+/* Parte superior */
+.footer-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footer-logo img {
+    width: 160px;
+    height: auto;
+}
+
+.footer-social {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.footer-social span {
+    font-weight: bold;
+}
+
+.social-links {
+    display: flex;
+    gap: 15px;
+}
+
+.social-links a {
+    color: var(--color-background);
+    text-decoration: none;
+    font-size: 14px;
+}
+
+/* Línea */
+.footer hr {
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
+    margin: 10px 0 25px;
+}
+
+/* Columnas */
+.footer-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.5fr;
+    gap: 50px;
+}
+
+.footer-column h3 {
+    margin-bottom: 12px;
+    font-size: 18px;
+}
+
+.footer-column p {
+    margin: 6px 0;
+    font-size: 14px;
+}
+
+.footer-column a {
+    display: block;
+    color: var(--color-background);
+    text-decoration: none;
+    margin: 7px 0;
+    font-size: 14px;
+}
+
+.footer-column a:hover {
+    text-decoration: underline;
+}
+
+/* Noticias */
+.news-item {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.news-item img {
+    width: 48px;
+    height: 40px;
+    object-fit: cover;
+}
+
+.news-item small {
+    font-size: 9px;
+    display: block;
+}
+
+.news-item p {
+    margin: 2px 0;
+    font-size: 12px;
+}
+
+/* Copyright */
+.footer-bottom {
+    text-align: center;
+    margin-top: 35px;
+}
+
+.footer-bottom p {
+    margin: 0;
+    font-size: 13px;
 }
