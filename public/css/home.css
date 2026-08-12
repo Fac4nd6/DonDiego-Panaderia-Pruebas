@@ -19,9 +19,9 @@
 
 .hero-content h1 {
     font-family: var(--font-title);
-    font-size: 64px;
+    font-size: 100px;
     color: var(--color-background);
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .hero-content p {
@@ -36,8 +36,8 @@
 
     padding: 14px 28px;
 
-    background-color: var(--color-background);
-    color: var(--color-primary);
+    background-color: var(--color-dark);
+    color: var(--color-background);
 
     text-decoration: none;
     font-weight: bold;
@@ -142,13 +142,28 @@
 
 
 .recommended h2{
+    font-size: 32px;
     text-align: center;
     margin-bottom: 30px;
     width: 100%;
     font-family: var(--font-main);
 }
 .products {
-    display: flex;
-    justify-content: center;
-    gap: 40px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    margin: 40px 8%;
+}
+
+.product {
+    width: 100%;
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.product img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    display: block;
 }
