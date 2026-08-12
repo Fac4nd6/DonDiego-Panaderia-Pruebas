@@ -106,26 +106,25 @@ require '../layouts/header.php';
         <section class="recommended">
             <h2>Recomendado para vos</h2>
 
-            <div class="products">
-                <article class="product">
+            <div class="productos-grid">
+                <article class="producto-card">
                     <img src="../../public/img/torta-chocolate.avif" alt="Torta de chocolate">
                     <h3>Torta de chocolate</h3>
                     <p>$450</p>
-                    <button>Agregar al carrito</button>
+
                 </article>
 
-                <article class="product">
+                <article class="producto-card">
                     <img src="../../public/img/alfajores.avif" alt="Alfajor de chocolate">
                     <h3>Alfajor de chocolate</h3>
                     <p>$100</p>
-                    <button>Agregar al carrito</button>
                 </article>
                 
-                <article class="product">
+                <article class="producto-card">
                     <img src="../../public/img/brownie.avif" alt="Alfajor de chocolate">
                     <h3>Brownie Chocolate</h3>
                     <p>$250</p>
-                    <button>Agregar al carrito</button>
+                    
                 </article>
                 
             </div>
