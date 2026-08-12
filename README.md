@@ -55,15 +55,12 @@ main
   ↑
 develop
   ↑
-├── facu
-├── mati
-├── cony
-└── cano
-```
+├── tarea individual
+
 
 * `main`: versión estable y final del proyecto.
 * `develop`: rama donde se integran los cambios del equipo.
-* `facu`, `mati`, `cony`, `cano`: ramas individuales de desarrollo.
+* `tarea individual´: ramas individuales de desarrollo.
 
 Los cambios se realizan en las ramas individuales y posteriormente se envían mediante **Pull Requests** hacia `develop`.
 
