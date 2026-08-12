@@ -34,7 +34,7 @@ require '../layouts/header.php';
 
         <section class="productos">
             <h2>Productos</h2>
-
+            <hr class="separador">
             <div class="productos-grid">
 
                 <article class="producto-card">
@@ -104,26 +104,31 @@ require '../layouts/header.php';
 
         <section class="recommended">
             <h2>Recomendado para vos</h2>
+            <hr class="separador">
 
             <div class="productos-grid">
                 <article class="producto-card">
                     <img src="../../public/img/torta-chocolate.avif" alt="Torta de chocolate">
-                    <h3>Torta de chocolate</h3>
-                    <p>$450</p>
-
+                    <div class="producto-info">
+                        <h3>Torta de chocolate</h3>
+                        <p>$450</p>
+                    </div>
                 </article>
 
                 <article class="producto-card">
                     <img src="../../public/img/alfajores.avif" alt="Alfajor de chocolate">
-                    <h3>Alfajor de chocolate</h3>
-                    <p>$100</p>
+                    <div class="producto-info">
+                        <h3>Alfajor de chocolate</h3>
+                        <p>$100</p>
+                    </div>
                 </article>
                 
                 <article class="producto-card">
                     <img src="../../public/img/brownie.avif" alt="Alfajor de chocolate">
-                    <h3>Brownie Chocolate</h3>
-                    <p>$250</p>
-                    
+                    <div class="producto-info">
+                        <h3>Brownie Chocolate</h3>
+                        <p>$250</p>
+                    </div>
                 </article>
                 
             </div>
@@ -133,15 +138,18 @@ require '../layouts/header.php';
             
             <div class="informacion">
                 <div class="info-texto">
+                    
                     <h2>Animate y visitanos</h2>
-                    <p>Uruguay 1796<p>
+                    <p>Uruguay 1796</p>
                     <p>de 6:00 a 20:00 hs</p>
                     <P>+598 95 005 706</p>
                     <P>473 49 924</p>
                  </div>
+                 <div class="info-local">
                 <iframe class="mapa" src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d6811.739034260684!2d-57.9604178!3d-31.3901612!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95addd560a248351%3A0x31070367860ed798!2sPanader%C3%ADa%20y%20Confiter%C3%ADa%20Don%20Diego%20(Centro)!5e0!3m2!1ses-419!2suy!4v1786501316195!5m2!1ses-419!2suy" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
                 <img class="local" src="../../public/img/dondiego-local.jpg" alt="Productos de Don Diego">    
                 </div>
+            </div>
             
         </section>
 

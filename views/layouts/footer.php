@@ -78,9 +78,8 @@
 
     </div>
 
-    <!-- Copyright -->
     <div class="footer-bottom">
-        <p>© 2026 [Empresa], Todos Los Derechos Reservados</p>
+        <p>© 2026 [ReptiTech], Todos Los Derechos Reservados</p>
     </div>
 
 </footer>

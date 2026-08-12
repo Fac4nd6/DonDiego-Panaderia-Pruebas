@@ -2,7 +2,7 @@
     <nav class="navbar">
 
         <a href="index.php" class="logo">
-            <img src="../../public/img/logo.png" alt="Don Diego">
+            <img src="../../public/img/dondiego-logo.jpeg" alt="Don Diego">
         </a>
 
         <div class="nav-links">
