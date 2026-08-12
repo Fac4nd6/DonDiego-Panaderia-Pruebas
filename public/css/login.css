@@ -1,0 +1,321 @@
+/* ==============================
+   FONDO DEL LOGIN
+   ============================== */
+
+.background-container {
+    position: relative;
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 40px 20px;
+
+    background: #b31b21;
+
+    overflow: hidden;
+}
+
+/* Imagen difuminada de fondo */
+
+.background-container::before {
+    content: "";
+
+    position: absolute;
+    inset: -20px;
+
+    background:
+        url('../img/bolsa-coca.avif')
+        center / cover no-repeat;
+
+    filter: blur(2px);
+
+    opacity: 0.67;
+}
+
+
+/* ==============================
+   TARJETA
+   ============================== */
+
+.login-card {
+    position: relative;
+    z-index: 1;
+
+    width: 100%;
+    max-width: 380px;
+
+    padding: 70px 35px 30px;
+
+    background-color: #fffdf7;
+
+    border-radius: 28px;
+
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+
+    text-align: center;
+
+    margin-top: 40px;
+}
+
+
+/* ==============================
+   LOGO
+   ============================== */
+
+.logo-container {
+    position: absolute;
+
+    top: -55px;
+    left: 50%;
+
+    transform: translateX(-50%);
+}
+
+.logo-badge {
+    width: 110px;
+    height: 110px;
+
+    background-color: #fffdf7;
+
+    border: 3px solid #b31b21;
+
+    border-radius: 50%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    overflow: hidden;
+
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.logo-badge img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    display: block;
+}
+
+
+/* ==============================
+   TÍTULO
+   ============================== */
+
+.form-header {
+    margin-top: 10px;
+    margin-bottom: 30px;
+}
+
+.form-title {
+    font-family: 'Playfair Display', serif;
+
+    font-style: italic;
+
+    font-size: 1.5rem;
+
+    color: #2b2b2b;
+
+    margin-bottom: 8px;
+
+    font-weight: 600;
+}
+
+
+/* ==============================
+   ERROR
+   ============================== */
+
+.error-msg {
+    color: #b31b21;
+
+    background: rgba(179, 27, 33, 0.08);
+
+    border-radius: 6px;
+
+    padding: 8px 10px;
+
+    font-size: 0.8rem;
+
+    margin-bottom: 20px;
+}
+
+
+/* ==============================
+   FORMULARIO
+   ============================== */
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+
+    gap: 22px;
+}
+
+.login-form fieldset {
+    border: none;
+    padding: 0;
+}
+
+
+/* ==============================
+   INPUTS
+   ============================== */
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+
+    width: 80%;
+
+    margin: 0 auto;
+
+    text-align: left;
+}
+
+.input-group label {
+    color: #555;
+
+    font-size: 0.75rem;
+
+    margin-bottom: 5px;
+}
+
+.input-group input {
+    width: 100%;
+
+    border: none;
+
+    border-bottom: 2px solid #555;
+
+    background: transparent;
+
+    padding: 6px 4px;
+
+    font-family: 'Poppins', sans-serif;
+
+    font-size: 0.95rem;
+
+    color: #333;
+
+    outline: none;
+
+    transition: border-color 0.2s ease;
+}
+
+.input-group input::placeholder {
+    color: #999;
+}
+
+.input-group input:focus {
+    border-bottom-color: #b31b21;
+}
+
+
+/* ==============================
+   BOTÓN
+   ============================== */
+
+.btn-submit {
+    background-color: #b31b21;
+
+    color: #fff;
+
+    border: none;
+
+    padding: 11px 24px;
+
+    border-radius: 6px;
+
+    font-family: 'Poppins', sans-serif;
+
+    font-size: 0.75rem;
+
+    font-weight: 600;
+
+    letter-spacing: 0.5px;
+
+    cursor: pointer;
+
+    align-self: center;
+
+    margin-top: 8px;
+
+    transition:
+        background-color 0.2s ease,
+        transform 0.15s ease;
+}
+
+.btn-submit:hover {
+    background-color: #8e1419;
+}
+
+.btn-submit:active {
+    transform: scale(0.97);
+}
+
+
+/* ==============================
+   FOOTER
+   ============================== */
+
+.form-footer {
+    margin-top: 25px;
+}
+
+.form-footer p {
+    color: #777;
+
+    font-size: 0.8rem;
+}
+
+.form-footer a {
+    color: #333;
+
+    font-size: 0.8rem;
+
+    font-weight: 500;
+
+    text-decoration: none;
+}
+
+.form-footer a:hover {
+    color: #b31b21;
+
+    text-decoration: underline;
+}
+
+
+/* ==============================
+   RESPONSIVE
+   ============================== */
+
+@media (max-width: 480px) {
+
+    .background-container {
+        padding: 30px 15px;
+    }
+
+    .login-card {
+        padding: 65px 20px 25px;
+
+        border-radius: 24px;
+    }
+
+    .input-group {
+        width: 90%;
+    }
+
+    .logo-badge {
+        width: 100px;
+        height: 100px;
+    }
+
+    .form-title {
+        font-size: 1.35rem;
+    }
+}
