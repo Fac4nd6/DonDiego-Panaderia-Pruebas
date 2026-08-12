@@ -26,4 +26,7 @@
         <link rel="stylesheet" href="/DonDiego-Panaderia-Pruebas/public/css/<?= $pageCss ?>">
     <?php endif; ?>
 
+        <link rel="stylesheet" href="/DonDiego-Panaderia-Pruebas/public/css/footer.css">
+
+
 </head>
