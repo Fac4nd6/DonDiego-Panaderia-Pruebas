@@ -28,5 +28,6 @@
 
         <link rel="stylesheet" href="/DonDiego-Panaderia-Pruebas/public/css/footer.css">
 
+        <link rel="stylesheet" href="../../public/css/header.css">
 
 </head>

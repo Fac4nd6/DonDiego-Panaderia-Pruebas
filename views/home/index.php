@@ -8,9 +8,11 @@ require '../layouts/header.php';
 ?>
 
 <body>
-    <nav>
-        <!-- Barra de navegación -->
-    </nav>
+   <?php 
+   
+   require '../layouts/header.php';
+   
+   ?>
 
     <main>
 
@@ -18,7 +20,7 @@ require '../layouts/header.php';
 
         <section class="hero">
             <div class="hero-content">
-                <h1>Don Diego</h1>
+                <h1>El sabor de lo recién hecho</h1>
                 <p>Los mejores productos de panadería.</p>
                 <a href="#" class="hero-button">Ver catálogo</a>
             </div>
