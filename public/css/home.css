@@ -14,7 +14,7 @@
 }
 
 .hero-content {
-    width: 50%;
+    width: 60%;
 }
 
 .hero-content h1 {
@@ -51,7 +51,7 @@
 }
 
 .hero-image {
-    width: 45%;
+    width: 20%;
     display: flex;
     justify-content: center;
     align-items: center;

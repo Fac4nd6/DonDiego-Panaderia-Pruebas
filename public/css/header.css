@@ -1,0 +1,56 @@
+/* =========================
+   HEADER / NAVBAR
+   ========================= */
+
+.header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 10;
+}
+
+.navbar {
+    width: 100%;
+    padding: 15px 8%;
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Logo */
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo img {
+    width: 90px;
+    height: 90px;
+    object-fit: contain;
+}
+
+/* Menú */
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.nav-links a {
+    color: var(--color-background);
+    text-decoration: none;
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: bold;
+
+    transition: 0.2s;
+}
+
+.nav-links a:hover {
+    color: var(--color-secondary);
+}
