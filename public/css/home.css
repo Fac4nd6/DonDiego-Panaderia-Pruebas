@@ -19,9 +19,9 @@
 
 .hero-content h1 {
     font-family: var(--font-title);
-    font-size: 64px;
+    font-size: 100px;
     color: var(--color-background);
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .hero-content p {
@@ -36,8 +36,8 @@
 
     padding: 14px 28px;
 
-    background-color: var(--color-background);
-    color: var(--color-primary);
+    background-color: var(--color-dark);
+    color: var(--color-background);
 
     text-decoration: none;
     font-weight: bold;
@@ -98,31 +98,22 @@
     margin-bottom: 50px;
 }
 
-.productos h2 {
-    text-align: center;
-    margin-bottom: 30px;
-    font-family: var(--font-title);
-}
 
 .producto-info {
     padding: 12px 15px;
+    
 }
 
-.producto-info h3 {
-    margin: 0;
-    font-size: 14px;
-}
 
-.producto-info p {
-    margin: 5px 0 0;
-    font-weight: bold;
-}
+
 
 /* Botón de catálogo completo */
 
 .catalogo-button {
+    text-align: center;
     display: block;
-    width: fit-content;
+    width: 90%;
+    height: 75px;
     margin: 40px auto 0;
 
     padding: 14px 28px;
@@ -141,14 +132,46 @@
 }
 
 
-.recommended h2{
+h2{
+    font-size: 32px;
     text-align: center;
     margin-bottom: 30px;
     width: 100%;
     font-family: var(--font-main);
+}   
+
+h3,p {
+    margin: 0;
+    font-size: 25px;
+    font-weight: bold;
 }
-.products {
+.conocenos{
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../img/dondiego-concoenos.jpeg');
+    height: 600px;
+
     display: flex;
+    align-items: center;
     justify-content: center;
-    gap: 40px;
+}
+.informacion {
+    width: 80%;
+    height: 90%;
+    background-color: var(--color-background);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    padding: 30px;
+    box-sizing: border-box;
+    border-radius: var(--radius);
+}
+.mapa{
+    width: 250px;
+    height: 350px;
+    border: 0;
+
+}
+.local{
+    width: 45%;
+    height: auto;
 }
