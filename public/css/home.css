@@ -284,3 +284,10 @@ h3,p {
     margin: 0;
     font-size: 13px;
 }
+hr {
+    border: none;
+    height: 6px;
+    background-color: grey;
+    width: 80%;
+    margin: 40px auto;
+}

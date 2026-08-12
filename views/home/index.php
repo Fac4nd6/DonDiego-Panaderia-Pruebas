@@ -102,6 +102,7 @@ require '../layouts/header.php';
 
         <section class="recommended">
             <h2>Recomendado para vos</h2>
+            <hr>
 
             <div class="productos-grid">
                 <article class="producto-card">
