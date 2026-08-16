@@ -11,9 +11,23 @@
     align-items: center;
 }
 
+.footer-logo {
+    width: 220px;
+    height: 70px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
 .footer-logo img {
-    width: 160px;
-    height: auto;
+    width: auto;
+    height: 220px;
+    object-fit: contain;
 }
 
 .footer-social {

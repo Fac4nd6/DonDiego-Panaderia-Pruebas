@@ -8,11 +8,11 @@ require '../layouts/header.php';
 ?>
 
 <body>
-   <?php 
-   
-   require '../layouts/header.php';
-   
-   ?>
+    <?php
+
+    require '../layouts/header.php';
+
+    ?>
 
     <main>
 
@@ -92,13 +92,13 @@ require '../layouts/header.php';
                 </article>
 
             </div>
-            
+
         </section>
-                <a href="catalogo.php" class="catalogo-button">
-                    Ver catálogo completo
-                </a>
-        
-       
+        <a href="catalogo.php" class="catalogo-button">
+            Ver catálogo completo
+        </a>
+
+
 
         <!-- Productos recomendados para el usuario -->
 
@@ -122,7 +122,7 @@ require '../layouts/header.php';
                         <p>$100</p>
                     </div>
                 </article>
-                
+
                 <article class="producto-card">
                     <img src="../../public/img/brownie.avif" alt="Alfajor de chocolate">
                     <div class="producto-info">
@@ -130,31 +130,78 @@ require '../layouts/header.php';
                         <p>$250</p>
                     </div>
                 </article>
-                
+
             </div>
         </section>
 
-         <section class="conocenos">
-            
-            <div class="informacion">
+        <section class="conocenos">
+
+            <div class="conocenos-contenido">
+
+                <!-- INFORMACIÓN DEL LOCAL -->
+
                 <div class="info-texto">
+
                     
-                    <h2>Animate y visitanos</h2>
-                    <p>Uruguay 1796</p>
-                    <p>de 6:00 a 20:00 hs</p>
-                    <P>+598 95 005 706</p>
-                    <P>473 49 924</p>
-                 </div>
-                 <div class="info-local">
-                <iframe class="mapa" src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d6811.739034260684!2d-57.9604178!3d-31.3901612!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95addd560a248351%3A0x31070367860ed798!2sPanader%C3%ADa%20y%20Confiter%C3%ADa%20Don%20Diego%20(Centro)!5e0!3m2!1ses-419!2suy!4v1786501316195!5m2!1ses-419!2suy" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
-                <img class="local" src="../../public/img/dondiego-local.jpg" alt="Productos de Don Diego">    
+
+                    <h2>Animate y<br>visitarnos</h2>
+
+                    <p class="info-descripcion">
+                        Vení a disfrutar de algo rico, recién hecho y preparado
+                        con mucho cariño. Te esperamos en nuestro local.
+                    </p>
+
+                    <div class="info-datos">
+
+                        <div class="info-dato">
+                            <span>📍</span>
+                            <p>Uruguay 1796</p>
+                        </div>
+
+                        <div class="info-dato">
+                            <span>🕐</span>
+                            <p>Todos los días · 6:00 a 20:00 hs</p>
+                        </div>
+
+                        <div class="info-dato">
+                            <span>📞</span>
+                            <p>095 005 706 · 473 49 924</p>
+                        </div>
+
+                    </div>
+
+                    <a href="#" class="conocenos-button">
+                        Cómo llegar
+                        <span>→</span>
+                    </a>
+
                 </div>
+
+
+                <!-- MAPA -->
+
+                <div class="mapa-container">
+
+                    <iframe
+                        class="mapa"
+                        src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d6811.739034260684!2d-57.9604178!3d-31.3901612!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95addd560a248351%3A0x31070367860ed798!2sPanader%C3%ADa%20y%20Confiter%C3%ADa%20Don%20Diego%20(Centro)!5e0!3m2!1ses-419!2suy!4v1786501316195!5m2!1ses-419!2suy"
+                        allowfullscreen=""
+                        loading="lazy"
+                        referrerpolicy="strict-origin-when-cross-origin">
+                    </iframe>
+
+                    <div class="mapa-label">
+                        📍 Encontranos acá
+                    </div>
+
+                </div>
+
             </div>
-            
+
         </section>
 
     </main>
-<?php require '../layouts/footer.php'; ?>
+    <?php require '../layouts/footer.php'; ?>
 
 </body>
 

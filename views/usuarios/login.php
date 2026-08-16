@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 }
 
 require '../layouts/head.php';
-require '../layouts/header.php';
+
 
 ?>
 
@@ -39,7 +39,7 @@ require '../layouts/header.php';
             <header class="logo-container">
                 <div class="logo-badge">
                     <img
-                        src="../../public/img/dondiego-logo.jpeg"
+                        src="../../public/img/logo.avif"
                         alt="Logo de Don Diego">
                 </div>
             </header>
