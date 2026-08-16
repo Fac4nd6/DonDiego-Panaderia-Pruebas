@@ -4,7 +4,7 @@
     <div class="footer-top">
 
         <div class="footer-logo">
-            <img src="/DonDiego-Panaderia-Pruebas/public/img/logo.png"
+            <img src="/DonDiego-Panaderia-Pruebas/public/img/logo-don2.png"
                  alt="Don Diego Panadería y Confitería">
         </div>
 
