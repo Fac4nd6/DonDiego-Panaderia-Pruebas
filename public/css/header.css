@@ -1,56 +1,204 @@
 /* =========================
    HEADER / NAVBAR
-   ========================= */
+========================= */
 
 .header {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: 90%;
+    max-width: 1400px;
+
     z-index: 10;
 }
 
 .navbar {
     width: 100%;
-    padding: 15px 8%;
+
+    padding: 8px 20px;
+
     box-sizing: border-box;
 
     display: flex;
     align-items: center;
-    justify-content: space-between;
+
+    gap: 35px;
 }
 
-/* Logo */
+
+/* LOGO */
 
 .logo {
     display: flex;
     align-items: center;
+    flex-shrink: 0;
 }
 
 .logo img {
-    width: 90px;
-    height: 90px;
+    width: 70px;
+    height: 70px;
+
     object-fit: contain;
+
+    transition: transform 0.3s ease;
 }
 
-/* Menú */
+.logo:hover img {
+    transform: scale(1.05);
+}
+
+
+/* MENÚ */
 
 .nav-links {
     display: flex;
     align-items: center;
-    gap: 25px;
+    gap: 30px;
 }
 
 .nav-links a {
+    position: relative;
+
     color: var(--color-background);
+
     text-decoration: none;
+
     font-family: var(--font-body);
     font-size: 16px;
     font-weight: bold;
 
-    transition: 0.2s;
+    padding: 8px 0;
+
+    transition: color 0.25s ease;
 }
 
 .nav-links a:hover {
-    color: var(--color-secondary);
+    color: var(--color-background);
+}
+
+
+/* Línea debajo */
+
+.nav-links a::after {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    bottom: 0;
+
+    width: 0;
+    height: 2px;
+
+    background-color: var(--color-background);
+
+    transition: width 0.25s ease;
+}
+
+.nav-links a:hover::after {
+    width: 100%;
+}
+
+
+/* ACCIONES */
+
+.nav-actions {
+    margin-left: auto;
+
+    display: flex;
+    align-items: center;
+
+    gap: 15px;
+}
+
+
+/* CARRITO */
+
+.cart-button {
+    position: relative;
+
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    color: var(--color-background);
+
+    text-decoration: none;
+
+    font-size: 19px;
+
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.cart-button:hover {
+    background-color: rgba(255,255,255,0.12);
+
+    transform: translateY(-2px);
+}
+
+
+/* CONTADOR */
+
+.cart-count {
+    position: absolute;
+
+    top: 0;
+    right: -2px;
+
+    width: 17px;
+    height: 17px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: var(--color-dark);
+
+    color: white;
+
+    font-size: 10px;
+    font-weight: bold;
+
+    border-radius: 50%;
+}
+
+
+/* PEDIR AHORA */
+
+.nav-button {
+    padding: 11px 20px;
+
+    background-color: var(--color-dark);
+
+    color: var(--color-background);
+
+    text-decoration: none;
+
+    font-family: var(--font-body);
+
+    font-size: 14px;
+    font-weight: bold;
+
+    border-radius: var(--radius);
+
+    box-shadow: 0 5px 0 rgba(0,0,0,0.18);
+
+    transition:
+        transform 0.2s ease,
+        background-color 0.2s ease;
+}
+
+.nav-button:hover {
+    background-color: var(--color-secondary);
+
+    transform: translateY(-2px);
 }
