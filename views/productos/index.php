@@ -2,171 +2,10 @@
 
 $pageCss = "catalogo.css";
 
-require '../../config/Database.php';
-require '../../models/Producto.php';
-require '../layouts/header.php';
-require '../layouts/head.php';
-
-
-// =========================================================
-// PRODUCTOS DESDE LA BASE DE DATOS
-// =========================================================
-
-$productoModel = new Producto($conn);
-
-
-// =========================================================
-// FILTROS
-// =========================================================
-
-$busqueda = trim($_GET['busqueda'] ?? '');
-
-$categoriaSeleccionada = $_GET['categoria'] ?? 'todos';
-
-
-// =========================================================
-// OBTENER PRODUCTOS
-// =========================================================
-
-if ($busqueda !== '') {
-
-    $productos = $productoModel->buscar($busqueda);
-
-} else {
-
-    $productos = $productoModel->obtenerTodos();
-
-}
-
-
-// =========================================================
-// FILTRAR CATEGORÍA
-// =========================================================
-// La base de datos devuelve nombres como:
-// "Dulces", "Tortas", "Repostería", etc.
-//
-// Convertimos el nombre a un formato simple para
-// compararlo con la URL (?categoria=dulces).
-// =========================================================
-
-function categoriaSlug($categoria)
-{
-    $categoria = strtolower($categoria);
-
-    $categoria = str_replace(
-        ['á', 'é', 'í', 'ó', 'ú', 'ñ'],
-        ['a', 'e', 'i', 'o', 'u', 'n'],
-        $categoria
-    );
-
-    return $categoria;
-}
-
-
-if ($categoriaSeleccionada !== 'todos') {
-
-    $productos = array_filter(
-        $productos,
-        function ($producto) use ($categoriaSeleccionada) {
-
-            return categoriaSlug($producto['categoria'])
-                === $categoriaSeleccionada;
-        }
-    );
-
-}
-
-
-// =========================================================
-// PAGINACIÓN
-// =========================================================
-
-$productosPorPagina = 8;
-
-$totalProductos = count($productos);
-
-$totalPaginas = max(
-    1,
-    (int) ceil($totalProductos / $productosPorPagina)
-);
-
-
-$paginaActual = isset($_GET['pagina'])
-    ? max(1, (int) $_GET['pagina'])
-    : 1;
-
-
-$paginaActual = min(
-    $paginaActual,
-    $totalPaginas
-);
-
-
-$inicio = ($paginaActual - 1) * $productosPorPagina;
-
-
-$productosPagina = array_slice(
-    $productos,
-    $inicio,
-    $productosPorPagina
-);
-
-
-// =========================================================
-// FUNCIÓN PARA GENERAR LINKS
-// =========================================================
-
-function linkCatalogo($pagina)
-{
-    global $busqueda, $categoriaSeleccionada;
-
-    return '?pagina=' . $pagina
-        . '&busqueda=' . urlencode($busqueda)
-        . '&categoria=' . urlencode($categoriaSeleccionada);
-}
-
-
-// =========================================================
-// NOMBRE BONITO DE LA CATEGORÍA
-// =========================================================
-
-function nombreCategoria($categoria)
-{
-    $categorias = [
-        'todos'      => 'Todos los productos',
-        'dulces'     => 'Dulces',
-        'tortas'     => 'Tortas',
-        'reposteria' => 'Repostería',
-        'panaderia'  => 'Panadería',
-        'salados'    => 'Salados'
-    ];
-
-    return $categorias[$categoria] ?? 'Productos';
-}
+require __DIR__ . '/../layouts/head.php';
+require __DIR__ . '/../layouts/header.php';
 
 ?>
-
-<!DOCTYPE html>
-
-<html lang="es">
-
-<head>
-
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>Catálogo | Don Diego</title>
-
-    <link
-        rel="stylesheet"
-        href="../../public/css/catalogo.css"
-    >
-
-</head>
 
 
 <body class="pagina-catalogo">
@@ -284,14 +123,12 @@ function nombreCategoria($categoria)
             Todos
         </a>
 
-
         <a
             href="?categoria=dulces"
             class="<?= $categoriaSeleccionada === 'dulces' ? 'activo' : '' ?>"
         >
             Dulces
         </a>
-
 
         <a
             href="?categoria=tortas"
@@ -300,7 +137,6 @@ function nombreCategoria($categoria)
             Tortas
         </a>
 
-
         <a
             href="?categoria=reposteria"
             class="<?= $categoriaSeleccionada === 'reposteria' ? 'activo' : '' ?>"
@@ -308,14 +144,12 @@ function nombreCategoria($categoria)
             Repostería
         </a>
 
-
         <a
             href="?categoria=panaderia"
             class="<?= $categoriaSeleccionada === 'panaderia' ? 'activo' : '' ?>"
         >
             Panadería
         </a>
-
 
         <a
             href="?categoria=salados"
@@ -337,13 +171,10 @@ function nombreCategoria($categoria)
         <div class="catalogo-resultados-header">
 
             <h2>
-
                 <?= htmlspecialchars(
                     nombreCategoria($categoriaSeleccionada)
                 ) ?>
-
             </h2>
-
 
             <span>
                 <?= $totalProductos ?> productos
@@ -358,25 +189,21 @@ function nombreCategoria($categoria)
 
         <?php if (empty($productosPagina)): ?>
 
-
             <div class="catalogo-vacio">
 
                 <div class="catalogo-vacio-icono">
                     🔎
                 </div>
 
-
                 <h2>
                     No encontramos productos
                 </h2>
-
 
                 <p>
                     Probá buscando otro producto o categoría.
                 </p>
 
-
-                <a href="catalogo.php">
+                <a href="/DonDiego-Panaderia-Pruebas/controllers/CatalogoController.php">
                     Ver todos los productos
                 </a>
 
@@ -407,14 +234,14 @@ function nombreCategoria($categoria)
                             <?php if (!empty($producto['imagen'])): ?>
 
                                 <img
-                                    src="../../public/img/<?= htmlspecialchars($producto['imagen']) ?>"
+                                    src="/DonDiego-Panaderia-Pruebas/public/img/<?= htmlspecialchars($producto['imagen']) ?>"
                                     alt="<?= htmlspecialchars($producto['nombre']) ?>"
                                 >
 
                             <?php else: ?>
 
                                 <img
-                                    src="../../public/img/logo.avif"
+                                    src="/DonDiego-Panaderia-Pruebas/public/img/logo.avif"
                                     alt="Don Diego"
                                 >
 
@@ -441,20 +268,16 @@ function nombreCategoria($categoria)
 
 
                             <h3>
-
                                 <?= htmlspecialchars(
                                     $producto['nombre']
                                 ) ?>
-
                             </h3>
 
 
                             <p>
-
                                 <?= htmlspecialchars(
                                     $producto['descripcion']
                                 ) ?>
-
                             </p>
 
 
@@ -476,7 +299,7 @@ function nombreCategoria($categoria)
 
 
                                 <a
-                                    href="detalle.php?id=<?= $producto['id'] ?>"
+                                    href="../productos/detalle.php?id=<?= (int) $producto['id'] ?>"
                                     class="producto-boton"
                                 >
                                     Ver producto
@@ -510,7 +333,6 @@ function nombreCategoria($categoria)
 
     <?php if ($totalPaginas > 1): ?>
 
-
         <nav class="catalogo-paginacion">
 
 
@@ -519,7 +341,8 @@ function nombreCategoria($categoria)
             <?php if ($paginaActual > 1): ?>
 
                 <a
-                    href="<?= linkCatalogo($paginaActual - 1) ?>"
+                    href="<?= htmlspecialchars(linkCatalogo($paginaActual - 1)
+                    ) ?>"
                     class="pagina-anterior"
                     aria-label="Página anterior"
                 >
@@ -537,14 +360,14 @@ function nombreCategoria($categoria)
                 $i++
             ): ?>
 
-
                 <a
-                    href="<?= linkCatalogo($i) ?>"
+                    href="<?= htmlspecialchars(
+                        linkCatalogo($i)
+                    ) ?>"
                     class="<?= $i === $paginaActual ? 'activo' : '' ?>"
                 >
                     <?= $i ?>
                 </a>
-
 
             <?php endfor; ?>
 
@@ -554,7 +377,9 @@ function nombreCategoria($categoria)
             <?php if ($paginaActual < $totalPaginas): ?>
 
                 <a
-                    href="<?= linkCatalogo($paginaActual + 1) ?>"
+                    href="<?= htmlspecialchars(
+                        linkCatalogo($paginaActual + 1
+                    ) ) ?>"
                     class="pagina-siguiente"
                     aria-label="Página siguiente"
                 >
@@ -566,14 +391,13 @@ function nombreCategoria($categoria)
 
         </nav>
 
-
     <?php endif; ?>
 
 
 </main>
 
 
-<?php include '../layouts/footer.php'; ?>
+<?php require __DIR__ . '/../layouts/footer.php'; ?>
 
 
 </body>
