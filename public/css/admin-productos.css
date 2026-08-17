@@ -1,0 +1,802 @@
+/* =========================================================
+   HEADER DEL ADMIN
+========================================================= */
+
+.pagina-admin .header {
+    background:
+        var(--color-primary);
+
+    border-radius:
+        0 0 18px 18px;
+
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.12);
+
+    width:
+        90%;
+
+    max-width:
+        100%;
+}
+
+
+/* =========================================================
+   PÁGINA ADMINISTRACIÓN
+========================================================= */
+
+.pagina-admin {
+    background:
+        var(--color-background);
+
+    color:
+        var(--color-dark);
+}
+
+
+/* =========================================================
+   CONTENEDOR
+========================================================= */
+
+.admin-productos-container {
+    width:
+        90%;
+
+    max-width:
+        1200px;
+
+    margin:
+        120px auto 60px;
+}
+
+
+/* =========================================================
+   ENCABEZADO
+========================================================= */
+
+.admin-header {
+    display:
+        flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        center;
+
+    gap:
+        30px;
+
+    margin-bottom:
+        35px;
+}
+
+
+.admin-etiqueta {
+    display:
+        block;
+
+    margin-bottom:
+        5px;
+
+    color:
+        var(--color-primary);
+
+    font-size:
+        0.8rem;
+
+    font-weight:
+        700;
+
+    letter-spacing:
+        2px;
+}
+
+
+.admin-header h1 {
+    margin:
+        0 0 8px;
+
+    color:
+        var(--color-dark);
+
+    font-family:
+        var(--font-main);
+
+    font-size:
+        2.5rem;
+
+    font-weight:
+        700;
+}
+
+
+.admin-header p {
+    margin:
+        0;
+
+    color:
+        #666;
+
+    font-size:
+        1rem;
+}
+
+
+/* =========================================================
+   BOTÓN AGREGAR
+========================================================= */
+
+.btn-agregar {
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    padding:
+        13px 22px;
+
+    background:
+        var(--color-primary);
+
+    border:
+        none;
+
+    border-radius:
+        10px;
+
+    color:
+        white;
+
+    text-decoration:
+        none;
+
+    font-size:
+        0.95rem;
+
+    font-weight:
+        600;
+
+    cursor:
+        pointer;
+
+    box-shadow:
+        0 6px 15px rgba(179, 27, 33, 0.18);
+
+    transition:
+        transform 0.2s ease,
+        background-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.btn-agregar:hover {
+    background:
+        var(--color-secondary);
+
+    color:
+        white;
+
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 10px 22px rgba(179, 27, 33, 0.25);
+}
+
+
+/* =========================================================
+   RESUMEN
+========================================================= */
+
+.admin-resumen {
+    margin-bottom:
+        25px;
+}
+
+
+.resumen-card {
+    display:
+        inline-flex;
+
+    flex-direction:
+        column;
+
+    min-width:
+        170px;
+
+    padding:
+        20px 25px;
+
+    background:
+        white;
+
+    border:
+        1px solid #e5e5e5;
+
+    border-radius:
+        14px;
+
+    box-shadow:
+        0 4px 15px rgba(0, 0, 0, 0.06);
+}
+
+
+.resumen-numero {
+    color:
+        var(--color-primary);
+
+    font-size:
+        2rem;
+
+    font-weight:
+        700;
+}
+
+
+.resumen-texto {
+    margin-top:
+        3px;
+
+    color:
+        #666;
+
+    font-size:
+        0.9rem;
+}
+
+
+/* =========================================================
+   TABLA
+========================================================= */
+
+.tabla-contenedor {
+    overflow-x:
+        auto;
+
+    background:
+        white;
+
+    border:
+        1px solid #e5e5e5;
+
+    border-radius:
+        16px;
+
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.07);
+}
+
+
+.tabla-productos {
+    width:
+        100%;
+
+    min-width:
+        800px;
+
+    border-collapse:
+        collapse;
+
+    color:
+        var(--color-dark);
+}
+
+
+/* =========================================================
+   CABECERA TABLA
+========================================================= */
+
+.tabla-productos th {
+    padding:
+        18px;
+
+    background:
+        #fafafa;
+
+    border-bottom:
+        1px solid #e5e5e5;
+
+    color:
+        #555;
+
+    text-align:
+        left;
+
+    font-size:
+        0.85rem;
+
+    font-weight:
+        600;
+}
+
+
+.tabla-productos th:first-child {
+    border-top-left-radius:
+        16px;
+}
+
+
+.tabla-productos th:last-child {
+    border-top-right-radius:
+        16px;
+}
+
+
+/* =========================================================
+   CELDAS
+========================================================= */
+
+.tabla-productos td {
+    padding:
+        16px 18px;
+
+    background:
+        white;
+
+    border-bottom:
+        1px solid #eeeeee;
+
+    color:
+        var(--color-dark);
+
+    vertical-align:
+        middle;
+}
+
+
+.tabla-productos tbody tr {
+    transition:
+        background-color 0.2s ease;
+}
+
+
+.tabla-productos tbody tr:hover td {
+    background:
+        #fffafa;
+}
+
+
+.tabla-productos tbody tr:last-child td {
+    border-bottom:
+        none;
+}
+
+
+/* =========================================================
+   PRODUCTO
+========================================================= */
+
+.producto-admin {
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        14px;
+}
+
+
+.producto-admin-imagen,
+.producto-sin-imagen {
+    width:
+        65px;
+
+    height:
+        65px;
+
+    flex-shrink:
+        0;
+
+    border-radius:
+        10px;
+
+    object-fit:
+        cover;
+}
+
+
+.producto-admin-imagen {
+    display:
+        block;
+
+    background:
+        #f1f1f1;
+}
+
+
+.producto-sin-imagen {
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    background:
+        #eeeeee;
+
+    font-size:
+        1.5rem;
+}
+
+
+.producto-admin-info {
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    gap:
+        4px;
+
+    min-width:
+        0;
+}
+
+
+.producto-admin-info strong {
+    color:
+        var(--color-dark);
+
+    font-size:
+        0.95rem;
+
+    font-weight:
+        600;
+}
+
+
+.producto-admin-info span {
+    display:
+        block;
+
+    max-width:
+        300px;
+
+    overflow:
+        hidden;
+
+    text-overflow:
+        ellipsis;
+
+    white-space:
+        nowrap;
+
+    color:
+        #777;
+
+    font-size:
+        0.8rem;
+}
+
+
+/* =========================================================
+   CATEGORÍA
+========================================================= */
+
+.categoria-producto {
+    display:
+        inline-block;
+
+    padding:
+        6px 10px;
+
+    background:
+        rgba(179, 27, 33, 0.08);
+
+    border-radius:
+        20px;
+
+    color:
+        var(--color-primary);
+
+    font-size:
+        0.8rem;
+
+    font-weight:
+        600;
+
+    white-space:
+        nowrap;
+}
+
+
+/* =========================================================
+   PRECIO
+========================================================= */
+
+.precio-producto {
+    color:
+        var(--color-primary);
+
+    font-size:
+        0.95rem;
+
+    font-weight:
+        600;
+
+    white-space:
+        nowrap;
+}
+
+
+/* =========================================================
+   ESTADO
+========================================================= */
+
+.estado {
+    display:
+        inline-block;
+
+    padding:
+        6px 10px;
+
+    border-radius:
+        20px;
+
+    font-size:
+        0.8rem;
+
+    font-weight:
+        600;
+
+    white-space:
+        nowrap;
+}
+
+
+.estado.activo {
+    background:
+        #e5f7ea;
+
+    color:
+        #23833b;
+}
+
+
+.estado.inactivo {
+    background:
+        #fbe8e8;
+
+    color:
+        #a33;
+}
+
+
+/* =========================================================
+   ACCIONES
+========================================================= */
+
+.acciones-producto {
+    display:
+        flex;
+
+    gap:
+        8px;
+}
+
+
+.btn-editar,
+.btn-eliminar {
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    width:
+        38px;
+
+    height:
+        38px;
+
+    border-radius:
+        8px;
+
+    text-decoration:
+        none;
+
+    transition:
+        transform 0.2s ease,
+        background-color 0.2s ease;
+}
+
+
+.btn-editar {
+    background:
+        #eeeeee;
+}
+
+
+.btn-eliminar {
+    background:
+        #ffe8e8;
+}
+
+
+.btn-editar:hover {
+    background:
+        #e2e2e2;
+
+    transform:
+        translateY(-2px);
+}
+
+
+.btn-eliminar:hover {
+    background:
+        #ffd5d5;
+
+    transform:
+        translateY(-2px);
+}
+
+
+/* =========================================================
+   SIN PRODUCTOS
+========================================================= */
+
+.productos-vacio {
+    padding:
+        70px 20px;
+
+    background:
+        white;
+
+    border:
+        1px solid #e5e5e5;
+
+    border-radius:
+        16px;
+
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.07);
+
+    text-align:
+        center;
+}
+
+
+.productos-vacio-icono {
+    margin-bottom:
+        15px;
+
+    font-size:
+        3rem;
+}
+
+
+.productos-vacio h2 {
+    margin:
+        0 0 8px;
+
+    color:
+        var(--color-dark);
+
+    font-size:
+        1.5rem;
+}
+
+
+.productos-vacio p {
+    margin:
+        0 0 25px;
+
+    color:
+        #666;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 700px) {
+
+    .admin-productos-container {
+        width:
+            92%;
+
+        margin-top:
+            100px;
+    }
+
+
+    .admin-header {
+        flex-direction:
+            column;
+
+        align-items:
+            flex-start;
+    }
+
+
+    .admin-header h1 {
+        font-size:
+            2rem;
+    }
+
+
+    .btn-agregar {
+        width:
+            100%;
+    }
+
+
+    .tabla-contenedor {
+        border-radius:
+            12px;
+    }
+
+
+    .tabla-productos th:nth-child(4),
+    .tabla-productos td:nth-child(4) {
+        display:
+            none;
+    }
+}
+
+/* =========================================================
+   ANIMACIONES DE ENTRADA
+========================================================= */
+
+.admin-header {
+    animation:
+        adminEntrada 0.5s ease-out both;
+}
+
+.admin-resumen {
+    animation:
+        adminEntrada 0.5s ease-out 0.1s both;
+}
+
+.tabla-contenedor,
+.productos-vacio {
+    animation:
+        adminEntrada 0.5s ease-out 0.2s both;
+}
+
+
+@keyframes adminEntrada {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0);
+    }
+}
+
+
+/* =========================================================
+   ACCESIBILIDAD
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .admin-header,
+    .admin-resumen,
+    .tabla-contenedor,
+    .productos-vacio {
+        animation: none;
+    }
+}

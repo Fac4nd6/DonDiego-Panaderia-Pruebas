@@ -2,29 +2,58 @@
     <nav class="navbar">
 
         <!-- Logo -->
-        <a href="index.php" class="logo">
-            <img src="../../public/img/logo.avif" alt="Don Diego">
+        <a href="/DonDiego-Panaderia-Pruebas/views/home/index.php" class="logo">
+            <img
+                src="/DonDiego-Panaderia-Pruebas/public/img/logo.avif"
+                alt="Don Diego"
+            >
         </a>
+
 
         <!-- Menú -->
         <div class="nav-links">
-            <a href="../home/index.php">Hogar</a>
-            <a href="servicios.php">Servicios</a>
-            <a href="blog.php">Blog</a>
-            <a href="contacto.php">Contacto</a>
+
+            <a href="/DonDiego-Panaderia-Pruebas/views/home/index.php">
+                Hogar
+            </a>
+
+            <a href="/DonDiego-Panaderia-Pruebas/views/servicios.php">
+                Servicios
+            </a>
+
+            <a href="/DonDiego-Panaderia-Pruebas/views/blog.php">
+                Blog
+            </a>
+
+            <a href="/DonDiego-Panaderia-Pruebas/views/contacto.php">
+                Contacto
+            </a>
+
         </div>
+
 
         <!-- Acciones -->
         <div class="nav-actions">
 
             <!-- Carrito -->
-            <a href="../carrito/index.php" class="cart-button" aria-label="Carrito">
+            <a
+                href="/DonDiego-Panaderia-Pruebas/views/carrito/index.php"
+                class="cart-button"
+                aria-label="Carrito"
+            >
                 <i class="fa-solid fa-cart-shopping"></i>
-                <span class="cart-count">0</span>
+
+                <span class="cart-count">
+                    0
+                </span>
             </a>
 
+
             <!-- Botón -->
-            <a href="servicios.php" class="nav-button">
+            <a
+                href="/DonDiego-Panaderia-Pruebas/views/servicios.php"
+                class="nav-button"
+            >
                 Pedir ahora
             </a>
 

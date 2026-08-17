@@ -90,7 +90,7 @@ require '../layouts/header.php';
             </div>
 
         </section>
-        <a href="/views/productos/index.php" class="catalogo-button">
+        <a href="../productos/index.php" class="catalogo-button">
             Ver catálogo completo
         </a>
 
