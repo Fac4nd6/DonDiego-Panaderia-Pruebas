@@ -31,19 +31,13 @@
 
     box-sizing: border-box;
 
+    position: relative;
+
+    overflow: hidden;
+
+    isolation: isolate;
+
     background:
-        radial-gradient(
-            circle at 90% 10%,
-            rgba(179, 27, 33, 0.06),
-            transparent 30%
-        ),
-
-        radial-gradient(
-            circle at 10% 50%,
-            rgba(179, 27, 33, 0.04),
-            transparent 30%
-        ),
-
         var(--color-background);
 }
 
@@ -56,17 +50,12 @@
     max-width: 850px;
 
     margin:
-        0
-        auto
-        45px;
+        0 auto 45px;
 
     text-align: center;
 
     animation:
-        catalogoTituloEntrada
-        0.6s
-        ease-out
-        both;
+        catalogoTituloEntrada 0.6s ease-out both;
 }
 
 
@@ -95,9 +84,7 @@
 
 .catalogo-header h1 {
     margin:
-        0
-        0
-        12px;
+        0 0 12px;
 
     font-family:
         var(--font-main);
@@ -127,16 +114,10 @@
     max-width: 800px;
 
     margin:
-        0
-        auto
-        35px;
+        0 auto 35px;
 
     animation:
-        buscadorEntrada
-        0.6s
-        ease-out
-        0.1s
-        both;
+        buscadorEntrada 0.6s ease-out 0.1s both;
 }
 
 
@@ -152,14 +133,12 @@
     background: white;
 
     border:
-        1px solid
-        #eee;
+        1px solid #eee;
 
     border-radius: 18px;
 
     box-shadow:
-        0 10px 30px
-        rgba(0, 0, 0, 0.07);
+        0 10px 30px rgba(0, 0, 0, 0.07);
 
     transition:
         box-shadow 0.25s ease,
@@ -172,8 +151,7 @@
         translateY(-2px);
 
     box-shadow:
-        0 15px 35px
-        rgba(0, 0, 0, 0.11);
+        0 15px 35px rgba(0, 0, 0, 0.11);
 }
 
 
@@ -183,8 +161,7 @@
     min-width: 0;
 
     padding:
-        13px
-        15px;
+        13px 15px;
 
     border: none;
 
@@ -205,8 +182,7 @@
 
 .catalogo-buscador button {
     padding:
-        12px
-        22px;
+        12px 22px;
 
     border: none;
 
@@ -254,27 +230,19 @@
     max-width: 1100px;
 
     margin:
-        0
-        auto
-        55px;
+        0 auto 55px;
 
     animation:
-        categoriasEntrada
-        0.6s
-        ease-out
-        0.2s
-        both;
+        categoriasEntrada 0.6s ease-out 0.2s both;
 }
 
 
 .catalogo-categorias a {
     padding:
-        10px
-        18px;
+        10px 18px;
 
     border:
-        1px solid
-        #e5e5e5;
+        1px solid #e5e5e5;
 
     border-radius: 999px;
 
@@ -304,8 +272,7 @@
         var(--color-primary);
 
     box-shadow:
-        0 6px 15px
-        rgba(0, 0, 0, 0.08);
+        0 6px 15px rgba(0, 0, 0, 0.08);
 }
 
 
@@ -319,8 +286,7 @@
         var(--color-primary);
 
     box-shadow:
-        0 6px 15px
-        rgba(179, 27, 33, 0.20);
+        0 6px 15px rgba(179, 27, 33, 0.20);
 }
 
 
@@ -332,8 +298,7 @@
     max-width: 1200px;
 
     margin:
-        0
-        auto;
+        0 auto;
 }
 
 
@@ -347,11 +312,7 @@
     margin-bottom: 25px;
 
     animation:
-        resultadosEntrada
-        0.6s
-        ease-out
-        0.25s
-        both;
+        resultadosEntrada 0.6s ease-out 0.25s both;
 }
 
 
@@ -376,7 +337,7 @@
 
 
 /* =========================================================
-   GRID PRODUCTOS
+   GRID DE PRODUCTOS
 ========================================================= */
 
 .productos-grid {
@@ -401,18 +362,14 @@
     border-radius: 20px;
 
     box-shadow:
-        0 8px 25px
-        rgba(0, 0, 0, 0.07);
+        0 8px 25px rgba(0, 0, 0, 0.07);
 
     transition:
         transform 0.3s ease,
         box-shadow 0.3s ease;
 
     animation:
-        productoCatalogoEntrada
-        0.55s
-        ease-out
-        both;
+        productoCatalogoEntrada 0.55s ease-out both;
 }
 
 
@@ -454,13 +411,12 @@
         translateY(-7px);
 
     box-shadow:
-        0 18px 35px
-        rgba(0, 0, 0, 0.12);
+        0 18px 35px rgba(0, 0, 0, 0.12);
 }
 
 
 /* =========================================================
-   IMAGEN PRODUCTO
+   IMAGEN DEL PRODUCTO
 ========================================================= */
 
 .producto-imagen {
@@ -491,8 +447,7 @@
 }
 
 
-.producto-card:hover
-.producto-imagen img {
+.producto-card:hover .producto-imagen img {
     transform:
         scale(1.07);
 }
@@ -506,8 +461,7 @@
     left: 12px;
 
     padding:
-        6px
-        10px;
+        6px 10px;
 
     border-radius: 999px;
 
@@ -522,13 +476,12 @@
     font-weight: bold;
 
     box-shadow:
-        0 4px 12px
-        rgba(0, 0, 0, 0.08);
+        0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 
 /* =========================================================
-   INFORMACIÓN
+   INFORMACIÓN DEL PRODUCTO
 ========================================================= */
 
 .producto-info {
@@ -538,9 +491,7 @@
 
 .producto-info h3 {
     margin:
-        0
-        0
-        8px;
+        0 0 8px;
 
     color:
         var(--color-dark);
@@ -553,9 +504,7 @@
     min-height: 42px;
 
     margin:
-        0
-        0
-        18px;
+        0 0 18px;
 
     color: #777;
 
@@ -566,7 +515,7 @@
 
 
 /* =========================================================
-   FOOTER PRODUCTO
+   FOOTER DEL PRODUCTO
 ========================================================= */
 
 .producto-footer {
@@ -590,8 +539,7 @@
 
 .producto-boton {
     padding:
-        9px
-        13px;
+        9px 13px;
 
     border-radius: 10px;
 
@@ -629,12 +577,10 @@
     max-width: 600px;
 
     margin:
-        50px
-        auto;
+        50px auto;
 
     padding:
-        60px
-        30px;
+        60px 30px;
 
     text-align: center;
 
@@ -643,14 +589,10 @@
     border-radius: 24px;
 
     box-shadow:
-        0 12px 35px
-        rgba(0, 0, 0, 0.08);
+        0 12px 35px rgba(0, 0, 0, 0.08);
 
     animation:
-        catalogoVacioEntrada
-        0.6s
-        ease-out
-        both;
+        catalogoVacioEntrada 0.6s ease-out both;
 }
 
 
@@ -663,17 +605,13 @@
 
 .catalogo-vacio h2 {
     margin:
-        0
-        0
-        10px;
+        0 0 10px;
 }
 
 
 .catalogo-vacio p {
     margin:
-        0
-        0
-        25px;
+        0 0 25px;
 
     color: #777;
 }
@@ -683,8 +621,7 @@
     display: inline-block;
 
     padding:
-        12px
-        18px;
+        12px 18px;
 
     border-radius: 10px;
 
@@ -713,16 +650,10 @@
     gap: 8px;
 
     margin:
-        55px
-        auto
-        0;
+        55px auto 0;
 
     animation:
-        paginacionEntrada
-        0.6s
-        ease-out
-        0.3s
-        both;
+        paginacionEntrada 0.6s ease-out 0.3s both;
 }
 
 
@@ -742,8 +673,7 @@
     background: white;
 
     border:
-        1px solid
-        #eee;
+        1px solid #eee;
 
     color:
         var(--color-dark);
@@ -765,8 +695,7 @@
         translateY(-2px);
 
     box-shadow:
-        0 6px 15px
-        rgba(0, 0, 0, 0.08);
+        0 6px 15px rgba(0, 0, 0, 0.08);
 }
 
 
@@ -780,37 +709,693 @@
     color: white;
 
     box-shadow:
-        0 6px 15px
-        rgba(179, 27, 33, 0.20);
+        0 6px 15px rgba(179, 27, 33, 0.20);
 }
 
 
 /* =========================================================
-   ANIMACIONES
+   DECORACIÓN - MIGAS
 ========================================================= */
 
+.miga {
+    position: absolute;
 
-/* ---------- HEADER ---------- */
+    z-index: 0;
 
-@keyframes headerCatalogoEntrada {
+    pointer-events: none;
 
-    from {
-        opacity: 0.7;
+    /*
+       Marrón/beige suave para que
+       se distingan mejor del fondo.
+    */
 
+    background:
+        rgba(150, 95, 55, 0.35);
+
+    border-radius:
+        60% 40% 50% 50%;
+
+    opacity: 0;
+}
+
+
+/* =========================================================
+   POSICIONES DE LAS MIGAS
+========================================================= */
+
+.miga-1 {
+    width: 10px;
+    height: 7px;
+
+    top: 18%;
+    left: 6%;
+
+    animation:
+        migaMovimiento1 6s ease-in-out infinite;
+}
+
+
+.miga-2 {
+    width: 7px;
+    height: 11px;
+
+    top: 29%;
+    left: 13%;
+
+    animation:
+        migaMovimiento2 8s ease-in-out infinite;
+}
+
+
+.miga-3 {
+    width: 11px;
+    height: 7px;
+
+    top: 46%;
+    left: 5%;
+
+    animation:
+        migaMovimiento3 7s ease-in-out infinite;
+}
+
+
+.miga-4 {
+    width: 8px;
+    height: 12px;
+
+    top: 61%;
+    left: 11%;
+
+    animation:
+        migaMovimiento1 9s ease-in-out infinite;
+}
+
+
+.miga-5 {
+    width: 9px;
+    height: 6px;
+
+    top: 76%;
+    left: 5%;
+
+    animation:
+        migaMovimiento2 7s ease-in-out infinite;
+}
+
+
+.miga-6 {
+    width: 8px;
+    height: 11px;
+
+    top: 21%;
+    right: 7%;
+
+    animation:
+        migaMovimiento3 8s ease-in-out infinite;
+}
+
+
+.miga-7 {
+    width: 11px;
+    height: 7px;
+
+    top: 36%;
+    right: 14%;
+
+    animation:
+        migaMovimiento1 7s ease-in-out infinite;
+}
+
+
+.miga-8 {
+    width: 7px;
+    height: 10px;
+
+    top: 51%;
+    right: 6%;
+
+    animation:
+        migaMovimiento2 9s ease-in-out infinite;
+}
+
+
+.miga-9 {
+    width: 10px;
+    height: 6px;
+
+    top: 68%;
+    right: 13%;
+
+    animation:
+        migaMovimiento3 8s ease-in-out infinite;
+}
+
+
+.miga-10 {
+    width: 8px;
+    height: 11px;
+
+    top: 82%;
+    right: 5%;
+
+    animation:
+        migaMovimiento1 7s ease-in-out infinite;
+}
+
+
+/* =========================================================
+   MOVIMIENTO DE LAS MIGAS
+========================================================= */
+
+@keyframes migaMovimiento1 {
+
+    0% {
         transform:
-            translateY(-8px);
+            translate(0, 0)
+            rotate(0deg);
+
+        opacity: 0.10;
     }
 
-    to {
-        opacity: 1;
-
+    50% {
         transform:
-            translateY(0);
+            translate(25px, -30px)
+            rotate(120deg);
+
+        opacity: 0.45;
+    }
+
+    100% {
+        transform:
+            translate(0, 0)
+            rotate(240deg);
+
+        opacity: 0.10;
     }
 }
 
 
-/* ---------- TÍTULO ---------- */
+@keyframes migaMovimiento2 {
+
+    0% {
+        transform:
+            translate(0, 0)
+            rotate(0deg);
+
+        opacity: 0.08;
+    }
+
+    50% {
+        transform:
+            translate(-20px, 25px)
+            rotate(180deg);
+
+        opacity: 0.38;
+    }
+
+    100% {
+        transform:
+            translate(0, 0)
+            rotate(360deg);
+
+        opacity: 0.08;
+    }
+}
+
+
+@keyframes migaMovimiento3 {
+
+    0% {
+        transform:
+            translate(0, 0)
+            rotate(0deg);
+
+        opacity: 0.08;
+    }
+
+    50% {
+        transform:
+            translate(30px, -20px)
+            rotate(90deg);
+
+        opacity: 0.42;
+    }
+
+    100% {
+        transform:
+            translate(0, 0)
+            rotate(180deg);
+
+        opacity: 0.08;
+    }
+}
+
+
+/* =========================================================
+   HOJAS VERDES
+========================================================= */
+
+.hoja {
+    position: absolute;
+
+    z-index: 0;
+
+    width: 15px;
+    height: 8px;
+
+    pointer-events: none;
+
+    /*
+       Verde natural y suave.
+    */
+
+    background:
+        rgba(76, 130, 70, 0.35);
+
+    border-radius:
+        100% 0 100% 0;
+
+    opacity: 0;
+
+    transform-origin:
+        center;
+
+    box-shadow:
+        0 1px 4px rgba(50, 100, 45, 0.08);
+}
+
+
+/* =========================================================
+   POSICIONES DE LAS HOJAS
+========================================================= */
+
+.hoja-1 {
+    top: 16%;
+    left: 18%;
+
+    animation:
+        hojaMovimiento1 10s ease-in-out infinite;
+}
+
+
+.hoja-2 {
+    top: 42%;
+    left: 3%;
+
+    width: 12px;
+    height: 7px;
+
+    animation:
+        hojaMovimiento2 12s ease-in-out infinite;
+}
+
+
+.hoja-3 {
+    top: 72%;
+    left: 17%;
+
+    width: 18px;
+    height: 9px;
+
+    animation:
+        hojaMovimiento3 11s ease-in-out infinite;
+}
+
+
+.hoja-4 {
+    top: 24%;
+    right: 17%;
+
+    width: 17px;
+    height: 9px;
+
+    animation:
+        hojaMovimiento2 13s ease-in-out infinite;
+}
+
+
+.hoja-5 {
+    top: 57%;
+    right: 4%;
+
+    width: 13px;
+    height: 7px;
+
+    animation:
+        hojaMovimiento1 10s ease-in-out infinite;
+}
+
+
+.hoja-6 {
+    bottom: 12%;
+    right: 18%;
+
+    width: 18px;
+    height: 9px;
+
+    animation:
+        hojaMovimiento3 12s ease-in-out infinite;
+}
+
+
+/* =========================================================
+   ANIMACIÓN DE HOJAS
+========================================================= */
+
+@keyframes hojaMovimiento1 {
+
+    0% {
+        transform:
+            translate(0, 0)
+            rotate(20deg);
+
+        opacity: 0;
+    }
+
+    15% {
+        opacity: 0.25;
+    }
+
+    50% {
+        transform:
+            translate(35px, -30px)
+            rotate(100deg);
+
+        opacity: 0.40;
+    }
+
+    85% {
+        opacity: 0.22;
+    }
+
+    100% {
+        transform:
+            translate(0, 0)
+            rotate(170deg);
+
+        opacity: 0;
+    }
+}
+
+
+@keyframes hojaMovimiento2 {
+
+    0% {
+        transform:
+            translate(0, 0)
+            rotate(-20deg);
+
+        opacity: 0;
+    }
+
+    15% {
+        opacity: 0.22;
+    }
+
+    50% {
+        transform:
+            translate(-30px, 35px)
+            rotate(-120deg);
+
+        opacity: 0.38;
+    }
+
+    85% {
+        opacity: 0.20;
+    }
+
+    100% {
+        transform:
+            translate(0, 0)
+            rotate(-180deg);
+
+        opacity: 0;
+    }
+}
+
+
+@keyframes hojaMovimiento3 {
+
+    0% {
+        transform:
+            translate(0, 0)
+            rotate(45deg);
+
+        opacity: 0;
+    }
+
+    20% {
+        opacity: 0.22;
+    }
+
+    50% {
+        transform:
+            translate(25px, -40px)
+            rotate(160deg);
+
+        opacity: 0.38;
+    }
+
+    80% {
+        opacity: 0.20;
+    }
+
+    100% {
+        transform:
+            translate(0, 0)
+            rotate(240deg);
+
+        opacity: 0;
+    }
+}
+
+
+/* =========================================================
+   MARIPOSA
+========================================================= */
+
+.mariposa {
+    position: absolute;
+
+    top: 32%;
+    left: -80px;
+
+    width: 42px;
+    height: 32px;
+
+    z-index: 0;
+
+    pointer-events: none;
+
+    animation:
+        vueloMariposa 20s linear infinite;
+}
+
+
+/* =========================================================
+   CUERPO DE LA MARIPOSA
+========================================================= */
+
+.cuerpo-mariposa {
+    position: absolute;
+
+    width: 4px;
+    height: 22px;
+
+    left: 19px;
+    top: 5px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(70, 40, 35, 0.45);
+
+    transform:
+        rotate(8deg);
+
+    z-index: 2;
+}
+
+
+/* =========================================================
+   ALAS
+========================================================= */
+
+.ala {
+    position: absolute;
+
+    top: 3px;
+
+    width: 19px;
+    height: 25px;
+
+    background:
+        rgba(179, 27, 33, 0.20);
+
+    border:
+        1px solid
+        rgba(179, 27, 33, 0.22);
+
+    z-index: 1;
+}
+
+
+.ala-izquierda {
+    left: 2px;
+
+    border-radius:
+        70% 30% 70% 30%;
+
+    transform-origin:
+        right center;
+
+    animation:
+        aleteoIzquierdo 0.35s ease-in-out infinite alternate;
+}
+
+
+.ala-derecha {
+    right: 2px;
+
+    border-radius:
+        30% 70% 30% 70%;
+
+    transform-origin:
+        left center;
+
+    animation:
+        aleteoDerecho 0.35s ease-in-out infinite alternate;
+}
+
+
+/* =========================================================
+   ALETEO
+========================================================= */
+
+@keyframes aleteoIzquierdo {
+
+    from {
+        transform:
+            rotate(15deg)
+            scaleY(1);
+    }
+
+    to {
+        transform:
+            rotate(-25deg)
+            scaleY(0.75);
+    }
+}
+
+
+@keyframes aleteoDerecho {
+
+    from {
+        transform:
+            rotate(-15deg)
+            scaleY(1);
+    }
+
+    to {
+        transform:
+            rotate(25deg)
+            scaleY(0.75);
+    }
+}
+
+
+/* =========================================================
+   VUELO DE LA MARIPOSA
+========================================================= */
+
+@keyframes vueloMariposa {
+
+    0% {
+        left: -80px;
+        top: 35%;
+
+        opacity: 0;
+
+        transform:
+            rotate(-8deg)
+            scale(0.8);
+    }
+
+    7% {
+        opacity: 0.8;
+    }
+
+    20% {
+        top: 27%;
+    }
+
+    35% {
+        top: 38%;
+
+        transform:
+            rotate(7deg)
+            scale(1);
+    }
+
+    50% {
+        top: 25%;
+
+        transform:
+            rotate(-5deg)
+            scale(1.05);
+    }
+
+    68% {
+        top: 42%;
+
+        transform:
+            rotate(8deg)
+            scale(0.95);
+    }
+
+    85% {
+        top: 30%;
+
+        opacity: 0.8;
+    }
+
+    94% {
+        opacity: 0.3;
+    }
+
+    100% {
+        left: calc(100% + 80px);
+
+        top: 34%;
+
+        opacity: 0;
+
+        transform:
+            rotate(-8deg)
+            scale(0.8);
+    }
+}
+
+
+/* =========================================================
+   CONTENIDO POR ENCIMA DE LA DECORACIÓN
+========================================================= */
+
+.catalogo-header,
+.catalogo-herramientas,
+.catalogo-categorias,
+.catalogo-resultados,
+.catalogo-paginacion {
+
+    position: relative;
+
+    z-index: 1;
+}
+
+
+/* =========================================================
+   ANIMACIONES DE ENTRADA
+========================================================= */
 
 @keyframes catalogoTituloEntrada {
 
@@ -830,8 +1415,6 @@
 }
 
 
-/* ---------- BUSCADOR ---------- */
-
 @keyframes buscadorEntrada {
 
     from {
@@ -849,8 +1432,6 @@
     }
 }
 
-
-/* ---------- CATEGORÍAS ---------- */
 
 @keyframes categoriasEntrada {
 
@@ -870,8 +1451,6 @@
 }
 
 
-/* ---------- RESULTADOS ---------- */
-
 @keyframes resultadosEntrada {
 
     from {
@@ -890,8 +1469,6 @@
 }
 
 
-/* ---------- PRODUCTOS ---------- */
-
 @keyframes productoCatalogoEntrada {
 
     from {
@@ -909,8 +1486,6 @@
     }
 }
 
-
-/* ---------- SIN RESULTADOS ---------- */
 
 @keyframes catalogoVacioEntrada {
 
@@ -931,8 +1506,6 @@
     }
 }
 
-
-/* ---------- PAGINACIÓN ---------- */
 
 @keyframes paginacionEntrada {
 
@@ -969,14 +1542,17 @@
 
     .catalogo-container {
         padding:
-            110px
-            5%
-            70px;
+            110px 5% 70px;
     }
 
     .productos-grid {
         grid-template-columns:
             repeat(2, 1fr);
+    }
+
+    .mariposa {
+        transform:
+            scale(0.8);
     }
 }
 
@@ -993,8 +1569,7 @@
 
     .catalogo-buscador button {
         padding:
-            11px
-            15px;
+            11px 15px;
     }
 
     .catalogo-categorias {
@@ -1036,6 +1611,17 @@
     .catalogo-paginacion {
         margin-top: 40px;
     }
+
+    .hoja,
+    .miga {
+        transform:
+            scale(0.8);
+    }
+
+    .mariposa {
+        transform:
+            scale(0.7);
+    }
 }
 
 
@@ -1052,9 +1638,34 @@
     .catalogo-resultados-header,
     .producto-card,
     .catalogo-vacio,
-    .catalogo-paginacion {
+    .catalogo-paginacion,
+    .miga,
+    .hoja,
+    .mariposa,
+    .ala-izquierda,
+    .ala-derecha {
 
         animation: none;
+    }
+
+    .miga,
+    .hoja {
+        opacity: 0.15;
+    }
+
+    .mariposa {
+        opacity: 0.4;
+    }
+
+    .catalogo-header,
+    .catalogo-herramientas,
+    .catalogo-categorias,
+    .catalogo-resultados,
+    .catalogo-paginacion {
+
+        position: relative;
+
+        z-index: 1;
     }
 
     .producto-card,
