@@ -15,6 +15,7 @@ $editando = !empty($producto);
 
     <main class="admin-form-container">
 
+
         <!-- =====================================================
              ENCABEZADO
         ====================================================== -->
@@ -40,6 +41,7 @@ $editando = !empty($producto);
 
             </div>
 
+
             <a
                 href="ProductoController.php?accion=listar"
                 class="btn-volver">
@@ -53,6 +55,7 @@ $editando = !empty($producto);
         </section>
 
 
+
         <!-- =====================================================
              FORMULARIO
         ====================================================== -->
@@ -63,16 +66,17 @@ $editando = !empty($producto);
                 action="ProductoController.php"
                 method="POST"
                 enctype="multipart/form-data"
-                class="producto-form"
-            >
+                class="producto-form">
 
-                <!-- ACCIÓN -->
+
+                <!-- =================================================
+                     ACCIÓN
+                ================================================== -->
 
                 <input
                     type="hidden"
                     name="accion"
-                    value="<?= $editando ? 'actualizar' : 'guardar' ?>"
-                >
+                    value="<?= $editando ? 'actualizar' : 'guardar' ?>">
 
 
                 <?php if ($editando): ?>
@@ -80,10 +84,10 @@ $editando = !empty($producto);
                     <input
                         type="hidden"
                         name="id"
-                        value="<?= htmlspecialchars($producto['id']) ?>"
-                    >
+                        value="<?= htmlspecialchars($producto['id']) ?>">
 
                 <?php endif; ?>
+
 
 
                 <!-- =================================================
@@ -105,7 +109,10 @@ $editando = !empty($producto);
                     </div>
 
 
-                    <!-- NOMBRE -->
+
+                    <!-- =================================================
+                         NOMBRE
+                    ================================================== -->
 
                     <div class="form-grupo">
 
@@ -119,13 +126,15 @@ $editando = !empty($producto);
                             name="nombre"
                             placeholder="Ej. Bizcochos de grasa"
                             value="<?= htmlspecialchars($producto['nombre'] ?? '') ?>"
-                            required
-                        >
+                            required>
 
                     </div>
 
 
-                    <!-- DESCRIPCIÓN -->
+
+                    <!-- =================================================
+                         DESCRIPCIÓN
+                    ================================================== -->
 
                     <div class="form-grupo">
 
@@ -137,13 +146,15 @@ $editando = !empty($producto);
                             id="descripcion"
                             name="descripcion"
                             rows="4"
-                            placeholder="Describí brevemente el producto..."
-                        ><?= htmlspecialchars($producto['descripcion'] ?? '') ?></textarea>
+                            placeholder="Describí brevemente el producto..."><?= htmlspecialchars($producto['descripcion'] ?? '') ?></textarea>
 
                     </div>
 
 
-                    <!-- CATEGORÍA -->
+
+                    <!-- =================================================
+                         CATEGORÍA
+                    ================================================== -->
 
                     <div class="form-grupo">
 
@@ -153,55 +164,38 @@ $editando = !empty($producto);
 
                         <select
                             id="categoria"
-                            name="categoria"
-                            required
-                        >
+                            name="categoria_id"
+                            required>
 
                             <option value="">
                                 Seleccioná una categoría
                             </option>
 
-                            <option
-                                value="Panadería"
-                                <?= (($producto['categoria'] ?? '') === 'Panadería') ? 'selected' : '' ?>
-                            >
-                                Panadería
-                            </option>
 
-                            <option
-                                value="Pastelería"
-                                <?= (($producto['categoria'] ?? '') === 'Pastelería') ? 'selected' : '' ?>
-                            >
-                                Pastelería
-                            </option>
+                            <?php foreach ($categorias as $categoria): ?>
 
-                            <option
-                                value="Bollería"
-                                <?= (($producto['categoria'] ?? '') === 'Bollería') ? 'selected' : '' ?>
-                            >
-                                Bollería
-                            </option>
+                                <option
+                                    value="<?= $categoria['id'] ?>"
+                                    <?= (($producto['categoria_id'] ?? '') == $categoria['id'])
+                                        ? 'selected'
+                                        : ''
+                                    ?>>
 
-                            <option
-                                value="Tortas"
-                                <?= (($producto['categoria'] ?? '') === 'Tortas') ? 'selected' : '' ?>
-                            >
-                                Tortas
-                            </option>
+                                    <?= htmlspecialchars($categoria['nombre']) ?>
 
-                            <option
-                                value="Otros"
-                                <?= (($producto['categoria'] ?? '') === 'Otros') ? 'selected' : '' ?>
-                            >
-                                Otros
-                            </option>
+                                </option>
+
+                            <?php endforeach; ?>
 
                         </select>
 
                     </div>
 
 
-                    <!-- PRECIO -->
+
+                    <!-- =================================================
+                         PRECIO
+                    ================================================== -->
 
                     <div class="form-grupo">
 
@@ -209,11 +203,13 @@ $editando = !empty($producto);
                             Precio
                         </label>
 
+
                         <div class="input-precio">
 
                             <span>
                                 $
                             </span>
+
 
                             <input
                                 type="number"
@@ -223,14 +219,14 @@ $editando = !empty($producto);
                                 step="1"
                                 placeholder="0"
                                 value="<?= htmlspecialchars($producto['precio'] ?? '') ?>"
-                                required
-                            >
+                                required>
 
                         </div>
 
                     </div>
 
                 </div>
+
 
 
                 <!-- =================================================
@@ -252,14 +248,15 @@ $editando = !empty($producto);
                     </div>
 
 
+
                     <?php if ($editando && !empty($producto['imagen'])): ?>
 
                         <div class="imagen-actual">
 
                             <img
                                 src="/DonDiego-Panaderia-Pruebas/public/img/<?= htmlspecialchars($producto['imagen']) ?>"
-                                alt="<?= htmlspecialchars($producto['nombre']) ?>"
-                            >
+                                alt="<?= htmlspecialchars($producto['nombre']) ?>">
+
 
                             <div>
 
@@ -278,27 +275,35 @@ $editando = !empty($producto);
                     <?php endif; ?>
 
 
+
                     <div class="form-grupo">
 
                         <label for="imagen">
-                            <?= $editando ? 'Nueva imagen' : 'Imagen del producto' ?>
+
+                            <?= $editando
+                                ? 'Nueva imagen'
+                                : 'Imagen del producto'
+                            ?>
+
                         </label>
+
 
                         <input
                             type="file"
                             id="imagen"
                             name="imagen"
-                            accept="image/*"
-                            <?= $editando ? '' : 'required' ?>
-                        >
+                            accept="image/jpeg,image/png,image/webp"
+                            <?= $editando ? '' : 'required' ?>>
+
 
                         <small>
-                            Formatos recomendados: JPG, PNG o WEBP.
+                            Formatos permitidos: JPG, PNG o WEBP.
                         </small>
 
                     </div>
 
                 </div>
+
 
 
                 <!-- =================================================
@@ -328,22 +333,27 @@ $editando = !empty($producto);
                                 Estado del producto
                             </label>
 
+
                             <select
                                 id="activo"
-                                name="activo"
-                            >
+                                name="activo">
 
                                 <option
                                     value="1"
-                                    <?= ($producto['activo'] ?? 1) == 1 ? 'selected' : '' ?>
-                                >
+                                    <?= ($producto['activo'] ?? 1) == 1
+                                        ? 'selected'
+                                        : ''
+                                    ?>>
                                     Activo
                                 </option>
 
+
                                 <option
                                     value="0"
-                                    <?= ($producto['activo'] ?? 1) == 0 ? 'selected' : '' ?>
-                                >
+                                    <?= ($producto['activo'] ?? 1) == 0
+                                        ? 'selected'
+                                        : ''
+                                    ?>>
                                     Inactivo
                                 </option>
 
@@ -356,24 +366,26 @@ $editando = !empty($producto);
                 <?php endif; ?>
 
 
+
                 <!-- =================================================
                      BOTONES
                 ================================================== -->
 
                 <div class="form-acciones">
 
+
                     <a
                         href="ProductoController.php?accion=listar"
-                        class="btn-cancelar"
-                    >
+                        class="btn-cancelar">
+
                         Cancelar
+
                     </a>
 
 
                     <button
                         type="submit"
-                        class="btn-guardar"
-                    >
+                        class="btn-guardar">
 
                         <i class="fa-solid fa-check"></i>
 
@@ -387,6 +399,69 @@ $editando = !empty($producto);
                 </div>
 
             </form>
+
+
+
+            <!-- =====================================================
+                 ELIMINAR PRODUCTO
+            ====================================================== -->
+
+            <?php if ($editando): ?>
+
+                <div class="form-eliminar">
+
+                    <div>
+
+                        <strong>
+                            Eliminar producto
+                        </strong>
+
+                        <p>
+                            Esta acción eliminará permanentemente el producto.
+                        </p>
+
+                    </div>
+
+
+                    <form
+                        action="ProductoController.php"
+                        method="POST"
+                        onsubmit="return confirm(
+                            '¿Seguro que querés eliminar este producto? Esta acción no se puede deshacer.'
+                        );"
+                    >
+
+                        <input
+                            type="hidden"
+                            name="accion"
+                            value="eliminar"
+                        >
+
+
+                        <input
+                            type="hidden"
+                            name="id"
+                            value="<?= htmlspecialchars($producto['id']) ?>"
+                        >
+
+
+                        <button
+                            type="submit"
+                            class="btn-eliminar-definitivo"
+                        >
+
+                            <i class="fa-solid fa-trash"></i>
+
+                            Eliminar producto
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            <?php endif; ?>
+
 
         </section>
 

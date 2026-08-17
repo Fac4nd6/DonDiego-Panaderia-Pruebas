@@ -24,11 +24,11 @@ class Producto
                 p.precio,
                 p.imagen,
                 p.activo,
+                p.categoria_id,
                 c.nombre AS categoria
             FROM productos p
             INNER JOIN categorias c
                 ON p.categoria_id = c.id
-            WHERE p.activo = 1
             ORDER BY p.id DESC
         ";
 
@@ -81,7 +81,7 @@ class Producto
 
 
     // =========================================================
-    // BUSCAR PRODUCTOS
+    // BUSCAR PRODUCTOS ACTIVOS
     // =========================================================
 
     public function buscar($busqueda)
@@ -123,6 +123,30 @@ class Producto
         $stmt->execute();
 
         $resultado = $stmt->get_result();
+
+        return $resultado->fetch_all(MYSQLI_ASSOC);
+    }
+
+
+    // =========================================================
+    // OBTENER CATEGORÍAS
+    // =========================================================
+
+    public function obtenerCategorias()
+    {
+        $sql = "
+            SELECT
+                id,
+                nombre
+            FROM categorias
+            ORDER BY nombre ASC
+        ";
+
+        $resultado = $this->db->query($sql);
+
+        if (!$resultado) {
+            die("Error en obtenerCategorias: " . $this->db->error);
+        }
 
         return $resultado->fetch_all(MYSQLI_ASSOC);
     }
@@ -185,9 +209,10 @@ class Producto
                 descripcion,
                 precio,
                 categoria_id,
-                imagen
+                imagen,
+                activo
             )
-            VALUES (?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, 1)
         ";
 
         $stmt = $this->db->prepare($sql);
@@ -219,7 +244,8 @@ class Producto
         $descripcion,
         $precio,
         $categoriaId,
-        $imagen
+        $imagen,
+        $activo
     ) {
         $sql = "
             UPDATE productos
@@ -228,7 +254,8 @@ class Producto
                 descripcion = ?,
                 precio = ?,
                 categoria_id = ?,
-                imagen = ?
+                imagen = ?,
+                activo = ?
             WHERE id = ?
         ";
 
@@ -239,12 +266,13 @@ class Producto
         }
 
         $stmt->bind_param(
-            "ssdisi",
+            "ssdisii",
             $nombre,
             $descripcion,
             $precio,
             $categoriaId,
             $imagen,
+            $activo,
             $id
         );
 
@@ -268,6 +296,53 @@ class Producto
 
         if (!$stmt) {
             die("Error en desactivar: " . $this->db->error);
+        }
+
+        $stmt->bind_param("i", $id);
+
+        return $stmt->execute();
+    }
+
+
+    // =========================================================
+    // ACTIVAR PRODUCTO
+    // =========================================================
+
+    public function activar($id)
+    {
+        $sql = "
+            UPDATE productos
+            SET activo = 1
+            WHERE id = ?
+        ";
+
+        $stmt = $this->db->prepare($sql);
+
+        if (!$stmt) {
+            die("Error en activar: " . $this->db->error);
+        }
+
+        $stmt->bind_param("i", $id);
+
+        return $stmt->execute();
+    }
+
+
+    // =========================================================
+    // ELIMINAR PRODUCTO DEFINITIVAMENTE
+    // =========================================================
+
+    public function eliminar($id)
+    {
+        $sql = "
+            DELETE FROM productos
+            WHERE id = ?
+        ";
+
+        $stmt = $this->db->prepare($sql);
+
+        if (!$stmt) {
+            die("Error en eliminar: " . $this->db->error);
         }
 
         $stmt->bind_param("i", $id);
