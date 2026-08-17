@@ -1,18 +1,27 @@
-/* =========================
+/* =========================================================
    HEADER / NAVBAR
-========================= */
+========================================================= */
 
 .header {
     position: absolute;
+
     top: 15px;
     left: 50%;
+
     transform: translateX(-50%);
 
     width: 90%;
     max-width: 1400px;
 
     z-index: 10;
+
+    box-sizing: border-box;
 }
+
+
+/* =========================================================
+   NAVBAR
+========================================================= */
 
 .navbar {
     width: 100%;
@@ -25,14 +34,20 @@
     align-items: center;
 
     gap: 35px;
+
+    overflow: hidden;
 }
 
 
-/* LOGO */
+/* =========================================================
+   LOGO
+========================================================= */
 
 .logo {
     display: flex;
+
     align-items: center;
+
     flex-shrink: 0;
 }
 
@@ -42,44 +57,63 @@
 
     object-fit: contain;
 
-    transition: transform 0.3s ease;
+    transition:
+        transform 0.3s ease;
 }
 
 .logo:hover img {
-    transform: scale(1.05);
+    transform:
+        scale(1.05);
 }
 
 
-/* MENÚ */
+/* =========================================================
+   MENÚ
+========================================================= */
 
 .nav-links {
     display: flex;
+
     align-items: center;
+
     gap: 30px;
+
+    min-width: 0;
 }
 
 .nav-links a {
     position: relative;
 
-    color: var(--color-background);
+    color:
+        var(--color-background);
 
     text-decoration: none;
 
-    font-family: var(--font-body);
+    font-family:
+        var(--font-body);
+
     font-size: 16px;
+
     font-weight: bold;
 
-    padding: 8px 0;
+    padding:
+        8px 0;
 
-    transition: color 0.25s ease;
+    white-space: nowrap;
+
+    transition:
+        color 0.25s ease;
 }
 
 .nav-links a:hover {
-    color: var(--color-background);
+    color:
+        var(--color-background);
 }
 
 
-/* Línea debajo */
+/* =========================================================
+   LÍNEA DEBAJO DEL MENÚ
+========================================================= */
 
 .nav-links a::after {
     content: "";
@@ -92,9 +126,11 @@
     width: 0;
     height: 2px;
 
-    background-color: var(--color-background);
+    background-color:
+        var(--color-background);
 
-    transition: width 0.25s ease;
+    transition:
+        width 0.25s ease;
 }
 
 .nav-links a:hover::after {
@@ -102,19 +138,26 @@
 }
 
 
-/* ACCIONES */
+/* =========================================================
+   ACCIONES
+========================================================= */
 
 .nav-actions {
     margin-left: auto;
 
     display: flex;
+
     align-items: center;
 
     gap: 15px;
+
+    flex-shrink: 0;
 }
 
 
-/* CARRITO */
+/* =========================================================
+   CARRITO
+========================================================= */
 
 .cart-button {
     position: relative;
@@ -123,16 +166,20 @@
     height: 42px;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
     border-radius: 50%;
 
-    color: var(--color-background);
+    color:
+        var(--color-background);
 
     text-decoration: none;
 
     font-size: 19px;
+
+    flex-shrink: 0;
 
     transition:
         background-color 0.2s ease,
@@ -140,13 +187,17 @@
 }
 
 .cart-button:hover {
-    background-color: rgba(255,255,255,0.12);
+    background-color:
+        rgba(255, 255, 255, 0.12);
 
-    transform: translateY(-2px);
+    transform:
+        translateY(-2px);
 }
 
 
-/* CONTADOR */
+/* =========================================================
+   CONTADOR DEL CARRITO
+========================================================= */
 
 .cart-count {
     position: absolute;
@@ -158,39 +209,53 @@
     height: 17px;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
-    background-color: var(--color-dark);
+    background-color:
+        var(--color-dark);
 
     color: white;
 
     font-size: 10px;
+
     font-weight: bold;
 
     border-radius: 50%;
 }
 
 
-/* PEDIR AHORA */
+/* =========================================================
+   BOTÓN PEDIR AHORA
+========================================================= */
 
 .nav-button {
-    padding: 11px 20px;
+    padding:
+        11px 20px;
 
-    background-color: var(--color-dark);
+    background-color:
+        var(--color-dark);
 
-    color: var(--color-background);
+    color:
+        var(--color-background);
 
     text-decoration: none;
 
-    font-family: var(--font-body);
+    font-family:
+        var(--font-body);
 
     font-size: 14px;
+
     font-weight: bold;
 
-    border-radius: var(--radius);
+    border-radius:
+        var(--radius);
 
-    box-shadow: 0 5px 0 rgba(0,0,0,0.18);
+    white-space: nowrap;
+
+    box-shadow:
+        0 5px 0 rgba(0, 0, 0, 0.18);
 
     transition:
         transform 0.2s ease,
@@ -198,7 +263,70 @@
 }
 
 .nav-button:hover {
-    background-color: var(--color-secondary);
+    background-color:
+        var(--color-secondary);
 
-    transform: translateY(-2px);
+    transform:
+        translateY(-2px);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .header {
+        width: 94%;
+    }
+
+    .navbar {
+        gap: 20px;
+    }
+
+    .nav-links {
+        gap: 18px;
+    }
+
+    .nav-links a {
+        font-size: 14px;
+    }
+
+    .nav-button {
+        padding:
+            10px 15px;
+    }
+}
+
+
+@media (max-width: 700px) {
+
+    .header {
+        width: 95%;
+    }
+
+    .navbar {
+        gap: 12px;
+
+        padding:
+            8px 12px;
+    }
+
+    .logo img {
+        width: 55px;
+        height: 55px;
+    }
+
+    .nav-links {
+        gap: 12px;
+    }
+
+    .nav-links a {
+        font-size: 13px;
+    }
+
+    .nav-button {
+        display: none;
+    }
 }
