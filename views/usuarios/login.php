@@ -2,26 +2,67 @@
 
 $pageCss = "login.css";
 
+require '../../config/Database.php';
+
+session_start();
+
 $error = '';
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
+
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
 
     if (empty($email) || empty($password)) {
+
         $error = 'Por favor, completa todos los campos.';
+
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+
         $error = 'Ingresa un correo electrónico válido.';
+
     } else {
-        /*
-         * Aquí irá la lógica de autenticación con la base de datos.
-         *
-         * Ejemplo:
-         * - Buscar el usuario por email.
-         * - Verificar la contraseña con password_verify().
-         * - Crear la sesión.
-         * - Redirigir al usuario.
-         */
+
+        // Buscar usuario por email
+        $stmt = $conn->prepare("
+            SELECT id, nombre_completo, email, password, rol
+            FROM usuarios
+            WHERE email = ?
+            LIMIT 1
+        ");
+
+        $stmt->bind_param("s", $email);
+
+        $stmt->execute();
+
+        $result = $stmt->get_result();
+
+        $usuario = $result->fetch_assoc();
+
+        $stmt->close();
+
+
+        // Verificar que el usuario exista y que la contraseña coincida
+        if ($usuario && password_verify($password, $usuario['password'])) {
+
+            // Regenerar el ID de sesión por seguridad
+            session_regenerate_id(true);
+
+            // Guardar datos del usuario en la sesión
+            $_SESSION['usuario_id'] = $usuario['id'];
+            $_SESSION['usuario_nombre'] = $usuario['nombre_completo'];
+            $_SESSION['usuario_email'] = $usuario['email'];
+            $_SESSION['usuario_rol'] = $usuario['rol'];
+
+            // Redirigir al inicio
+            header('Location: ../home/index.php');
+            exit;
+
+        } else {
+
+            // Mensaje genérico para no revelar si el email existe
+            $error = 'El correo o la contraseña son incorrectos.';
+        }
     }
 }
 
