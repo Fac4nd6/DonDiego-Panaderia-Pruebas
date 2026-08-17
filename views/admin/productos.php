@@ -158,11 +158,11 @@ require __DIR__ . '/../layouts/head.php';
 
                                         <strong class="precio-producto">
                                             $<?= number_format(
-                                                $producto['precio'],
-                                                0,
-                                                ',',
-                                                '.'
-                                            ) ?>
+                                                    $producto['precio'],
+                                                    0,
+                                                    ',',
+                                                    '.'
+                                                ) ?>
                                         </strong>
 
                                     </td>
@@ -209,8 +209,17 @@ require __DIR__ . '/../layouts/head.php';
                                                     🗑️
                                                 </a>
 
-                                            <?php endif; ?>
+                                            <?php else: ?>
 
+                                                <a
+                                                    href="/DonDiego-Panaderia-Pruebas/controllers/ProductoController.php?accion=activar&id=<?= $producto['id'] ?>"
+                                                    class="btn-activar"
+                                                    title="Activar producto"
+                                                    onclick="return confirm('¿Querés volver a activar este producto?');">
+                                                    🔄
+                                                </a>
+
+                                            <?php endif; ?>
                                         </div>
 
                                     </td>
@@ -232,4 +241,5 @@ require __DIR__ . '/../layouts/head.php';
     </main>
 
 </body>
+
 </html>

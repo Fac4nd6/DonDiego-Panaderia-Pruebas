@@ -1,4 +1,96 @@
 /* =========================================================
+   ELIMINAR PRODUCTO
+========================================================= */
+
+.form-eliminar {
+    margin-top: 30px;
+    padding: 22px 24px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+
+    border: 1px solid #f1c4c4;
+    border-radius: 14px;
+
+    background: #fff8f8;
+}
+
+.form-eliminar strong {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #b42318;
+
+    font-size: 16px;
+}
+
+.form-eliminar p {
+    margin: 0;
+
+    color: #777;
+
+    font-size: 14px;
+}
+
+
+/* BOTÓN */
+
+.btn-eliminar-definitivo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    padding: 11px 18px;
+
+    border: 1px solid #dc2626;
+    border-radius: 9px;
+
+    background: #fff;
+    color: #dc2626;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+.btn-eliminar-definitivo:hover {
+    background: #dc2626;
+    color: #fff;
+
+    transform: translateY(-1px);
+
+    box-shadow: 0 5px 14px rgba(220, 38, 38, 0.20);
+}
+
+.btn-eliminar-definitivo:active {
+    transform: translateY(0);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .form-eliminar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .btn-eliminar-definitivo {
+        width: 100%;
+    }
+
+}
+/* =========================================================
    HEADER DEL ADMIN
 ========================================================= */
 
