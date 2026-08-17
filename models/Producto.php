@@ -349,4 +349,37 @@ class Producto
 
         return $stmt->execute();
     }
+
+    // =========================================================
+// OBTENER PRODUCTOS ACTIVOS PARA EL CATÁLOGO
+// =========================================================
+
+public function obtenerActivos()
+{
+    $sql = "
+        SELECT
+            p.id,
+            p.nombre,
+            p.descripcion,
+            p.precio,
+            p.imagen,
+            p.categoria_id,
+            c.nombre AS categoria
+        FROM productos p
+        INNER JOIN categorias c
+            ON p.categoria_id = c.id
+        WHERE p.activo = 1
+        ORDER BY p.id DESC
+    ";
+
+    $resultado = $this->db->query($sql);
+
+    if (!$resultado) {
+        die("Error en obtenerActivos: " . $this->db->error);
+    }
+
+    return $resultado->fetch_all(MYSQLI_ASSOC);
 }
+
+}
+

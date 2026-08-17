@@ -347,6 +347,12 @@
         repeat(4, 1fr);
 
     gap: 25px;
+
+    /*
+       Hace que todas las tarjetas de una misma fila
+       tengan la misma altura.
+    */
+    align-items: stretch;
 }
 
 
@@ -370,6 +376,16 @@
 
     animation:
         productoCatalogoEntrada 0.55s ease-out both;
+
+    /*
+       IMPORTANTE:
+       convierte la tarjeta en una columna flexible.
+    */
+    display: flex;
+
+    flex-direction: column;
+
+    height: 100%;
 }
 
 
@@ -425,6 +441,8 @@
     width: 100%;
 
     height: 230px;
+
+    flex-shrink: 0;
 
     overflow: hidden;
 
@@ -486,8 +504,21 @@
 
 .producto-info {
     padding: 20px;
+
+    /*
+       Ocupa todo el espacio restante de la tarjeta.
+    */
+    flex: 1;
+
+    display: flex;
+
+    flex-direction: column;
 }
 
+
+/* =========================================================
+   TÍTULO
+========================================================= */
 
 .producto-info h3 {
     margin:
@@ -497,8 +528,20 @@
         var(--color-dark);
 
     font-size: 20px;
+
+    /*
+       Reserva espacio para hasta 2 líneas.
+       Así los títulos no desacomodan el contenido.
+    */
+    min-height: 48px;
+
+    line-height: 1.2;
 }
 
+
+/* =========================================================
+   DESCRIPCIÓN
+========================================================= */
 
 .producto-info p {
     min-height: 42px;
@@ -526,6 +569,12 @@
     align-items: center;
 
     gap: 10px;
+
+    /*
+       ESTE ES EL ARREGLO PRINCIPAL.
+       Empuja precio y botón hasta abajo.
+    */
+    margin-top: auto;
 }
 
 
@@ -723,11 +772,6 @@
     z-index: 0;
 
     pointer-events: none;
-
-    /*
-       Marrón/beige suave para que
-       se distingan mejor del fondo.
-    */
 
     background:
         rgba(150, 95, 55, 0.35);
@@ -965,10 +1009,6 @@
 
     pointer-events: none;
 
-    /*
-       Verde natural y suave.
-    */
-
     background:
         rgba(76, 130, 70, 0.35);
 
@@ -1192,10 +1232,6 @@
 }
 
 
-/* =========================================================
-   CUERPO DE LA MARIPOSA
-========================================================= */
-
 .cuerpo-mariposa {
     position: absolute;
 
@@ -1216,10 +1252,6 @@
     z-index: 2;
 }
 
-
-/* =========================================================
-   ALAS
-========================================================= */
 
 .ala {
     position: absolute;

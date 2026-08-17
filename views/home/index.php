@@ -18,7 +18,7 @@ require '../layouts/header.php';
             <div class="hero-content">
                 <h1>El sabor de lo recién hecho</h1>
                 <p>Los mejores productos de panadería.</p>
-                <a href="../productos/index.php" class="hero-button">Ver catálogo</a>
+                <a href="/DonDiego-Panaderia-Pruebas/controllers/CatalogoController.php" class="hero-button">Ver catálogo</a>
             </div>
 
             <div class="hero-image">
@@ -90,7 +90,7 @@ require '../layouts/header.php';
             </div>
 
         </section>
-        <a href="../productos/index.php" class="catalogo-button">
+        <a href="/DonDiego-Panaderia-Pruebas/controllers/CatalogoController.php" class="catalogo-button">
             Ver catálogo completo
         </a>
 
