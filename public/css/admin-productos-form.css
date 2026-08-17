@@ -1,0 +1,928 @@
+/* =========================================================
+   HEADER DEL ADMIN
+========================================================= */
+
+.pagina-admin .header {
+    background:
+        var(--color-primary);
+
+    border-radius:
+        0 0 18px 18px;
+
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.12);
+
+    width:
+        90%;
+
+    max-width:
+        100%;
+}
+
+
+/* =========================================================
+   PÁGINA ADMINISTRACIÓN
+========================================================= */
+
+.pagina-admin {
+    background:
+        var(--color-background);
+
+    color:
+        var(--color-dark);
+}
+
+
+/* =========================================================
+   CONTENEDOR
+========================================================= */
+
+.admin-form-container {
+    width:
+        90%;
+
+    max-width:
+        1000px;
+
+    margin:
+        120px auto 70px;
+}
+
+
+/* =========================================================
+   ENCABEZADO
+========================================================= */
+
+.admin-form-header {
+    display:
+        flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        center;
+
+    gap:
+        30px;
+
+    margin-bottom:
+        35px;
+}
+
+
+.admin-etiqueta {
+    display:
+        block;
+
+    margin-bottom:
+        6px;
+
+    color:
+        var(--color-primary);
+
+    font-size:
+        0.8rem;
+
+    font-weight:
+        700;
+
+    letter-spacing:
+        2px;
+}
+
+
+.admin-form-header h1 {
+    margin:
+        0 0 8px;
+
+    color:
+        var(--color-dark);
+
+    font-family:
+        var(--font-main);
+
+    font-size:
+        2.5rem;
+
+    font-weight:
+        700;
+}
+
+
+.admin-form-header p {
+    margin:
+        0;
+
+    color:
+        #666;
+
+    font-size:
+        1rem;
+}
+
+/* =========================================================
+   BOTÓN VOLVER
+========================================================= */
+
+.btn-volver {
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    gap:
+        8px;
+
+    padding:
+        11px 18px;
+
+    background:
+        white;
+
+    border:
+        1px solid #e5e5e5;
+
+    border-radius:
+        10px;
+
+    color:
+        var(--color-dark);
+
+    text-decoration:
+        none;
+
+    font-size:
+        0.9rem;
+
+    font-weight:
+        600;
+
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.05);
+
+    transition:
+        transform 0.2s ease,
+        background-color 0.2s ease,
+        color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.btn-volver:hover {
+    transform:
+        translateY(-2px);
+
+    background:
+        #fffafa;
+
+    color:
+        var(--color-primary);
+
+    box-shadow:
+        0 7px 16px rgba(0, 0, 0, 0.08);
+}
+
+
+/* =========================================================
+   TARJETA DEL FORMULARIO
+========================================================= */
+
+.admin-form-card {
+    background:
+        white;
+
+    border:
+        1px solid #e5e5e5;
+
+    border-radius:
+        18px;
+
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.07);
+
+    overflow:
+        hidden;
+}
+
+
+/* =========================================================
+   FORMULARIO
+========================================================= */
+
+.producto-form {
+    padding:
+        35px;
+}
+
+
+/* =========================================================
+   SECCIONES
+========================================================= */
+
+.form-seccion {
+    padding-bottom:
+        30px;
+
+    margin-bottom:
+        30px;
+
+    border-bottom:
+        1px solid #eeeeee;
+}
+
+
+.form-seccion:last-of-type {
+    margin-bottom:
+        0;
+}
+
+
+.form-seccion-header {
+    margin-bottom:
+        25px;
+}
+
+
+.form-seccion-header h2 {
+    margin:
+        0 0 6px;
+
+    color:
+        var(--color-dark);
+
+    font-size:
+        1.25rem;
+
+    font-weight:
+        700;
+}
+
+
+.form-seccion-header p {
+    margin:
+        0;
+
+    color:
+        #777;
+
+    font-size:
+        0.9rem;
+}
+
+
+/* =========================================================
+   GRUPOS DEL FORMULARIO
+========================================================= */
+
+.form-grupo {
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    gap:
+        8px;
+
+    margin-bottom:
+        20px;
+}
+
+
+.form-grupo:last-child {
+    margin-bottom:
+        0;
+}
+
+
+.form-grupo label {
+    color:
+        var(--color-dark);
+
+    font-size:
+        0.9rem;
+
+    font-weight:
+        600;
+}
+
+
+/* =========================================================
+   INPUTS
+========================================================= */
+
+.form-grupo input[type="text"],
+.form-grupo input[type="number"],
+.form-grupo input[type="file"],
+.form-grupo textarea,
+.form-grupo select {
+    width:
+        100%;
+
+    box-sizing:
+        border-box;
+
+    padding:
+        13px 14px;
+
+    background:
+        white;
+
+    border:
+        1px solid #dddddd;
+
+    border-radius:
+        10px;
+
+    color:
+        var(--color-dark);
+
+    font-family:
+        inherit;
+
+    font-size:
+        0.95rem;
+
+    outline:
+        none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.form-grupo input[type="text"]:focus,
+.form-grupo input[type="number"]:focus,
+.form-grupo input[type="file"]:focus,
+.form-grupo textarea:focus,
+.form-grupo select:focus {
+    border-color:
+        var(--color-primary);
+
+    box-shadow:
+        0 0 0 3px rgba(179, 27, 33, 0.08);
+}
+
+
+.form-grupo textarea {
+    resize:
+        vertical;
+
+    min-height:
+        110px;
+
+    line-height:
+        1.5;
+}
+
+
+.form-grupo input::placeholder,
+.form-grupo textarea::placeholder {
+    color:
+        #aaa;
+}
+
+
+/* =========================================================
+   SELECT
+========================================================= */
+
+.form-grupo select {
+    cursor:
+        pointer;
+}
+
+
+/* =========================================================
+   PRECIO
+========================================================= */
+
+.input-precio {
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    border:
+        1px solid #dddddd;
+
+    border-radius:
+        10px;
+
+    overflow:
+        hidden;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.input-precio:focus-within {
+    border-color:
+        var(--color-primary);
+
+    box-shadow:
+        0 0 0 3px rgba(179, 27, 33, 0.08);
+}
+
+
+.input-precio span {
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    width:
+        45px;
+
+    align-self:
+        stretch;
+
+    background:
+        #fafafa;
+
+    border-right:
+        1px solid #dddddd;
+
+    color:
+        var(--color-primary);
+
+    font-size:
+        1rem;
+
+    font-weight:
+        700;
+}
+
+
+.input-precio input {
+    flex:
+        1;
+
+    min-width:
+        0;
+
+    padding:
+        13px 14px;
+
+    border:
+        none;
+
+    outline:
+        none;
+
+    box-shadow:
+        none;
+}
+
+
+/* =========================================================
+   IMAGEN ACTUAL
+========================================================= */
+
+.imagen-actual {
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        18px;
+
+    margin-bottom:
+        22px;
+
+    padding:
+        15px;
+
+    background:
+        #fafafa;
+
+    border:
+        1px solid #eeeeee;
+
+    border-radius:
+        12px;
+}
+
+
+.imagen-actual img {
+    width:
+        90px;
+
+    height:
+        90px;
+
+    flex-shrink:
+        0;
+
+    object-fit:
+        cover;
+
+    border-radius:
+        10px;
+
+    background:
+        #eeeeee;
+}
+
+
+.imagen-actual div {
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    gap:
+        5px;
+}
+
+
+.imagen-actual strong {
+    color:
+        var(--color-dark);
+
+    font-size:
+        0.95rem;
+}
+
+
+.imagen-actual span {
+    color:
+        #777;
+
+    font-size:
+        0.8rem;
+}
+
+
+/* =========================================================
+   INPUT FILE
+========================================================= */
+
+.form-grupo input[type="file"] {
+    padding:
+        10px;
+
+    cursor:
+        pointer;
+
+    background:
+        #fafafa;
+}
+
+
+.form-grupo input[type="file"]::file-selector-button {
+    margin-right:
+        12px;
+
+    padding:
+        8px 13px;
+
+    background:
+        var(--color-primary);
+
+    border:
+        none;
+
+    border-radius:
+        8px;
+
+    color:
+        white;
+
+    font-size:
+        0.8rem;
+
+    font-weight:
+        600;
+
+    cursor:
+        pointer;
+
+    transition:
+        background-color 0.2s ease;
+}
+
+
+.form-grupo input[type="file"]::file-selector-button:hover {
+    background:
+        var(--color-secondary);
+}
+
+
+.form-grupo small {
+    color:
+        #888;
+
+    font-size:
+        0.78rem;
+}
+
+
+/* =========================================================
+   ACCIONES
+========================================================= */
+
+.form-acciones {
+    display:
+        flex;
+
+    justify-content:
+        flex-end;
+
+    align-items:
+        center;
+
+    gap:
+        12px;
+
+    padding-top:
+        5px;
+}
+
+
+/* =========================================================
+   BOTÓN CANCELAR
+========================================================= */
+
+.btn-cancelar {
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    padding:
+        12px 20px;
+
+    background:
+        #eeeeee;
+
+    border:
+        none;
+
+    border-radius:
+        10px;
+
+    color:
+        #555;
+
+    text-decoration:
+        none;
+
+    font-size:
+        0.9rem;
+
+    font-weight:
+        600;
+
+    transition:
+        transform 0.2s ease,
+        background-color 0.2s ease;
+}
+
+
+.btn-cancelar:hover {
+    background:
+        #e2e2e2;
+
+    transform:
+        translateY(-2px);
+}
+
+
+/* =========================================================
+   BOTÓN GUARDAR
+========================================================= */
+
+.btn-guardar {
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    gap:
+        8px;
+
+    padding:
+        12px 22px;
+
+    background:
+        var(--color-primary);
+
+    border:
+        none;
+
+    border-radius:
+        10px;
+
+    color:
+        white;
+
+    font-family:
+        inherit;
+
+    font-size:
+        0.9rem;
+
+    font-weight:
+        600;
+
+    cursor:
+        pointer;
+
+    box-shadow:
+        0 6px 15px rgba(179, 27, 33, 0.18);
+
+    transition:
+        transform 0.2s ease,
+        background-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.btn-guardar:hover {
+    background:
+        var(--color-secondary);
+
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 10px 22px rgba(179, 27, 33, 0.25);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 700px) {
+
+    .admin-form-container {
+        width:
+            92%;
+
+        margin-top:
+            100px;
+    }
+
+
+    .admin-form-header {
+        flex-direction:
+            column;
+
+        align-items:
+            flex-start;
+    }
+
+
+    .admin-form-header h1 {
+        font-size:
+            2rem;
+    }
+
+
+    .btn-volver {
+        width:
+            100%;
+    }
+
+
+    .producto-form {
+        padding:
+            25px 20px;
+    }
+
+
+    .imagen-actual {
+        align-items:
+            flex-start;
+    }
+
+
+    .imagen-actual img {
+        width:
+            75px;
+
+        height:
+            75px;
+    }
+
+
+    .form-acciones {
+        flex-direction:
+            column-reverse;
+    }
+
+
+    .btn-cancelar,
+    .btn-guardar {
+        width:
+            100%;
+    }
+}
+
+
+/* =========================================================
+   ANIMACIONES DE ENTRADA
+========================================================= */
+
+.admin-form-header {
+    animation:
+        adminFormEntrada 0.55s ease-out both;
+}
+
+
+.admin-form-card {
+    animation:
+        adminCardEntrada 0.55s ease-out 0.08s both;
+}
+
+
+@keyframes adminFormEntrada {
+
+    from {
+        opacity:
+            0;
+
+        transform:
+            translateY(18px);
+    }
+
+    to {
+        opacity:
+            1;
+
+        transform:
+            translateY(0);
+    }
+}
+
+
+@keyframes adminCardEntrada {
+
+    from {
+        opacity:
+            0;
+
+        transform:
+            translateY(20px);
+    }
+
+    to {
+        opacity:
+            1;
+
+        transform:
+            translateY(0);
+    }
+}
+
+
+/* =========================================================
+   ACCESIBILIDAD
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .admin-form-header,
+    .admin-form-card {
+        animation:
+            none;
+    }
+
+
+    .btn-volver,
+    .form-grupo input,
+    .form-grupo textarea,
+    .form-grupo select,
+    .input-precio,
+    .btn-cancelar,
+    .btn-guardar {
+        transition:
+            none;
+    }
+}

@@ -11,9 +11,6 @@ require __DIR__ . '/../layouts/head.php';
     <?php require __DIR__ . '/../layouts/header.php'; ?>
 
     <main class="admin-productos-container">
-        <!-- =====================================================
-         ENCABEZADO
-    ====================================================== -->
 
         <section class="admin-header">
 
@@ -34,17 +31,13 @@ require __DIR__ . '/../layouts/head.php';
             </div>
 
             <a
-                href="../../controllers/ProductoController.php?accion=crear"
+                href="/DonDiego-Panaderia-Pruebas/controllers/ProductoController.php?accion=crear"
                 class="btn-agregar">
                 + Agregar producto
             </a>
 
         </section>
 
-
-        <!-- =====================================================
-      RESUMEN
-    ====================================================== -->
 
         <section class="admin-resumen">
 
@@ -63,15 +56,9 @@ require __DIR__ . '/../layouts/head.php';
         </section>
 
 
-        <!-- =====================================================
-         PRODUCTOS
-    ====================================================== -->
-
         <section class="admin-productos">
 
             <?php if (empty($productos)): ?>
-
-                <!-- SIN PRODUCTOS -->
 
                 <div class="productos-vacio">
 
@@ -88,61 +75,34 @@ require __DIR__ . '/../layouts/head.php';
                     </p>
 
                     <a
-                        href="../../controllers/ProductoController.php?accion=crear"
+                        href="/DonDiego-Panaderia-Pruebas/controllers/ProductoController.php?accion=crear"
                         class="btn-agregar">
                         + Agregar primer producto
                     </a>
 
                 </div>
 
-
             <?php else: ?>
-
-
-                <!-- =================================================
-                 TABLA
-            ================================================== -->
 
                 <div class="tabla-contenedor">
 
                     <table class="tabla-productos">
 
                         <thead>
-
                             <tr>
-
-                                <th>
-                                    Producto
-                                </th>
-
-                                <th>
-                                    Categoría
-                                </th>
-
-                                <th>
-                                    Precio
-                                </th>
-
-                                <th>
-                                    Estado
-                                </th>
-
-                                <th>
-                                    Acciones
-                                </th>
-
+                                <th>Producto</th>
+                                <th>Categoría</th>
+                                <th>Precio</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
                             </tr>
-
                         </thead>
-
 
                         <tbody>
 
                             <?php foreach ($productos as $producto): ?>
 
                                 <tr>
-
-                                    <!-- PRODUCTO -->
 
                                     <td>
 
@@ -154,6 +114,7 @@ require __DIR__ . '/../layouts/head.php';
                                                     src="/DonDiego-Panaderia-Pruebas/public/img/<?= htmlspecialchars($producto['imagen']) ?>"
                                                     alt="<?= htmlspecialchars($producto['nombre']) ?>"
                                                     class="producto-admin-imagen">
+
                                             <?php else: ?>
 
                                                 <div class="producto-sin-imagen">
@@ -166,17 +127,13 @@ require __DIR__ . '/../layouts/head.php';
                                             <div class="producto-admin-info">
 
                                                 <strong>
-                                                    <?= htmlspecialchars(
-                                                        $producto['nombre']
-                                                    ) ?>
+                                                    <?= htmlspecialchars($producto['nombre']) ?>
                                                 </strong>
 
                                                 <?php if (!empty($producto['descripcion'])): ?>
 
                                                     <span>
-                                                        <?= htmlspecialchars(
-                                                            $producto['descripcion']
-                                                        ) ?>
+                                                        <?= htmlspecialchars($producto['descripcion']) ?>
                                                     </span>
 
                                                 <?php endif; ?>
@@ -188,40 +145,28 @@ require __DIR__ . '/../layouts/head.php';
                                     </td>
 
 
-                                    <!-- CATEGORÍA -->
-
                                     <td>
 
                                         <span class="categoria-producto">
-
-                                            <?= htmlspecialchars(
-                                                $producto['categoria']
-                                            ) ?>
-
+                                            <?= htmlspecialchars($producto['categoria']) ?>
                                         </span>
 
                                     </td>
 
 
-                                    <!-- PRECIO -->
-
                                     <td>
 
                                         <strong class="precio-producto">
-
                                             $<?= number_format(
-                                                    $producto['precio'],
-                                                    0,
-                                                    ',',
-                                                    '.'
-                                                ) ?>
-
+                                                $producto['precio'],
+                                                0,
+                                                ',',
+                                                '.'
+                                            ) ?>
                                         </strong>
 
                                     </td>
 
-
-                                    <!-- ESTADO -->
 
                                     <td>
 
@@ -242,28 +187,22 @@ require __DIR__ . '/../layouts/head.php';
                                     </td>
 
 
-                                    <!-- ACCIONES -->
-
                                     <td>
 
                                         <div class="acciones-producto">
 
-                                            <!-- EDITAR -->
-
                                             <a
-                                                href="../../controllers/ProductoController.php?accion=editar&id=<?= $producto['id'] ?>"
+                                                href="/DonDiego-Panaderia-Pruebas/controllers/ProductoController.php?accion=editar&id=<?= $producto['id'] ?>"
                                                 class="btn-editar"
                                                 title="Editar producto">
                                                 ✏️
                                             </a>
 
 
-                                            <!-- DESACTIVAR -->
-
                                             <?php if ($producto['activo'] == 1): ?>
 
                                                 <a
-                                                    href="../../controllers/ProductoController.php?accion=desactivar&id=<?= $producto['id'] ?>"
+                                                    href="/DonDiego-Panaderia-Pruebas/controllers/ProductoController.php?accion=desactivar&id=<?= $producto['id'] ?>"
                                                     class="btn-eliminar"
                                                     title="Desactivar producto"
                                                     onclick="return confirm('¿Seguro que querés desactivar este producto?');">
@@ -290,8 +229,7 @@ require __DIR__ . '/../layouts/head.php';
 
         </section>
 
+    </main>
 
 </body>
-
-</main>
-
+</html>
