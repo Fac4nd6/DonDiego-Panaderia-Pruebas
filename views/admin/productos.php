@@ -291,7 +291,9 @@ require __DIR__ . '/../layouts/head.php';
         </section>
 
 
+
+
+    </main>
 </body>
 
-</main>
-
+</html>
