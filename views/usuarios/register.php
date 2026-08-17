@@ -2,6 +2,8 @@
 
 $pageCss = "login.css";
 
+require '../../config/Database.php';
+
 $error = '';
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
@@ -24,14 +26,75 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     } else {
 
-        /*
-         * Aquí irá la lógica para registrar al usuario.
-         *
-         * - Comprobar si el correo ya existe.
-         * - Encriptar la contraseña con password_hash().
-         * - Guardar nombre, email y contraseña en la base de datos.
-         * - Redirigir al login.
-         */
+        // Comprobar si el correo ya existe
+        $stmt = $conn->prepare("
+            SELECT id
+            FROM usuarios
+            WHERE email = ?
+            LIMIT 1
+        ");
+
+        $stmt->bind_param("s", $email);
+
+        $stmt->execute();
+
+        $result = $stmt->get_result();
+
+        $usuario = $result->fetch_assoc();
+
+        $stmt->close();
+
+
+        // Si el correo ya existe
+        if ($usuario) {
+
+            $error = 'El correo electrónico ya está registrado.';
+
+        } else {
+
+            // Hashear la contraseña antes de guardarla
+            $passwordHash = password_hash(
+                $password,
+                PASSWORD_DEFAULT
+            );
+
+
+            // Insertar el nuevo usuario
+            $stmt = $conn->prepare("
+                INSERT INTO usuarios
+                (
+                    nombre_completo,
+                    email,
+                    password,
+                    rol
+                )
+                VALUES
+                (?, ?, ?, 'cliente')
+            ");
+
+            $stmt->bind_param(
+                "sss",
+                $nombre,
+                $email,
+                $passwordHash
+            );
+
+            // Ejecutar registro
+            if ($stmt->execute()) {
+
+                $stmt->close();
+
+                // Redirigir al login
+                header('Location: login.php?registro=exitoso');
+                exit;
+
+            } else {
+
+                $error = 'Ocurrió un error al crear la cuenta.';
+
+                $stmt->close();
+            }
+        }
     }
 }
 

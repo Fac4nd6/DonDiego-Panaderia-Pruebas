@@ -8,11 +8,7 @@ require '../layouts/header.php';
 ?>
 
 <body>
-    <?php
-
-    require '../layouts/header.php';
-
-    ?>
+    
 
     <main>
 
@@ -22,7 +18,7 @@ require '../layouts/header.php';
             <div class="hero-content">
                 <h1>El sabor de lo recién hecho</h1>
                 <p>Los mejores productos de panadería.</p>
-                <a href="#" class="hero-button">Ver catálogo</a>
+                <a href="../productos/index.php" class="hero-button">Ver catálogo</a>
             </div>
 
             <div class="hero-image">
@@ -94,7 +90,7 @@ require '../layouts/header.php';
             </div>
 
         </section>
-        <a href="catalogo.php" class="catalogo-button">
+        <a href="/views/productos/index.php" class="catalogo-button">
             Ver catálogo completo
         </a>
 
@@ -170,7 +166,7 @@ require '../layouts/header.php';
 
                     </div>
 
-                    <a href="#" class="conocenos-button">
+                    <a href="https://www.google.com/maps/place/Panader%C3%ADa+y+Confiter%C3%ADa+Don+Diego+(Centro)/@-31.3889752,-57.9519957,17z/data=!4m6!3m5!1s0x95addd560a248351:0x31070367860ed798!8m2!3d-31.3889752!4d-57.9519957!16s%2Fg%2F11h2_b5sg3?hl=es-419&entry=ttu&g_ep=EgoyMDI2MDgxMi4wIKXMDSoASAFQAw%3D%3D" class="conocenos-button" target="_blank">
                         Cómo llegar
                         <span>→</span>
                     </a>
