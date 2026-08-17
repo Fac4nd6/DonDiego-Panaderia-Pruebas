@@ -12,10 +12,10 @@
             <span>Nuestras redes</span>
 
             <div class="social-links">
-                <a href="#" aria-label="Facebook">Facebook</a>
+                <a href="https://www.facebook.com/dondiego.uy/?locale=es_LA" aria-label="Facebook" target="_blank">Facebook</a>
                 <a href="#" aria-label="Pinterest">Pinterest</a>
-                <a href="#" aria-label="WhatsApp">WhatsApp</a>
-                <a href="#" aria-label="Instagram">Instagram</a>
+                <a href="https://wa.me/095005706" aria-label="WhatsApp" target="_blank">WhatsApp</a>
+                <a href="https://www.instagram.com/dondiego.uy/?hl=es" target="_blank" aria-label="Instagram">Instagram</a>
             </div>
         </div>
 
@@ -40,7 +40,7 @@
         <div class="footer-column">
             <h3>Explorar</h3>
 
-            <a href="#">Hogar</a>
+            <a href="../home/index.php">Hogar</a>
             <a href="#">Blog</a>
             <a href="#">Contacto</a>
             <a href="#">Servicios</a>
