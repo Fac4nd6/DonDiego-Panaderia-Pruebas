@@ -2,49 +2,205 @@
 
 $pageCss = "cuenta.css";
 
+
+/* =========================================================
+   SESIÓN
+========================================================= */
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
 
 /* =========================================================
-   PROTEGER LA PÁGINA
+   PROTEGER PÁGINA
 ========================================================= */
 
 if (!isset($_SESSION['usuario_id'])) {
 
     header('Location: login.php');
-    exit;
 
+    exit;
 }
 
 
 /* =========================================================
-   DATOS DEL USUARIO
+   MODELOS
 ========================================================= */
 
-$nombre = $_SESSION['usuario_nombre'] ?? 'Usuario';
-$email = $_SESSION['usuario_email'] ?? '';
-$rol = $_SESSION['usuario_rol'] ?? 'usuario';
+require '../../config/Database.php';
+require '../../models/Usuario.php';
 
+
+$usuarioModel =
+    new Usuario($conn);
+
+
+/* =========================================================
+   OBTENER USUARIO
+========================================================= */
+
+$usuario =
+    $usuarioModel->obtenerPorId(
+        $_SESSION['usuario_id']
+    );
+
+
+if (!$usuario) {
+
+    session_destroy();
+
+    header('Location: login.php');
+
+    exit;
+}
+
+
+/* =========================================================
+   VARIABLES
+========================================================= */
+
+$nombre =
+    $usuario['nombre_completo'] ?? '';
+
+$email =
+    $usuario['email'] ?? '';
+
+$nombreComercio =
+    $usuario['nombre_comercio'] ?? '';
+
+$telefono =
+    $usuario['telefono'] ?? '';
+
+$direccion =
+    $usuario['direccion'] ?? '';
+
+$rol =
+    $usuario['rol'] ?? 'cliente';
+
+
+/* =========================================================
+   MENSAJES
+========================================================= */
+
+$error = '';
+
+$mensaje = '';
+
+
+/* =========================================================
+   ACTUALIZAR DATOS
+========================================================= */
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    $nombre =
+        trim($_POST['nombre'] ?? '');
+
+    $nombreComercio =
+        trim($_POST['nombre_comercio'] ?? '');
+
+    $telefono =
+        trim($_POST['telefono'] ?? '');
+
+    $direccion =
+        trim($_POST['direccion'] ?? '');
+
+
+    /* =====================================================
+       VALIDAR
+    ===================================================== */
+
+    if (empty($nombre)) {
+
+        $error =
+            'El nombre completo es obligatorio.';
+
+    } elseif (empty($nombreComercio)) {
+
+        $error =
+            'El nombre del comercio es obligatorio.';
+
+    } elseif (empty($telefono)) {
+
+        $error =
+            'El teléfono es obligatorio.';
+
+    } elseif (empty($direccion)) {
+
+        $error =
+            'La dirección es obligatoria.';
+
+    } else {
+
+
+        /* =================================================
+           ACTUALIZAR BD
+        ================================================= */
+
+        $resultado =
+            $usuarioModel->actualizarDatos(
+                $_SESSION['usuario_id'],
+                $nombre,
+                $nombreComercio,
+                $telefono,
+                $direccion
+            );
+
+
+        if ($resultado) {
+
+            /* =============================================
+               ACTUALIZAR SESIÓN
+            ============================================= */
+
+            $_SESSION['usuario_nombre'] =
+                $nombre;
+
+
+            $mensaje =
+                'Tus datos fueron actualizados correctamente.';
+
+        } else {
+
+            $error =
+                'No se pudieron guardar los datos.';
+        }
+    }
+}
+
+
+/* =========================================================
+   HEAD
+========================================================= */
 
 require '../layouts/head.php';
 
 ?>
 
+
 <body>
+
 
     <main class="account-page">
 
+
         <section class="account-card">
 
-            <!-- ENCABEZADO -->
+
+            <!-- =================================================
+                 ENCABEZADO
+            ================================================== -->
 
             <header class="account-header">
 
+
                 <div class="account-icon">
+
                     <i class="fa-solid fa-user"></i>
+
                 </div>
+
 
                 <div>
 
@@ -53,87 +209,269 @@ require '../layouts/head.php';
                     </h1>
 
                     <p>
-                        Bienvenido, <?= htmlspecialchars(
+
+                        Bienvenido,
+
+                        <?= htmlspecialchars(
                             $nombre,
                             ENT_QUOTES,
                             'UTF-8'
-                        ) ?> 👋
+                        ) ?>
+
+                        👋
+
                     </p>
 
                 </div>
 
+
             </header>
 
 
-            <!-- DATOS -->
+            <!-- =================================================
+                 MENSAJE DE ERROR
+            ================================================== -->
+
+            <?php if (!empty($error)): ?>
+
+                <div
+                    class="account-message error"
+                    role="alert"
+                >
+
+                    <?= htmlspecialchars(
+                        $error,
+                        ENT_QUOTES,
+                        'UTF-8'
+                    ) ?>
+
+                </div>
+
+            <?php endif; ?>
+
+
+            <!-- =================================================
+                 MENSAJE DE ÉXITO
+            ================================================== -->
+
+            <?php if (!empty($mensaje)): ?>
+
+                <div
+                    class="account-message success"
+                    role="status"
+                >
+
+                    <?= htmlspecialchars(
+                        $mensaje,
+                        ENT_QUOTES,
+                        'UTF-8'
+                    ) ?>
+
+                </div>
+
+            <?php endif; ?>
+
+
+            <!-- =================================================
+                 MIS DATOS
+            ================================================== -->
 
             <section class="account-section">
+
 
                 <h2>
                     Mis datos
                 </h2>
 
 
-                <div class="account-info">
+                <form
+                    method="POST"
+                    class="account-form"
+                >
 
-                    <div class="info-item">
 
-                        <span class="info-label">
-                            Nombre
-                        </span>
+                    <!-- NOMBRE -->
 
-                        <span class="info-value">
-                            <?= htmlspecialchars(
+                    <div class="account-input">
+
+                        <label for="nombre">
+
+                            Nombre completo
+
+                        </label>
+
+                        <input
+                            type="text"
+                            id="nombre"
+                            name="nombre"
+                            value="<?= htmlspecialchars(
                                 $nombre,
                                 ENT_QUOTES,
                                 'UTF-8'
-                            ) ?>
-                        </span>
+                            ) ?>"
+                            required
+                        >
 
                     </div>
 
 
-                    <div class="info-item">
+                    <!-- EMAIL -->
 
-                        <span class="info-label">
+                    <div class="account-input">
+
+                        <label for="email">
+
                             Correo electrónico
-                        </span>
 
-                        <span class="info-value">
-                            <?= htmlspecialchars(
+                        </label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            value="<?= htmlspecialchars(
                                 $email,
                                 ENT_QUOTES,
                                 'UTF-8'
-                            ) ?>
-                        </span>
+                            ) ?>"
+                            disabled
+                        >
+
+                        <small>
+                            El correo electrónico no se puede modificar.
+                        </small>
 
                     </div>
 
 
-                    <div class="info-item">
+                    <!-- COMERCIO -->
 
-                        <span class="info-label">
+                    <div class="account-input">
+
+                        <label for="nombre_comercio">
+
+                            Nombre del comercio
+
+                        </label>
+
+                        <input
+                            type="text"
+                            id="nombre_comercio"
+                            name="nombre_comercio"
+                            placeholder="Ej: Almacén Don Pedro"
+                            value="<?= htmlspecialchars(
+                                $nombreComercio,
+                                ENT_QUOTES,
+                                'UTF-8'
+                            ) ?>"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- TELÉFONO -->
+
+                    <div class="account-input">
+
+                        <label for="telefono">
+
+                            Teléfono
+
+                        </label>
+
+                        <input
+                            type="tel"
+                            id="telefono"
+                            name="telefono"
+                            placeholder="Ej: 099 123 456"
+                            value="<?= htmlspecialchars(
+                                $telefono,
+                                ENT_QUOTES,
+                                'UTF-8'
+                            ) ?>"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- DIRECCIÓN -->
+
+                    <div class="account-input">
+
+                        <label for="direccion">
+
+                            Dirección del comercio
+
+                        </label>
+
+                        <input
+                            type="text"
+                            id="direccion"
+                            name="direccion"
+                            placeholder="Ej: Artigas 1234"
+                            value="<?= htmlspecialchars(
+                                $direccion,
+                                ENT_QUOTES,
+                                'UTF-8'
+                            ) ?>"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- ROL -->
+
+                    <div class="account-input">
+
+                        <label>
+
                             Tipo de cuenta
-                        </span>
 
-                        <span class="info-value">
-                            <?= htmlspecialchars(
+                        </label>
+
+                        <input
+                            type="text"
+                            value="<?= htmlspecialchars(
                                 $rol,
                                 ENT_QUOTES,
                                 'UTF-8'
-                            ) ?>
-                        </span>
+                            ) ?>"
+                            disabled
+                        >
 
                     </div>
 
-                </div>
+
+                    <!-- GUARDAR -->
+
+                    <button
+                        type="submit"
+                        class="account-save-button"
+                    >
+
+                        <i class="fa-solid fa-floppy-disk"></i>
+
+                        Guardar cambios
+
+                    </button>
+
+
+                </form>
+
 
             </section>
 
 
-            <!-- OPCIONES -->
+            <!-- =================================================
+                 OPCIONES
+            ================================================== -->
 
             <section class="account-options">
+
+
+                <!-- CARRITO -->
 
                 <a
                     href="/DonDiego-Panaderia-Pruebas/views/carrito/index.php"
@@ -141,6 +479,7 @@ require '../layouts/head.php';
                 >
 
                     <i class="fa-solid fa-cart-shopping"></i>
+
 
                     <div>
 
@@ -154,17 +493,23 @@ require '../layouts/head.php';
 
                     </div>
 
-                    <i class="fa-solid fa-chevron-right arrow"></i>
+
+                    <i
+                        class="fa-solid fa-chevron-right arrow"
+                    ></i>
 
                 </a>
 
 
+                <!-- PEDIDOS -->
+
                 <a
-                    href="#"
+                    href="/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=listar"
                     class="account-option"
                 >
 
                     <i class="fa-solid fa-box"></i>
+
 
                     <div>
 
@@ -173,38 +518,51 @@ require '../layouts/head.php';
                         </strong>
 
                         <span>
-                            Próximamente podrás ver tus pedidos
+                            Consultar tus pedidos anteriores
                         </span>
 
                     </div>
 
-                    <i class="fa-solid fa-chevron-right arrow"></i>
+
+                    <i
+                        class="fa-solid fa-chevron-right arrow"
+                    ></i>
 
                 </a>
+
 
             </section>
 
 
-            <!-- CERRAR SESIÓN -->
+            <!-- =================================================
+                 CERRAR SESIÓN
+            ================================================== -->
 
             <footer class="account-footer">
+
 
                 <a
                     href="/DonDiego-Panaderia-Pruebas/controllers/logout.php"
                     class="logout-button"
                 >
 
-                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <i
+                        class="fa-solid fa-right-from-bracket"
+                    ></i>
 
                     Cerrar sesión
 
                 </a>
 
+
             </footer>
+
 
         </section>
 
+
     </main>
+
 
 </body>
 
