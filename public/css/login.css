@@ -373,6 +373,9 @@ html::-webkit-scrollbar {
     border-bottom-color: #b31b21;
 
     padding-left: 8px;
+
+    box-shadow:
+        0 5px 10px -8px rgba(179,27,33,0.8);
 }
 
 .input-group:focus-within label {
@@ -389,6 +392,8 @@ html::-webkit-scrollbar {
 ============================== */
 
 .btn-submit {
+    position: relative;
+
     background-color: #b31b21;
 
     color: #fff;
@@ -413,15 +418,48 @@ html::-webkit-scrollbar {
 
     margin-top: 8px;
 
+    overflow: hidden;
+
     box-shadow:
         0 5px 0 #801318,
         0 8px 15px rgba(179,27,33,0.2);
 
     transition:
-        background-color 0.2s ease,
-        transform 0.2s ease,
-        box-shadow 0.2s ease;
+        background-color 0.25s ease,
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
 }
+
+
+/* Brillo */
+
+.btn-submit::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: -120%;
+
+    width: 65%;
+    height: 100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255,255,255,0.3),
+            transparent
+        );
+
+    transform: skewX(-20deg);
+
+    transition:
+        left 0.5s ease;
+}
+
+
+/* Hover */
 
 .btn-submit:hover {
     background-color: #c5242b;
@@ -433,15 +471,23 @@ html::-webkit-scrollbar {
         0 12px 20px rgba(179,27,33,0.25);
 }
 
+
+/* Brillo */
+
+.btn-submit:hover::before {
+    left: 130%;
+}
+
+
+/* Click */
+
 .btn-submit:active {
-    transform: translateY(2px);
+    transform: translateY(1px);
 
     box-shadow:
         0 3px 0 #801318,
         0 5px 10px rgba(179,27,33,0.2);
 }
-
-
 /* ==============================
    FOOTER
 ============================== */

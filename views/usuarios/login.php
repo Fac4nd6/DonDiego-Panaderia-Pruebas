@@ -2,72 +2,37 @@
 
 $pageCss = "login.css";
 
-require '../../config/Database.php';
+require '../../controllers/UsuarioController.php';
 
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+$usuarioController = new UsuarioController();
 
 $error = '';
+$email = '';
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    if (empty($email) || empty($password)) {
+    $resultado = $usuarioController->login(
+        $email,
+        $password
+    );
 
-        $error = 'Por favor, completa todos los campos.';
+    if ($resultado['success']) {
 
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-
-        $error = 'Ingresa un correo electrónico válido.';
-
-    } else {
-
-        // Buscar usuario por email
-        $stmt = $conn->prepare("
-            SELECT id, nombre_completo, email, password, rol
-            FROM usuarios
-            WHERE email = ?
-            LIMIT 1
-        ");
-
-        $stmt->bind_param("s", $email);
-
-        $stmt->execute();
-
-        $result = $stmt->get_result();
-
-        $usuario = $result->fetch_assoc();
-
-        $stmt->close();
-
-
-        // Verificar que el usuario exista y que la contraseña coincida
-        if ($usuario && password_verify($password, $usuario['password'])) {
-
-            // Regenerar el ID de sesión por seguridad
-            session_regenerate_id(true);
-
-            // Guardar datos del usuario en la sesión
-            $_SESSION['usuario_id'] = $usuario['id'];
-            $_SESSION['usuario_nombre'] = $usuario['nombre_completo'];
-            $_SESSION['usuario_email'] = $usuario['email'];
-            $_SESSION['usuario_rol'] = $usuario['rol'];
-
-            // Redirigir al inicio
-            header('Location: ../home/index.php');
-            exit;
-
-        } else {
-
-            // Mensaje genérico para no revelar si el email existe
-            $error = 'El correo o la contraseña son incorrectos.';
-        }
+        header('Location: ../home/index.php');
+        exit;
     }
+
+    $error = $resultado['error'];
 }
 
 require '../layouts/head.php';
-
 
 ?>
 
@@ -78,35 +43,63 @@ require '../layouts/head.php';
         <section class="login-card" aria-labelledby="login-title">
 
             <header class="logo-container">
+
                 <div class="logo-badge">
+
                     <img
                         src="../../public/img/logo.avif"
-                        alt="Logo de Don Diego">
+                        alt="Logo de Don Diego"
+                    >
+
                 </div>
+
             </header>
+
+
             <div class="login-content">
 
                 <header class="form-header">
-                    <h2 id="login-title" class="form-title">
+
+                    <h2
+                        id="login-title"
+                        class="form-title"
+                    >
                         Iniciar sesión
                     </h2>
+
                 </header>
+
 
                 <?php if (!empty($error)): ?>
 
-                    <aside class="error-msg" role="alert">
-                        <?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?>
+                    <aside
+                        class="error-msg"
+                        role="alert"
+                    >
+                        <?= htmlspecialchars(
+                            $error,
+                            ENT_QUOTES,
+                            'UTF-8'
+                        ) ?>
                     </aside>
 
                 <?php endif; ?>
 
-                <form action="login.php" method="POST" class="login-form">
+
+                <form
+                    action="login.php"
+                    method="POST"
+                    class="login-form"
+                >
 
                     <fieldset>
 
                         <legend class="sr-only">
                             Datos de inicio de sesión
                         </legend>
+
+
+                        <!-- EMAIL -->
 
                         <div class="input-group">
 
@@ -119,11 +112,19 @@ require '../layouts/head.php';
                                 id="email"
                                 name="email"
                                 placeholder="ejemplo@correo.com"
-                                value="<?= htmlspecialchars($email ?? '', ENT_QUOTES, 'UTF-8') ?>"
+                                value="<?= htmlspecialchars(
+                                    $email,
+                                    ENT_QUOTES,
+                                    'UTF-8'
+                                ) ?>"
                                 autocomplete="email"
-                                required>
+                                required
+                            >
 
                         </div>
+
+
+                        <!-- CONTRASEÑA -->
 
                         <div class="input-group">
 
@@ -137,25 +138,38 @@ require '../layouts/head.php';
                                 name="password"
                                 placeholder="Ingresa tu contraseña"
                                 autocomplete="current-password"
-                                required>
+                                required
+                            >
 
                         </div>
 
                     </fieldset>
 
-                    <button type="submit" class="btn-submit">
+
+                    <!-- BOTÓN -->
+
+                    <button
+                        type="submit"
+                        class="btn-submit"
+                    >
                         Iniciar sesión
                     </button>
 
                 </form>
 
+
+                <!-- REGISTRO -->
+
                 <footer class="form-footer">
 
                     <p>
+
                         ¿No tienes una cuenta?
+
                         <a href="register.php">
                             Regístrate
                         </a>
+
                     </p>
 
                 </footer>
