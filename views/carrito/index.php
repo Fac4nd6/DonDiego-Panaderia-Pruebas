@@ -46,8 +46,7 @@ require __DIR__ . '/../layouts/header.php';
 
                 <a
                     href="/DonDiego-Panaderia-Pruebas/controllers/CatalogoController.php"
-                    class="btn-volver"
-                >
+                    class="btn-volver">
                     Ver catálogo
                 </a>
 
@@ -84,23 +83,21 @@ require __DIR__ . '/../layouts/header.php';
 
                                     <img
                                         src="/DonDiego-Panaderia-Pruebas/public/img/<?= htmlspecialchars(
-                                            $item['imagen'],
-                                            ENT_QUOTES,
-                                            'UTF-8'
-                                        ) ?>"
+                                                                                        $item['imagen'],
+                                                                                        ENT_QUOTES,
+                                                                                        'UTF-8'
+                                                                                    ) ?>"
                                         alt="<?= htmlspecialchars(
-                                            $item['nombre'],
-                                            ENT_QUOTES,
-                                            'UTF-8'
-                                        ) ?>"
-                                    >
+                                                    $item['nombre'],
+                                                    ENT_QUOTES,
+                                                    'UTF-8'
+                                                ) ?>">
 
                                 <?php else: ?>
 
                                     <img
                                         src="/DonDiego-Panaderia-Pruebas/public/img/logo.avif"
-                                        alt="Don Diego"
-                                    >
+                                        alt="Don Diego">
 
                                 <?php endif; ?>
 
@@ -125,11 +122,11 @@ require __DIR__ . '/../layouts/header.php';
                                 <p class="item-precio">
 
                                     $<?= number_format(
-                                        $item['precio'],
-                                        0,
-                                        ',',
-                                        '.'
-                                    ) ?>
+                                            $item['precio'],
+                                            0,
+                                            ',',
+                                            '.'
+                                        ) ?>
 
                                     por unidad
 
@@ -143,24 +140,20 @@ require __DIR__ . '/../layouts/header.php';
                                 <form
                                     method="POST"
                                     action="/DonDiego-Panaderia-Pruebas/controllers/CarritoController.php"
-                                    class="cantidad-form"
-                                >
+                                    class="cantidad-form">
 
                                     <input
                                         type="hidden"
                                         name="accion"
-                                        value="actualizar"
-                                    >
+                                        value="actualizar">
 
                                     <input
                                         type="hidden"
                                         name="producto_id"
-                                        value="<?= (int) $item['id'] ?>"
-                                    >
+                                        value="<?= (int) $item['id'] ?>">
 
                                     <label
-                                        for="cantidad-<?= (int) $item['id'] ?>"
-                                    >
+                                        for="cantidad-<?= (int) $item['id'] ?>">
                                         Cantidad
                                     </label>
 
@@ -170,13 +163,11 @@ require __DIR__ . '/../layouts/header.php';
                                         name="cantidad"
                                         value="<?= (int) $item['cantidad'] ?>"
                                         min="1"
-                                        max="99"
-                                    >
+                                        max="99">
 
                                     <button
                                         type="submit"
-                                        class="btn-actualizar"
-                                    >
+                                        class="btn-actualizar">
                                         Actualizar
                                     </button>
 
@@ -189,25 +180,21 @@ require __DIR__ . '/../layouts/header.php';
 
                                 <form
                                     method="POST"
-                                    action="/DonDiego-Panaderia-Pruebas/controllers/CarritoController.php"
-                                >
+                                    action="/DonDiego-Panaderia-Pruebas/controllers/CarritoController.php">
 
                                     <input
                                         type="hidden"
                                         name="accion"
-                                        value="eliminar"
-                                    >
+                                        value="eliminar">
 
                                     <input
                                         type="hidden"
                                         name="producto_id"
-                                        value="<?= (int) $item['id'] ?>"
-                                    >
+                                        value="<?= (int) $item['id'] ?>">
 
                                     <button
                                         type="submit"
-                                        class="btn-eliminar"
-                                    >
+                                        class="btn-eliminar">
                                         Eliminar
                                     </button>
 
@@ -229,11 +216,11 @@ require __DIR__ . '/../layouts/header.php';
                                 <strong>
 
                                     $<?= number_format(
-                                        $item['precio'] * $item['cantidad'],
-                                        0,
-                                        ',',
-                                        '.'
-                                    ) ?>
+                                            $item['precio'] * $item['cantidad'],
+                                            0,
+                                            ',',
+                                            '.'
+                                        ) ?>
 
                                 </strong>
 
@@ -281,11 +268,11 @@ require __DIR__ . '/../layouts/header.php';
                         <strong>
 
                             $<?= number_format(
-                                $total,
-                                0,
-                                ',',
-                                '.'
-                            ) ?>
+                                    $total,
+                                    0,
+                                    ',',
+                                    '.'
+                                ) ?>
 
                         </strong>
 
@@ -295,9 +282,8 @@ require __DIR__ . '/../layouts/header.php';
                     <!-- CONTINUAR PEDIDO -->
 
                     <a
-                        href="#"
-                        class="btn-continuar"
-                    >
+                        href="/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=crear"
+                        class="btn-continuar">
                         Continuar con el pedido
                     </a>
 
@@ -306,8 +292,7 @@ require __DIR__ . '/../layouts/header.php';
 
                     <a
                         href="/DonDiego-Panaderia-Pruebas/controllers/CatalogoController.php"
-                        class="btn-seguir-comprando"
-                    >
+                        class="btn-seguir-comprando">
                         ← Seguir comprando
                     </a>
 

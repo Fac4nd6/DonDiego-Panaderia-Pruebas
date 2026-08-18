@@ -647,3 +647,314 @@ html::-webkit-scrollbar {
         text-align: left;
     }
 }
+
+/* =========================================================
+   MENSAJES DE CUENTA
+========================================================= */
+
+.account-message {
+
+    margin-bottom: 25px;
+
+    padding: 13px 16px;
+
+    border-radius: 12px;
+
+    font-family:
+        'Poppins',
+        sans-serif;
+
+    font-size: 0.78rem;
+
+    font-weight: 500;
+
+    animation:
+        contentAppear 0.5s ease-out;
+}
+
+
+/* ERROR */
+
+.account-message.error {
+
+    color: #a51d23;
+
+    background-color:
+        rgba(179, 27, 33, 0.08);
+
+    border: 1px solid
+        rgba(179, 27, 33, 0.18);
+}
+
+
+/* ÉXITO */
+
+.account-message.success {
+
+    color: #276749;
+
+    background-color:
+        rgba(72, 187, 120, 0.10);
+
+    border: 1px solid
+        rgba(72, 187, 120, 0.20);
+}
+
+
+/* =========================================================
+   FORMULARIO DE CUENTA
+========================================================= */
+
+.account-form {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 17px;
+
+    margin-bottom: 30px;
+
+    padding: 22px;
+
+    background:
+        rgba(255, 255, 255, 0.55);
+
+    border: 1px solid
+        rgba(0, 0, 0, 0.06);
+
+    border-radius: 16px;
+
+    animation:
+        contentAppear 0.6s ease-out 0.3s both;
+}
+
+
+/* =========================================================
+   CAMPOS
+========================================================= */
+
+.account-input {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 7px;
+}
+
+
+/* LABEL */
+
+.account-input label {
+
+    color: #555;
+
+    font-family:
+        'Poppins',
+        sans-serif;
+
+    font-size: 0.76rem;
+
+    font-weight: 600;
+}
+
+
+/* INPUT */
+
+.account-input input {
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 12px 14px;
+
+    color: #2b2b2b;
+
+    background-color:
+        rgba(255, 255, 255, 0.85);
+
+    border: 1px solid
+        rgba(0, 0, 0, 0.10);
+
+    border-radius: 10px;
+
+    outline: none;
+
+    font-family:
+        'Poppins',
+        sans-serif;
+
+    font-size: 0.78rem;
+
+    transition:
+        border-color 0.25s ease,
+        box-shadow 0.25s ease,
+        background-color 0.25s ease;
+}
+
+
+/* FOCUS */
+
+.account-input input:focus {
+
+    background-color: #fff;
+
+    border-color:
+        rgba(179, 27, 33, 0.55);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(179, 27, 33, 0.08);
+}
+
+
+/* INPUT DESHABILITADO */
+
+.account-input input:disabled {
+
+    color: #888;
+
+    background-color:
+        rgba(0, 0, 0, 0.035);
+
+    cursor: not-allowed;
+}
+
+
+/* PLACEHOLDER */
+
+.account-input input::placeholder {
+
+    color: #aaa;
+}
+
+
+/* =========================================================
+   TEXTO PEQUEÑO DEL EMAIL
+========================================================= */
+
+.account-input small {
+
+    margin-top: -2px;
+
+    color: #999;
+
+    font-family:
+        'Poppins',
+        sans-serif;
+
+    font-size: 0.68rem;
+}
+
+
+/* =========================================================
+   BOTÓN GUARDAR
+========================================================= */
+
+.account-save-button {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    width: 100%;
+
+    margin-top: 5px;
+
+    padding: 13px 18px;
+
+    color: #fff;
+
+    background-color:
+        #b31b21;
+
+    border: none;
+
+    border-radius: 10px;
+
+    cursor: pointer;
+
+    font-family:
+        'Poppins',
+        sans-serif;
+
+    font-size: 0.78rem;
+
+    font-weight: 600;
+
+    box-shadow:
+        0 6px 15px
+        rgba(179, 27, 33, 0.18);
+
+    transition:
+        background-color 0.25s ease,
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+
+/* HOVER */
+
+.account-save-button:hover {
+
+    background-color:
+        #98171c;
+
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 9px 20px
+        rgba(179, 27, 33, 0.25);
+}
+
+
+/* CLICK */
+
+.account-save-button:active {
+
+    transform:
+        translateY(0);
+
+    box-shadow:
+        0 4px 10px
+        rgba(179, 27, 33, 0.18);
+}
+
+
+/* =========================================================
+   RESPONSIVE FORMULARIO
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .account-form {
+
+        padding: 18px;
+
+        gap: 15px;
+
+        border-radius: 14px;
+    }
+
+
+    .account-input input {
+
+        padding: 11px 12px;
+
+        font-size: 0.76rem;
+    }
+
+
+    .account-save-button {
+
+        padding: 12px 15px;
+    }
+
+}
