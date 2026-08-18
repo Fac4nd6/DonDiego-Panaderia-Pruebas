@@ -1,0 +1,649 @@
+/* =========================================================
+   CUENTA
+========================================================= */
+
+html {
+    scrollbar-width: none;
+}
+
+html::-webkit-scrollbar {
+    display: none;
+}
+
+
+/* =========================================================
+   FONDO
+========================================================= */
+
+.account-page {
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 50px 20px;
+
+    box-sizing: border-box;
+
+    background:
+        radial-gradient(
+            circle at 15% 20%,
+            rgba(179, 27, 33, 0.08),
+            transparent 25%
+        ),
+        radial-gradient(
+            circle at 85% 80%,
+            rgba(0, 0, 0, 0.06),
+            transparent 30%
+        ),
+        #fffaf3;
+}
+
+
+/* =========================================================
+   TARJETA PRINCIPAL
+========================================================= */
+
+.account-card {
+    position: relative;
+
+    width: 100%;
+    max-width: 700px;
+
+    padding: 40px;
+
+    box-sizing: border-box;
+
+    background:
+        linear-gradient(
+            145deg,
+            #fffdf7,
+            #fffaf0
+        );
+
+    border-radius: 28px;
+
+    box-shadow:
+        0 25px 60px rgba(0, 0, 0, 0.15),
+        0 5px 15px rgba(0, 0, 0, 0.08);
+
+    animation:
+        accountAppear 0.7s ease-out;
+}
+
+
+/* Línea superior */
+
+.account-card::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 8%;
+
+    width: 84%;
+    height: 3px;
+
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(179, 27, 33, 0.8),
+            rgba(220, 55, 60, 0.9),
+            rgba(179, 27, 33, 0.8),
+            transparent
+        );
+
+    box-shadow:
+        0 0 10px rgba(179, 27, 33, 0.3);
+
+    animation:
+        accountGlow 3s ease-in-out infinite;
+}
+
+
+/* =========================================================
+   ENCABEZADO
+========================================================= */
+
+.account-header {
+    display: flex;
+
+    align-items: center;
+
+    gap: 18px;
+
+    margin-bottom: 35px;
+
+    animation:
+        contentAppear 0.6s ease-out 0.15s both;
+}
+
+
+.account-icon {
+    width: 65px;
+    height: 65px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    color: #fff;
+
+    background-color:
+        #b31b21;
+
+    border-radius: 50%;
+
+    font-size: 25px;
+
+    box-shadow:
+        0 8px 18px rgba(179, 27, 33, 0.22);
+
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+
+.account-icon:hover {
+    transform:
+        scale(1.08)
+        rotate(-4deg);
+
+    box-shadow:
+        0 12px 25px rgba(179, 27, 33, 0.28);
+}
+
+
+.account-header h1 {
+    margin: 0 0 5px;
+
+    color: #2b2b2b;
+
+    font-family:
+        'Playfair Display',
+        serif;
+
+    font-size: 1.8rem;
+}
+
+
+.account-header p {
+    margin: 0;
+
+    color: #777;
+
+    font-family:
+        'Poppins',
+        sans-serif;
+
+    font-size: 0.85rem;
+}
+
+
+/* =========================================================
+   SECCIONES
+========================================================= */
+
+.account-section {
+    animation:
+        contentAppear 0.6s ease-out 0.25s both;
+}
+
+
+.account-section h2 {
+    margin: 0 0 15px;
+
+    color: #2b2b2b;
+
+    font-family:
+        'Poppins',
+        sans-serif;
+
+    font-size: 1rem;
+}
+
+
+/* =========================================================
+   INFORMACIÓN
+========================================================= */
+
+.account-info {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 0;
+
+    margin-bottom: 30px;
+
+    border: 1px solid rgba(0, 0, 0, 0.06);
+
+    border-radius: 14px;
+
+    overflow: hidden;
+
+    background: rgba(255, 255, 255, 0.55);
+}
+
+
+.info-item {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 20px;
+
+    padding: 15px 18px;
+
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+
+    transition:
+        background-color 0.25s ease,
+        padding-left 0.25s ease;
+}
+
+
+.info-item:last-child {
+    border-bottom: none;
+}
+
+
+.info-item:hover {
+    background-color:
+        rgba(179, 27, 33, 0.04);
+
+    padding-left: 22px;
+}
+
+
+.info-label {
+    color: #777;
+
+    font-family:
+        'Poppins',
+        sans-serif;
+
+    font-size: 0.78rem;
+}
+
+
+.info-value {
+    color: #2b2b2b;
+
+    font-family:
+        'Poppins',
+        sans-serif;
+
+    font-size: 0.85rem;
+
+    font-weight: 600;
+
+    text-align: right;
+}
+
+
+/* =========================================================
+   OPCIONES
+========================================================= */
+
+.account-options {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+
+    margin-bottom: 30px;
+
+    animation:
+        contentAppear 0.6s ease-out 0.35s both;
+}
+
+
+.account-option {
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    padding: 17px 18px;
+
+    color: #2b2b2b;
+
+    background-color:
+        rgba(255, 255, 255, 0.65);
+
+    border: 1px solid rgba(0, 0, 0, 0.06);
+
+    border-radius: 14px;
+
+    text-decoration: none;
+
+    overflow: hidden;
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        background-color 0.25s ease;
+}
+
+
+.account-option > i:first-child {
+    width: 40px;
+    height: 40px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    color: #b31b21;
+
+    background-color:
+        rgba(179, 27, 33, 0.08);
+
+    border-radius: 10px;
+
+    transition:
+        transform 0.25s ease,
+        background-color 0.25s ease;
+}
+
+
+.account-option div {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 3px;
+
+    flex: 1;
+}
+
+
+.account-option strong {
+    font-size: 0.85rem;
+
+    font-weight: 600;
+}
+
+
+.account-option span {
+    color: #888;
+
+    font-size: 0.72rem;
+}
+
+
+.account-option .arrow {
+    color: #aaa;
+
+    font-size: 13px;
+
+    transition:
+        transform 0.25s ease,
+        color 0.25s ease;
+}
+
+
+.account-option:hover {
+    background-color: #fff;
+
+    transform:
+        translateY(-3px);
+
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+
+.account-option:hover > i:first-child {
+    color: #fff;
+
+    background-color: #b31b21;
+
+    transform:
+        scale(1.08);
+}
+
+
+.account-option:hover .arrow {
+    color: #b31b21;
+
+    transform:
+        translateX(4px);
+}
+
+
+/* =========================================================
+   CERRAR SESIÓN
+========================================================= */
+
+.account-footer {
+    padding-top: 5px;
+
+    text-align: center;
+
+    animation:
+        contentAppear 0.6s ease-out 0.45s both;
+}
+
+
+.logout-button {
+    position: relative;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    padding: 10px 18px;
+
+    color: #b31b21;
+
+    background-color: transparent;
+
+    border: 1px solid rgba(179, 27, 33, 0.3);
+
+    border-radius: 9px;
+
+    font-family:
+        'Poppins',
+        sans-serif;
+
+    font-size: 0.75rem;
+
+    font-weight: 600;
+
+    text-decoration: none;
+
+    overflow: hidden;
+
+    transition:
+        color 0.25s ease,
+        background-color 0.25s ease,
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+
+.logout-button::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: -120%;
+
+    width: 65%;
+    height: 100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.35),
+            transparent
+        );
+
+    transform:
+        skewX(-20deg);
+
+    transition:
+        left 0.5s ease;
+}
+
+
+.logout-button:hover {
+    color: #fff;
+
+    background-color: #b31b21;
+
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 7px 16px rgba(179, 27, 33, 0.2);
+}
+
+
+.logout-button:hover::before {
+    left: 130%;
+}
+
+
+.logout-button:active {
+    transform:
+        translateY(0);
+}
+
+
+/* =========================================================
+   ANIMACIONES
+========================================================= */
+
+@keyframes accountAppear {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(30px)
+            scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+    }
+}
+
+
+@keyframes contentAppear {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0);
+    }
+}
+
+
+@keyframes accountGlow {
+
+    0%,
+    100% {
+        opacity: 0.55;
+
+        transform:
+            scaleX(0.85);
+    }
+
+    50% {
+        opacity: 1;
+
+        transform:
+            scaleX(1);
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .account-page {
+        padding: 30px 15px;
+    }
+
+
+    .account-card {
+        padding: 30px 20px;
+
+        border-radius: 24px;
+    }
+
+
+    .account-header {
+        gap: 13px;
+
+        margin-bottom: 25px;
+    }
+
+
+    .account-icon {
+        width: 55px;
+        height: 55px;
+
+        font-size: 21px;
+    }
+
+
+    .account-header h1 {
+        font-size: 1.5rem;
+    }
+
+
+    .info-item {
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 5px;
+    }
+
+
+    .info-value {
+        text-align: left;
+    }
+}

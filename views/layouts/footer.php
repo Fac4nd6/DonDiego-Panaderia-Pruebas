@@ -40,7 +40,7 @@
         <div class="footer-column">
             <h3>Explorar</h3>
 
-            <a href="../home/index.php">Hogar</a>
+            <a href="/DonDiego-Panaderia-Pruebas/views/home/index.php">Hogar</a>
             <a href="#">Blog</a>
             <a href="#">Contacto</a>
             <a href="#">Servicios</a>

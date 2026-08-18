@@ -4,6 +4,16 @@ $pageCss = "carrito.css";
 
 session_start();
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+if (!isset($_SESSION['usuario_id'])) {
+
+    header('Location: /DonDiego-Panaderia-Pruebas/views/usuarios/login.php');
+    exit;
+}
+
 require '../layouts/head.php';
 require '../layouts/header.php';
 
@@ -17,7 +27,6 @@ require '../layouts/header.php';
 if (!isset($_SESSION['carrito'])) {
 
     $_SESSION['carrito'] = [];
-
 }
 
 
@@ -55,15 +64,12 @@ if (
         if ($cantidad <= 0) {
 
             unset($_SESSION['carrito'][$productoId]);
-
         } else {
 
             if (isset($_SESSION['carrito'][$productoId])) {
 
                 $_SESSION['carrito'][$productoId]['cantidad'] = $cantidad;
-
             }
-
         }
     }
 
@@ -97,7 +103,6 @@ if (
     ) {
 
         unset($_SESSION['carrito'][$productoId]);
-
     }
 
 
@@ -124,7 +129,6 @@ foreach ($_SESSION['carrito'] as $item) {
     $total += $subtotal;
 
     $cantidadProductos += $item['cantidad'];
-
 }
 
 ?>
@@ -201,15 +205,15 @@ foreach ($_SESSION['carrito'] as $item) {
 
                                 <img
                                     src="<?= htmlspecialchars(
-                                        $item['imagen'],
-                                        ENT_QUOTES,
-                                        'UTF-8'
-                                    ) ?>"
+                                                $item['imagen'],
+                                                ENT_QUOTES,
+                                                'UTF-8'
+                                            ) ?>"
                                     alt="<?= htmlspecialchars(
-                                        $item['nombre'],
-                                        ENT_QUOTES,
-                                        'UTF-8'
-                                    ) ?>">
+                                                $item['nombre'],
+                                                ENT_QUOTES,
+                                                'UTF-8'
+                                            ) ?>">
 
                             </div>
 
@@ -230,11 +234,11 @@ foreach ($_SESSION['carrito'] as $item) {
                                 <p class="item-precio">
 
                                     $<?= number_format(
-                                        $item['precio'],
-                                        0,
-                                        ',',
-                                        '.'
-                                    ) ?>
+                                            $item['precio'],
+                                            0,
+                                            ',',
+                                            '.'
+                                        ) ?>
 
                                     por unidad
 
@@ -317,11 +321,11 @@ foreach ($_SESSION['carrito'] as $item) {
                                 <strong>
 
                                     $<?= number_format(
-                                        $item['precio'] * $item['cantidad'],
-                                        0,
-                                        ',',
-                                        '.'
-                                    ) ?>
+                                            $item['precio'] * $item['cantidad'],
+                                            0,
+                                            ',',
+                                            '.'
+                                        ) ?>
 
                                 </strong>
 
@@ -369,11 +373,11 @@ foreach ($_SESSION['carrito'] as $item) {
                         <strong>
 
                             $<?= number_format(
-                                $total,
-                                0,
-                                ',',
-                                '.'
-                            ) ?>
+                                    $total,
+                                    0,
+                                    ',',
+                                    '.'
+                                ) ?>
 
                         </strong>
 
