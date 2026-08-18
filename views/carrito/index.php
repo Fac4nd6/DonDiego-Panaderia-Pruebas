@@ -2,148 +2,20 @@
 
 $pageCss = "carrito.css";
 
-session_start();
-
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-if (!isset($_SESSION['usuario_id'])) {
-
-    header('Location: /DonDiego-Panaderia-Pruebas/views/usuarios/login.php');
-    exit;
-}
-
-require '../layouts/head.php';
-require '../layouts/header.php';
-
-
-/*
-|--------------------------------------------------------------------------
-| INICIALIZAR CARRITO
-|--------------------------------------------------------------------------
-*/
-
-if (!isset($_SESSION['carrito'])) {
-
-    $_SESSION['carrito'] = [];
-}
-
-
-/*
-|--------------------------------------------------------------------------
-| ACTUALIZAR CANTIDAD
-|--------------------------------------------------------------------------
-*/
-
-if (
-    $_SERVER['REQUEST_METHOD'] === 'POST' &&
-    isset($_POST['actualizar'])
-) {
-
-    $productoId = filter_input(
-        INPUT_POST,
-        'producto_id',
-        FILTER_VALIDATE_INT
-    );
-
-    $cantidad = filter_input(
-        INPUT_POST,
-        'cantidad',
-        FILTER_VALIDATE_INT
-    );
-
-
-    if (
-        $productoId !== false &&
-        $productoId !== null &&
-        $cantidad !== false &&
-        $cantidad !== null
-    ) {
-
-        if ($cantidad <= 0) {
-
-            unset($_SESSION['carrito'][$productoId]);
-        } else {
-
-            if (isset($_SESSION['carrito'][$productoId])) {
-
-                $_SESSION['carrito'][$productoId]['cantidad'] = $cantidad;
-            }
-        }
-    }
-
-
-    header('Location: carrito.php');
-    exit;
-}
-
-
-/*
-|--------------------------------------------------------------------------
-| ELIMINAR PRODUCTO
-|--------------------------------------------------------------------------
-*/
-
-if (
-    $_SERVER['REQUEST_METHOD'] === 'POST' &&
-    isset($_POST['eliminar'])
-) {
-
-    $productoId = filter_input(
-        INPUT_POST,
-        'producto_id',
-        FILTER_VALIDATE_INT
-    );
-
-
-    if (
-        $productoId !== false &&
-        $productoId !== null
-    ) {
-
-        unset($_SESSION['carrito'][$productoId]);
-    }
-
-
-    header('Location: carrito.php');
-    exit;
-}
-
-
-/*
-|--------------------------------------------------------------------------
-| CALCULAR TOTAL
-|--------------------------------------------------------------------------
-*/
-
-$total = 0;
-
-$cantidadProductos = 0;
-
-
-foreach ($_SESSION['carrito'] as $item) {
-
-    $subtotal = $item['precio'] * $item['cantidad'];
-
-    $total += $subtotal;
-
-    $cantidadProductos += $item['cantidad'];
-}
+require __DIR__ . '/../layouts/head.php';
+require __DIR__ . '/../layouts/header.php';
 
 ?>
 
 <body class="pagina-carrito">
 
-    <?php require '../layouts/header.php'; ?>
-
-
     <main class="carrito-container">
-
 
         <header class="carrito-header">
 
-            <h1>Tu carrito</h1>
+            <h1>
+                Tu carrito
+            </h1>
 
             <p>
                 Revisá tus productos antes de continuar.
@@ -152,10 +24,11 @@ foreach ($_SESSION['carrito'] as $item) {
         </header>
 
 
-        <?php if (empty($_SESSION['carrito'])): ?>
+        <?php if (empty($carrito)): ?>
 
-
-            <!-- CARRITO VACÍO -->
+            <!-- =====================================================
+                 CARRITO VACÍO
+            ====================================================== -->
 
             <section class="carrito-vacio">
 
@@ -172,11 +45,10 @@ foreach ($_SESSION['carrito'] as $item) {
                 </p>
 
                 <a
-                    href="../productos/index.php"
-                    class="btn-volver">
-
+                    href="/DonDiego-Panaderia-Pruebas/controllers/CatalogoController.php"
+                    class="btn-volver"
+                >
                     Ver catálogo
-
                 </a>
 
             </section>
@@ -185,124 +57,158 @@ foreach ($_SESSION['carrito'] as $item) {
         <?php else: ?>
 
 
-            <!-- CONTENIDO DEL CARRITO -->
+            <!-- =================================================
+                 CONTENIDO DEL CARRITO
+            ================================================== -->
 
             <section class="carrito-contenido">
 
 
-                <!-- PRODUCTOS -->
+                <!-- =================================================
+                     PRODUCTOS
+                ================================================== -->
 
                 <div class="carrito-productos">
 
 
-                    <?php foreach ($_SESSION['carrito'] as $item): ?>
-
+                    <?php foreach ($carrito as $item): ?>
 
                         <article class="carrito-item">
 
 
+                            <!-- IMAGEN -->
+
                             <div class="carrito-item-imagen">
 
-                                <img
-                                    src="<?= htmlspecialchars(
-                                                $item['imagen'],
-                                                ENT_QUOTES,
-                                                'UTF-8'
-                                            ) ?>"
-                                    alt="<?= htmlspecialchars(
-                                                $item['nombre'],
-                                                ENT_QUOTES,
-                                                'UTF-8'
-                                            ) ?>">
+                                <?php if (!empty($item['imagen'])): ?>
+
+                                    <img
+                                        src="/DonDiego-Panaderia-Pruebas/public/img/<?= htmlspecialchars(
+                                            $item['imagen'],
+                                            ENT_QUOTES,
+                                            'UTF-8'
+                                        ) ?>"
+                                        alt="<?= htmlspecialchars(
+                                            $item['nombre'],
+                                            ENT_QUOTES,
+                                            'UTF-8'
+                                        ) ?>"
+                                    >
+
+                                <?php else: ?>
+
+                                    <img
+                                        src="/DonDiego-Panaderia-Pruebas/public/img/logo.avif"
+                                        alt="Don Diego"
+                                    >
+
+                                <?php endif; ?>
 
                             </div>
 
 
+                            <!-- =================================================
+                                 INFORMACIÓN
+                            ================================================== -->
+
                             <div class="carrito-item-info">
 
                                 <h2>
-
                                     <?= htmlspecialchars(
                                         $item['nombre'],
                                         ENT_QUOTES,
                                         'UTF-8'
                                     ) ?>
-
                                 </h2>
 
 
                                 <p class="item-precio">
 
                                     $<?= number_format(
-                                            $item['precio'],
-                                            0,
-                                            ',',
-                                            '.'
-                                        ) ?>
+                                        $item['precio'],
+                                        0,
+                                        ',',
+                                        '.'
+                                    ) ?>
 
                                     por unidad
 
                                 </p>
 
 
-                                <!-- CANTIDAD -->
+                                <!-- =================================================
+                                     ACTUALIZAR CANTIDAD
+                                ================================================== -->
 
                                 <form
                                     method="POST"
-                                    action="carrito.php"
-                                    class="cantidad-form">
+                                    action="/DonDiego-Panaderia-Pruebas/controllers/CarritoController.php"
+                                    class="cantidad-form"
+                                >
+
+                                    <input
+                                        type="hidden"
+                                        name="accion"
+                                        value="actualizar"
+                                    >
 
                                     <input
                                         type="hidden"
                                         name="producto_id"
-                                        value="<?= $item['id'] ?>">
+                                        value="<?= (int) $item['id'] ?>"
+                                    >
 
-
-                                    <label for="cantidad-<?= $item['id'] ?>">
+                                    <label
+                                        for="cantidad-<?= (int) $item['id'] ?>"
+                                    >
                                         Cantidad
                                     </label>
 
-
                                     <input
                                         type="number"
-                                        id="cantidad-<?= $item['id'] ?>"
+                                        id="cantidad-<?= (int) $item['id'] ?>"
                                         name="cantidad"
-                                        value="<?= $item['cantidad'] ?>"
+                                        value="<?= (int) $item['cantidad'] ?>"
                                         min="1"
-                                        max="99">
-
+                                        max="99"
+                                    >
 
                                     <button
                                         type="submit"
-                                        name="actualizar"
-                                        class="btn-actualizar">
-
+                                        class="btn-actualizar"
+                                    >
                                         Actualizar
-
                                     </button>
 
                                 </form>
 
 
-                                <!-- ELIMINAR -->
+                                <!-- =================================================
+                                     ELIMINAR
+                                ================================================== -->
 
                                 <form
                                     method="POST"
-                                    action="carrito.php">
+                                    action="/DonDiego-Panaderia-Pruebas/controllers/CarritoController.php"
+                                >
+
+                                    <input
+                                        type="hidden"
+                                        name="accion"
+                                        value="eliminar"
+                                    >
 
                                     <input
                                         type="hidden"
                                         name="producto_id"
-                                        value="<?= $item['id'] ?>">
-
+                                        value="<?= (int) $item['id'] ?>"
+                                    >
 
                                     <button
                                         type="submit"
-                                        name="eliminar"
-                                        class="btn-eliminar">
-
+                                        class="btn-eliminar"
+                                    >
                                         Eliminar
-
                                     </button>
 
                                 </form>
@@ -310,7 +216,9 @@ foreach ($_SESSION['carrito'] as $item) {
                             </div>
 
 
-                            <!-- SUBTOTAL -->
+                            <!-- =================================================
+                                 SUBTOTAL
+                            ================================================== -->
 
                             <div class="carrito-item-subtotal">
 
@@ -321,11 +229,11 @@ foreach ($_SESSION['carrito'] as $item) {
                                 <strong>
 
                                     $<?= number_format(
-                                            $item['precio'] * $item['cantidad'],
-                                            0,
-                                            ',',
-                                            '.'
-                                        ) ?>
+                                        $item['precio'] * $item['cantidad'],
+                                        0,
+                                        ',',
+                                        '.'
+                                    ) ?>
 
                                 </strong>
 
@@ -334,17 +242,17 @@ foreach ($_SESSION['carrito'] as $item) {
 
                         </article>
 
-
                     <?php endforeach; ?>
 
 
                 </div>
 
 
-                <!-- RESUMEN -->
+                <!-- =================================================
+                     RESUMEN
+                ================================================== -->
 
                 <aside class="carrito-resumen">
-
 
                     <h2>
                         Resumen del pedido
@@ -358,7 +266,7 @@ foreach ($_SESSION['carrito'] as $item) {
                         </span>
 
                         <span>
-                            <?= $cantidadProductos ?>
+                            <?= (int) $cantidadProductos ?>
                         </span>
 
                     </div>
@@ -373,36 +281,35 @@ foreach ($_SESSION['carrito'] as $item) {
                         <strong>
 
                             $<?= number_format(
-                                    $total,
-                                    0,
-                                    ',',
-                                    '.'
-                                ) ?>
+                                $total,
+                                0,
+                                ',',
+                                '.'
+                            ) ?>
 
                         </strong>
 
                     </div>
 
 
-                    <!-- TODAVÍA NO CONFIRMA EL PEDIDO -->
+                    <!-- CONTINUAR PEDIDO -->
 
                     <a
                         href="#"
-                        class="btn-continuar">
-
+                        class="btn-continuar"
+                    >
                         Continuar con el pedido
-
                     </a>
 
+
+                    <!-- SEGUIR COMPRANDO -->
 
                     <a
-                        href="../productos/catalogo.php"
-                        class="btn-seguir-comprando">
-
+                        href="/DonDiego-Panaderia-Pruebas/controllers/CatalogoController.php"
+                        class="btn-seguir-comprando"
+                    >
                         ← Seguir comprando
-
                     </a>
-
 
                 </aside>
 
@@ -416,8 +323,7 @@ foreach ($_SESSION['carrito'] as $item) {
     </main>
 
 
-    <?php require '../layouts/footer.php'; ?>
-
+    <?php require __DIR__ . '/../layouts/footer.php'; ?>
 
 </body>
 

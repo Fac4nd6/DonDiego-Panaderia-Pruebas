@@ -7,8 +7,7 @@
 
     <meta
         name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+        content="width=device-width, initial-scale=1.0">
 
     <title>Don Diego</title>
 
@@ -22,8 +21,7 @@
 
     <link
         href="https://fonts.googleapis.com/css2?family=Sansita+Swashed:wght@300..900&display=swap"
-        rel="stylesheet"
-    >
+        rel="stylesheet">
 
 
     <!-- =====================================================
@@ -32,13 +30,11 @@
 
     <link
         rel="stylesheet"
-        href="/DonDiego-Panaderia-Pruebas/public/css/variable.css"
-    >
+        href="/DonDiego-Panaderia-Pruebas/public/css/variable.css">
 
     <link
         rel="stylesheet"
-        href="/DonDiego-Panaderia-Pruebas/public/css/style.css"
-    >
+        href="/DonDiego-Panaderia-Pruebas/public/css/style.css">
 
 
     <!-- =====================================================
@@ -47,8 +43,7 @@
 
     <link
         rel="stylesheet"
-        href="/DonDiego-Panaderia-Pruebas/public/css/header.css"
-    >
+        href="/DonDiego-Panaderia-Pruebas/public/css/header.css">
 
 
     <!-- =====================================================
@@ -57,10 +52,21 @@
 
     <?php if (isset($pageCss)): ?>
 
-        <link
-            rel="stylesheet"
-            href="/DonDiego-Panaderia-Pruebas/public/css/<?= $pageCss ?>"
-        >
+        <?php
+
+        if (!is_array($pageCss)) {
+            $pageCss = [$pageCss];
+        }
+
+        ?>
+
+        <?php foreach ($pageCss as $css): ?>
+
+            <link
+                rel="stylesheet"
+                href="/DonDiego-Panaderia-Pruebas/public/css/<?= htmlspecialchars($css) ?>">
+
+        <?php endforeach; ?>
 
     <?php endif; ?>
 
@@ -71,8 +77,7 @@
 
     <link
         rel="stylesheet"
-        href="/DonDiego-Panaderia-Pruebas/public/css/footer.css"
-    >
+        href="/DonDiego-Panaderia-Pruebas/public/css/footer.css">
 
 
     <!-- =====================================================
@@ -81,7 +86,6 @@
 
     <link
         rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-    >
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 </head>
