@@ -1,40 +1,114 @@
-
-/* Sección de héroe */
+/* =========================================================
+   HERO
+========================================================= */
 
 .hero {
-    min-height: 500px;
+    min-height: 100vh;
+    height: 100vh;
+    box-sizing: border-box;
+
     display: flex;
     align-items: center;
     justify-content: space-between;
 
-    background-color: var(--color-primary);
-    padding: 60px 8%;
-
+    position: relative;
     overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 80% 50%,
+            rgba(255, 255, 255, 0.12),
+            transparent 30%
+        ),
+        linear-gradient(
+            135deg,
+            var(--color-primary),
+            #b51f2b
+        );
+
+    padding: 60px 8%;
 }
 
+
+/* ---------- Decoración ---------- */
+
+.hero::before {
+    content: "";
+
+    position: absolute;
+
+    width: 450px;
+    height: 450px;
+
+    border: 2px solid rgba(255, 255, 255, 0.12);
+    border-radius: 50%;
+
+    right: -120px;
+    top: 50%;
+
+    transform: translateY(-50%);
+}
+
+.hero::after {
+    content: "";
+
+    position: absolute;
+
+    width: 200px;
+    height: 200px;
+
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 50%;
+
+    right: 25%;
+    top: 15%;
+}
+
+
+/* ---------- Contenido ---------- */
+
 .hero-content {
-    width: 50%;
+    width: 60%;
+
+    position: relative;
+    z-index: 2;
+
+    animation: heroText 0.9s ease-out;
 }
 
 .hero-content h1 {
     font-family: var(--font-title);
-    font-size: 100px;
+
+    font-size: clamp(60px, 8vw, 100px);
+
+    line-height: 0.95;
+
     color: var(--color-background);
-    margin-bottom: 10px;
+
+    margin-bottom: 20px;
+
+    text-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 .hero-content p {
     font-family: var(--font-body);
+
     font-size: 20px;
+
+    max-width: 600px;
+
     color: var(--color-background);
-    margin-bottom: 30px;
+
+    margin-bottom: 35px;
 }
+
+
+/* ---------- Botón ---------- */
 
 .hero-button {
     display: inline-block;
 
-    padding: 14px 28px;
+    padding: 15px 32px;
 
     background-color: var(--color-dark);
     color: var(--color-background);
@@ -43,244 +117,1137 @@
     font-weight: bold;
 
     border-radius: var(--radius);
+
+    box-shadow: 0 8px 0 rgba(0, 0, 0, 0.2);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        background-color 0.2s ease;
 }
 
 .hero-button:hover {
     background-color: var(--color-secondary);
-    color: var(--color-background);
+
+    transform: translateY(-4px);
+
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
 }
 
+.hero-button:active {
+    transform: translateY(2px);
+
+    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.2);
+}
+
+
+/* ---------- Imagen ---------- */
+
 .hero-image {
-    width: 45%;
+    width: 25%;
+
     display: flex;
     justify-content: center;
     align-items: center;
+
+    position: relative;
+    z-index: 2;
+
+    animation: heroImage 1s ease-out;
 }
 
 .hero-image img {
     width: 100%;
-    max-width: 500px;
+    max-width: 380px;
     height: auto;
+
     object-fit: contain;
+
+    clip-path: polygon(
+        0 0,
+        100% 10%,
+        100% 100%,
+        0 90%
+    );
+
+    filter: drop-shadow(
+        0 25px 25px rgba(0, 0, 0, 0.25)
+    );
+
+    animation: floating 4s ease-in-out infinite;
 }
 
-/* Sección de productos destacados */
+
+/* =========================================================
+   PRODUCTOS
+========================================================= */
+
+.productos {
+    position: relative;
+
+    min-height: 100vh;
+
+    box-sizing: border-box;
+
+    padding: 45px 0 35px;
+
+    margin: 0;
+
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+
+/* ---------- Decoración ---------- */
+
+.productos::before {
+    content: "";
+
+    position: absolute;
+
+    width: 350px;
+    height: 350px;
+
+    border: 2px solid rgba(179, 27, 33, 0.07);
+
+    border-radius: 50%;
+
+    left: -180px;
+    top: 20px;
+
+    z-index: 0;
+}
+
+.productos::after {
+    content: "";
+
+    position: absolute;
+
+    width: 180px;
+    height: 180px;
+
+    background: rgba(179, 27, 33, 0.04);
+
+    border-radius: 50%;
+
+    right: 8%;
+    bottom: 20px;
+
+    z-index: 0;
+}
+
+
+/* ---------- Título ---------- */
+
+h2 {
+    position: relative;
+    z-index: 1;
+
+    width: 100%;
+
+    font-size: 34px;
+
+    text-align: center;
+
+    margin: 0 0 25px;
+
+    font-family: var(--font-main);
+}
+
+h2::after {
+    content: "";
+
+    display: block;
+
+    width: 55px;
+    height: 4px;
+
+    margin: 10px auto 0;
+
+    background-color: var(--color-primary);
+
+    border-radius: 10px;
+}
+
+
+/* ---------- Grid ---------- */
 
 .productos-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 30px;
+    position: relative;
+    z-index: 1;
 
-    margin: 40px 8%;
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 25px;
+
+    margin: 0 8%;
 }
+
+
+/* ---------- Card ---------- */
 
 .producto-card {
-    background: white;
-    overflow: hidden;
-    border-radius: var(--radius-img);
+    position: relative;
 
-    /* Separación interna */
-    padding-bottom: 10px;
+    display: block;
+
+    overflow: hidden;
+
+    height: 280px;
+
+    border-radius: 22px;
+
+    background: #fff;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.10);
+
+    transition:
+        transform 0.35s ease,
+        box-shadow 0.35s ease;
 }
+
+.producto-card:hover {
+    transform: translateY(-8px);
+
+    box-shadow:
+        0 20px 40px rgba(0, 0, 0, 0.18);
+}
+
+
+/* ---------- Imagen ---------- */
 
 .producto-card img {
     width: 100%;
-    aspect-ratio: 1 / 1;
+    height: 100%;
+
     object-fit: cover;
 
     display: block;
 
+    transition: transform 0.6s ease;
 }
 
-.productos{
-
-    margin-top: 50px;
-    margin-bottom: 50px;
+.producto-card:hover img {
+    transform: scale(1.08);
 }
 
+
+/* ---------- Capa de interacción ---------- */
+
+.producto-card::before {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 3;
+
+    background: rgba(255, 255, 255, 0.12);
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    transition: opacity 0.3s ease;
+}
+
+.producto-card:hover::before {
+    opacity: 1;
+}
+
+
+/* ---------- Degradado ---------- */
+
+.producto-card::after {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        linear-gradient(
+            to top,
+            rgba(0, 0, 0, 0.78) 0%,
+            rgba(0, 0, 0, 0.25) 45%,
+            rgba(0, 0, 0, 0.05) 100%
+        );
+
+    pointer-events: none;
+}
+
+
+/* ---------- Información ---------- */
 
 .producto-info {
-    padding: 12px 15px;
-    
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    z-index: 2;
+
+    padding: 18px;
+
+    color: white;
+
+    background: transparent;
+}
+
+.producto-info::before {
+    content: "";
+
+    display: block;
+
+    width: 30px;
+    height: 3px;
+
+    margin-bottom: 8px;
+
+    background-color: var(--color-primary);
+
+    border-radius: 5px;
+}
+
+.producto-info h3 {
+    margin: 0 0 4px;
+
+    font-size: 20px;
+
+    color: white;
+}
+
+.producto-info p {
+    margin: 0;
+
+    font-size: 14px;
+
+    font-weight: normal;
+
+    color: rgba(255, 255, 255, 0.85);
 }
 
 
+/* ---------- Ver producto ---------- */
+
+.ver-producto {
+    position: absolute;
+
+    z-index: 4;
+
+    left: 50%;
+    top: 50%;
+
+    transform: translate(-50%, -35%);
+
+    padding: 11px 22px;
+
+    border: 2px solid white;
+
+    border-radius: 8px;
+
+    color: white;
+
+    font-size: 14px;
+
+    font-weight: bold;
+
+    white-space: nowrap;
+
+    opacity: 0;
+
+    transition:
+        opacity 0.3s ease,
+        transform 0.3s ease;
+}
+
+.producto-card:hover .ver-producto {
+    opacity: 1;
+
+    transform: translate(-50%, -50%);
+}
 
 
-/* Botón de catálogo completo */
+/* ---------- Botón catálogo ---------- */
 
 .catalogo-button {
-    text-align: center;
-    display: block;
-    width: 90%;
-    height: 75px;
-    margin: 40px auto 0;
+    position: relative;
 
-    padding: 14px 28px;
+    z-index: 2;
+
+    display: block;
+
+    width: fit-content;
+    min-width: 210px;
+
+    margin: 25px auto 0;
+
+    padding: 13px 28px;
+
+    text-align: center;
 
     background-color: var(--color-primary);
     color: var(--color-background);
 
     text-decoration: none;
+
     font-weight: bold;
 
     border-radius: var(--radius);
+
+    box-shadow:
+        0 6px 0 rgba(0, 0, 0, 0.15);
+
+    transition:
+        transform 0.25s ease,
+        background-color 0.25s ease,
+        box-shadow 0.25s ease;
 }
 
 .catalogo-button:hover {
     background-color: var(--color-secondary);
+
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 9px 16px rgba(0, 0, 0, 0.15);
 }
 
 
-h2{
-    font-size: 32px;
-    text-align: center;
-    margin-bottom: 30px;
-    width: 100%;
-    font-family: var(--font-main);
-}   
+/* =========================================================
+   CONÓCENOS
+========================================================= */
 
-h3,p {
-    margin: 0;
-    font-size: 25px;
-    font-weight: bold;
-}
-.conocenos{
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../img/dondiego-concoenos.jpeg');
-    height: 600px;
+.conocenos {
+    position: relative;
+
+    height: 100vh;
+    min-height: 600px;
+
+    margin-top: 60px;
 
     display: flex;
     align-items: center;
     justify-content: center;
-}
-.informacion {
-    width: 80%;
-    height: 90%;
-    background-color: var(--color-background);
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-around;
-    padding: 30px;
+
+    padding: 60px 8%;
+
     box-sizing: border-box;
-    border-radius: var(--radius);
-}
-.mapa{
-    width: 250px;
-    height: 350px;
-    border: 0;
 
-}
-.local{
-    width: 45%;
-    height: auto;
-}
+    isolation: isolate;
 
-.footer {
-    background-color: var(--color-primary);
-    color: var(--color-background);
-    padding: 30px 8% 20px;
-}
+    background-image:
+        linear-gradient(
+            rgba(0, 0, 0, 0.55),
+            rgba(0, 0, 0, 0.55)
+        ),
+        url('../img/dondiego-local.jpg');
 
-/* Parte superior */
-.footer-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    background-size: cover;
+    background-position: center;
+
+    background-attachment: fixed;
+
+    overflow: hidden;
 }
 
-.footer-logo img {
-    width: 160px;
-    height: auto;
+
+/* ---------- Decoración animada ---------- */
+
+.conocenos::before {
+    content: "";
+
+    position: absolute;
+
+    width: 500px;
+    height: 500px;
+
+    border: 2px solid rgba(255, 255, 255, 0.12);
+
+    border-radius: 50%;
+
+    left: -250px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    animation:
+        circuloGrande 12s ease-in-out infinite alternate;
 }
 
-.footer-social {
-    display: flex;
-    align-items: center;
-    gap: 20px;
+.conocenos::after {
+    content: "";
+
+    position: absolute;
+
+    width: 220px;
+    height: 220px;
+
+    background: rgba(255, 255, 255, 0.06);
+
+    border-radius: 50%;
+
+    right: 5%;
+    top: 10%;
+
+    animation:
+        circuloPequeno 8s ease-in-out infinite alternate,
+        brilloFondo 6s ease-in-out infinite;
 }
 
-.footer-social span {
-    font-weight: bold;
-}
 
-.social-links {
-    display: flex;
-    gap: 15px;
-}
+/* ---------- Contenido ---------- */
 
-.social-links a {
-    color: var(--color-background);
-    text-decoration: none;
-    font-size: 14px;
-}
+.conocenos-contenido {
+    position: relative;
 
-/* Línea */
-.footer hr {
-    border: none;
-    border-top: 1px solid rgba(255, 255, 255, 0.25);
-    margin: 10px 0 25px;
-}
+    z-index: 3;
 
-/* Columnas */
-.footer-content {
+    width: 100%;
+    max-width: 1100px;
+
     display: grid;
-    grid-template-columns: 1fr 1fr 1.5fr;
-    gap: 50px;
+
+    grid-template-columns: 1fr 1fr;
+
+    align-items: center;
+
+    gap: 70px;
 }
 
-.footer-column h3 {
+
+/* ---------- Texto ---------- */
+
+.info-texto {
+    color: white;
+
+    max-width: 500px;
+
+    animation:
+        conocenosTexto 0.9s ease-out both;
+}
+
+.mini-titulo {
+    display: inline-block;
+
     margin-bottom: 12px;
+
+    color: white;
+
+    font-size: 14px;
+
+    font-weight: bold;
+
+    letter-spacing: 3px;
+
+    opacity: 0;
+
+    animation:
+        aparecer 0.6s ease-out 0.2s forwards;
+}
+
+.info-texto h2 {
+    color: white;
+
+    text-align: left;
+
+    font-size: clamp(38px, 5vw, 58px);
+
+    margin: 0 0 25px;
+
+    font-family: var(--font-main);
+
+    opacity: 0;
+
+    animation:
+        aparecer 0.7s ease-out 0.35s forwards;
+}
+
+.info-texto h2::after {
+    margin: 12px 0 0;
+
+    background-color: white;
+}
+
+.info-descripcion {
+    color: rgba(255, 255, 255, 0.9);
+
     font-size: 18px;
+
+    line-height: 1.6;
+
+    margin-bottom: 30px;
+
+    max-width: 450px;
+
+    opacity: 0;
+
+    animation:
+        aparecer 0.7s ease-out 0.5s forwards;
 }
 
-.footer-column p {
-    margin: 6px 0;
-    font-size: 14px;
-}
 
-.footer-column a {
-    display: block;
-    color: var(--color-background);
-    text-decoration: none;
-    margin: 7px 0;
-    font-size: 14px;
-}
+/* ---------- Datos ---------- */
 
-.footer-column a:hover {
-    text-decoration: underline;
-}
-
-/* Noticias */
-.news-item {
+.info-datos {
     display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
+
+    flex-direction: column;
+
+    gap: 15px;
+
+    opacity: 0;
+
+    animation:
+        aparecer 0.7s ease-out 0.65s forwards;
 }
 
-.news-item img {
-    width: 48px;
-    height: 40px;
-    object-fit: cover;
+.info-dato {
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    color: white;
+
+    transition:
+        transform 0.25s ease,
+        background-color 0.25s ease;
 }
 
-.news-item small {
-    font-size: 9px;
-    display: block;
+.info-dato:hover {
+    transform: translateX(8px);
 }
 
-.news-item p {
-    margin: 2px 0;
-    font-size: 12px;
+.info-dato span {
+    width: 42px;
+    height: 42px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(255, 255, 255, 0.15);
+
+    border: 1px solid rgba(255, 255, 255, 0.25);
+
+    border-radius: 50%;
+
+    font-size: 17px;
+
+    backdrop-filter: blur(5px);
+
+    transition:
+        transform 0.3s ease,
+        background-color 0.3s ease;
 }
 
-/* Copyright */
-.footer-bottom {
-    text-align: center;
-    margin-top: 35px;
+.info-dato:hover span {
+    transform: scale(1.12) rotate(-5deg);
+
+    background: rgba(255, 255, 255, 0.25);
 }
 
-.footer-bottom p {
+.info-dato p {
     margin: 0;
+
+    color: rgba(255, 255, 255, 0.95);
+
+    font-size: 16px;
+}
+
+
+/* ---------- Botón ---------- */
+
+.conocenos-button {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    margin-top: 30px;
+
+    padding: 13px 22px;
+
+    background: white;
+    color: var(--color-primary);
+
+    text-decoration: none;
+
+    font-weight: bold;
+
+    border-radius: 10px;
+
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.15);
+
+    opacity: 0;
+
+    animation:
+        aparecer 0.7s ease-out 0.8s forwards;
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.conocenos-button span {
+    font-size: 20px;
+
+    transition:
+        transform 0.25s ease;
+}
+
+.conocenos-button:hover {
+    transform: translateY(-4px);
+
+    box-shadow:
+        0 14px 30px rgba(0, 0, 0, 0.25);
+}
+
+.conocenos-button:hover span {
+    transform: translateX(5px);
+}
+
+
+/* ---------- Mapa ---------- */
+
+.mapa-container {
+    position: relative;
+
+    width: 100%;
+    max-width: 470px;
+
+    padding: 10px;
+
+    background: rgba(255, 255, 255, 0.95);
+
+    border-radius: 24px;
+
+    box-sizing: border-box;
+
+    box-shadow:
+        0 25px 60px rgba(0, 0, 0, 0.35);
+
+    transition:
+        transform 0.35s ease,
+        box-shadow 0.35s ease;
+
+    animation:
+        mapaEntrada 1s ease-out 0.2s both;
+}
+
+.mapa-container:hover {
+    transform: translateY(-6px);
+
+    box-shadow:
+        0 30px 70px rgba(0, 0, 0, 0.45);
+}
+
+.mapa {
+    display: block;
+
+    width: 100%;
+    height: 370px;
+
+    border: none;
+
+    border-radius: 17px;
+}
+
+
+/* ---------- Etiqueta mapa ---------- */
+
+.mapa-label {
+    position: absolute;
+
+    left: 25px;
+    bottom: 25px;
+
+    padding: 10px 16px;
+
+    background: var(--color-primary);
+
+    color: white;
+
+    border-radius: 8px;
+
     font-size: 13px;
+
+    font-weight: bold;
+
+    box-shadow:
+        0 5px 15px rgba(0, 0, 0, 0.25);
+}
+
+
+/* =========================================================
+   SEPARADOR
+========================================================= */
+
+.separador {
+    border: none;
+
+    height: 4px;
+
+    width: 80%;
+
+    margin: 60px auto;
+
+    border-radius: 3px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            var(--color-primary),
+            transparent
+        );
+}
+
+
+/* =========================================================
+   ANIMACIONES
+========================================================= */
+
+/* ---------- Hero ---------- */
+
+@keyframes heroText {
+    from {
+        opacity: 0;
+        transform: translateX(-40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes heroImage {
+    from {
+        opacity: 0;
+        transform: translateX(40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes floating {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-12px);
+    }
+}
+
+
+/* ---------- Conócenos ---------- */
+
+@keyframes conocenosTexto {
+    from {
+        opacity: 0;
+        transform: translateX(-45px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes mapaEntrada {
+    from {
+        opacity: 0;
+        transform: translateX(45px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes aparecer {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* ---------- Círculos ---------- */
+
+@keyframes circuloGrande {
+    0% {
+        transform:
+            translateY(-50%)
+            translateX(0)
+            rotate(0deg);
+    }
+
+    50% {
+        transform:
+            translateY(-50%)
+            translateX(35px)
+            rotate(8deg);
+    }
+
+    100% {
+        transform:
+            translateY(-50%)
+            translateX(-15px)
+            rotate(-5deg);
+    }
+}
+
+@keyframes circuloPequeno {
+    0% {
+        transform:
+            translate(0, 0)
+            scale(1);
+    }
+
+    50% {
+        transform:
+            translate(-25px, 30px)
+            scale(1.08);
+    }
+
+    100% {
+        transform:
+            translate(15px, -20px)
+            scale(0.95);
+    }
+}
+
+@keyframes brilloFondo {
+    0% {
+        filter: blur(0);
+        opacity: 0.5;
+    }
+
+    50% {
+        filter: blur(3px);
+        opacity: 0.8;
+    }
+
+    100% {
+        filter: blur(0);
+        opacity: 0.5;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE — TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+
+    /* ---------- Hero ---------- */
+
+    .hero {
+        flex-direction: column;
+
+        text-align: center;
+
+        padding-top: 100px;
+    }
+
+    .hero-content {
+        width: 100%;
+    }
+
+    .hero-image {
+        width: 60%;
+
+        margin-top: 50px;
+    }
+
+
+    /* ---------- Productos ---------- */
+
+    .productos {
+        min-height: auto;
+
+        padding: 60px 0;
+    }
+
+    .productos-grid {
+        grid-template-columns: repeat(2, 1fr);
+
+        margin: 0 6%;
+    }
+
+
+    /* ---------- Conócenos ---------- */
+
+    .conocenos {
+        min-height: auto;
+
+        height: auto;
+
+        padding: 80px 6%;
+
+        background-attachment: scroll;
+    }
+
+    .conocenos-contenido {
+        grid-template-columns: 1fr;
+
+        gap: 50px;
+
+        max-width: 650px;
+    }
+
+    .info-texto {
+        max-width: 100%;
+
+        text-align: center;
+    }
+
+    .info-texto h2 {
+        text-align: center;
+    }
+
+    .info-texto h2::after {
+        margin: 12px auto 0;
+    }
+
+    .info-descripcion {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .info-datos {
+        align-items: center;
+    }
+
+    .info-dato {
+        width: 100%;
+
+        max-width: 400px;
+    }
+
+    .mapa-container {
+        max-width: 600px;
+
+        margin: 0 auto;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE — MÓVIL
+========================================================= */
+
+@media (max-width: 600px) {
+
+    /* ---------- Hero ---------- */
+
+    .hero-content h1 {
+        font-size: 55px;
+    }
+
+    .hero-content p {
+        font-size: 17px;
+    }
+
+    .hero-image {
+        width: 80%;
+    }
+
+
+    /* ---------- Productos ---------- */
+
+    .productos {
+        padding: 50px 0 40px;
+    }
+
+    h2 {
+        font-size: 30px;
+    }
+
+    .productos-grid {
+        grid-template-columns: 1fr;
+
+        margin: 0 7%;
+    }
+
+    .producto-card {
+        height: 260px;
+    }
+
+    .catalogo-button {
+        margin-top: 25px;
+    }
+
+
+    /* ---------- Conócenos ---------- */
+
+    .conocenos {
+        padding: 65px 6%;
+    }
+
+    .conocenos-contenido {
+        gap: 40px;
+    }
+
+    .info-texto h2 {
+        font-size: 36px;
+    }
+
+    .info-descripcion {
+        font-size: 16px;
+    }
+
+    .info-dato p {
+        font-size: 14px;
+    }
+
+    .mapa-container {
+        padding: 7px;
+
+        border-radius: 18px;
+    }
+
+    .mapa {
+        height: 300px;
+
+        border-radius: 13px;
+    }
+
+    .mapa-label {
+        left: 18px;
+        bottom: 18px;
+    }
 }

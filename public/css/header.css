@@ -1,0 +1,500 @@
+/* =========================================================
+   HEADER / NAVBAR
+========================================================= */
+
+.header {
+    position: absolute;
+
+    top: 15px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: 90%;
+    max-width: 1400px;
+
+    z-index: 10;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   NAVBAR
+========================================================= */
+
+.navbar {
+    width: 100%;
+
+    padding: 8px 20px;
+
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+
+    gap: 35px;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   LOGO
+========================================================= */
+
+.logo {
+    display: flex;
+
+    align-items: center;
+
+    flex-shrink: 0;
+}
+
+.logo img {
+    width: 70px;
+    height: 70px;
+
+    object-fit: contain;
+
+    transition:
+        transform 0.3s ease;
+}
+
+.logo:hover img {
+    transform:
+        scale(1.05);
+}
+
+
+/* =========================================================
+   MENÚ
+========================================================= */
+
+.nav-links {
+    display: flex;
+
+    align-items: center;
+
+    gap: 30px;
+
+    min-width: 0;
+}
+
+.nav-links a {
+    position: relative;
+
+    color:
+        var(--color-background);
+
+    text-decoration: none;
+
+    font-family:
+        var(--font-body);
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    padding:
+        8px 0;
+
+    white-space: nowrap;
+
+    transition:
+        color 0.25s ease;
+}
+
+.nav-links a:hover {
+    color:
+        var(--color-background);
+}
+
+
+/* =========================================================
+   LÍNEA DEBAJO DEL MENÚ
+========================================================= */
+
+.nav-links a::after {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    bottom: 0;
+
+    width: 0;
+    height: 2px;
+
+    background-color:
+        var(--color-background);
+
+    transition:
+        width 0.25s ease;
+}
+
+.nav-links a:hover::after {
+    width: 100%;
+}
+
+
+/* =========================================================
+   ACCIONES
+========================================================= */
+
+.nav-actions {
+    margin-left: auto;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    flex-shrink: 0;
+}
+
+/* =========================================================
+   CARRITO
+========================================================= */
+
+.cart-button {
+    position: relative;
+
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    color:
+        var(--color-background);
+
+    text-decoration: none;
+
+    font-size: 19px;
+
+    flex-shrink: 0;
+
+    transition:
+        background-color 0.3s ease,
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.cart-button:hover {
+    background-color:
+        rgba(255, 255, 255, 0.14);
+
+    transform:
+        translateY(-3px);
+
+    box-shadow:
+        0 8px 18px rgba(0, 0, 0, 0.12);
+}
+
+
+/* Movimiento del icono */
+
+.cart-button i {
+    transition:
+        transform 0.3s ease;
+}
+
+.cart-button:hover i {
+    transform:
+        scale(1.15) rotate(-6deg);
+}
+
+
+/* =========================================================
+   CONTADOR DEL CARRITO
+========================================================= */
+
+.cart-count {
+    position: absolute;
+
+    top: 0;
+    right: -2px;
+
+    width: 17px;
+    height: 17px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background-color:
+        var(--color-dark);
+
+    color: white;
+
+    font-size: 10px;
+
+    font-weight: bold;
+
+    border-radius: 50%;
+
+    transition:
+        transform 0.3s ease;
+}
+
+
+/* El contador también reacciona */
+
+.cart-button:hover .cart-count {
+    transform:
+        scale(1.2);
+}
+
+/* =========================================================
+   BOTÓN INICIAR SESIÓN
+========================================================= */
+
+.login-button {
+    position: relative;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 10px 18px;
+
+    color: var(--color-primary);
+    background-color: white;
+
+    border: 2px solid var(--color-primary);
+    border-radius: 10px;
+
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        background-color 0.25s ease,
+        color 0.25s ease;
+
+    overflow: hidden;
+}
+
+
+/* Brillo que pasa por encima */
+.login-button::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: -120%;
+
+    width: 70%;
+    height: 100%;
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.6),
+        transparent
+    );
+
+    transform: skewX(-20deg);
+
+    transition: left 0.5s ease;
+}
+
+
+/* Hover */
+.login-button:hover {
+    color: white;
+    background-color: var(--color-primary);
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+
+/* Animación del brillo */
+.login-button:hover::before {
+    left: 130%;
+}
+
+
+/* Click */
+.login-button:active {
+    transform: translateY(0);
+    box-shadow:
+        0 3px 8px rgba(0, 0, 0, 0.12);
+}
+
+
+/* =========================================================
+   BOTÓN PEDIR AHORA
+========================================================= */
+
+.nav-button {
+    position: relative;
+
+    padding:
+        11px 20px;
+
+    background-color:
+        var(--color-dark);
+
+    color:
+        var(--color-background);
+
+    text-decoration: none;
+
+    font-family:
+        var(--font-body);
+
+    font-size: 14px;
+
+    font-weight: bold;
+
+    border-radius:
+        var(--radius);
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 5px 0 rgba(0, 0, 0, 0.18);
+
+    transition:
+        transform 0.25s ease,
+        background-color 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+
+/* Brillo */
+
+.nav-button::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: -120%;
+
+    width: 65%;
+    height: 100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.25),
+            transparent
+        );
+
+    transform:
+        skewX(-20deg);
+
+    transition:
+        left 0.5s ease;
+}
+
+
+/* Hover */
+
+.nav-button:hover {
+    background-color:
+        var(--color-secondary);
+
+    transform:
+        translateY(-3px);
+
+    box-shadow:
+        0 8px 0 rgba(0, 0, 0, 0.14),
+        0 10px 20px rgba(0, 0, 0, 0.12);
+}
+
+
+/* Brillo */
+
+.nav-button:hover::before {
+    left: 130%;
+}
+
+
+/* Click */
+
+.nav-button:active {
+    transform:
+        translateY(1px);
+
+    box-shadow:
+        0 3px 0 rgba(0, 0, 0, 0.15);
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .header {
+        width: 94%;
+    }
+
+    .navbar {
+        gap: 20px;
+    }
+
+    .nav-links {
+        gap: 18px;
+    }
+
+    .nav-links a {
+        font-size: 14px;
+    }
+
+    .nav-button {
+        padding:
+            10px 15px;
+    }
+}
+
+
+@media (max-width: 700px) {
+
+    .header {
+        width: 95%;
+    }
+
+    .navbar {
+        gap: 12px;
+
+        padding:
+            8px 12px;
+    }
+
+    .logo img {
+        width: 55px;
+        height: 55px;
+    }
+
+    .nav-links {
+        gap: 12px;
+    }
+
+    .nav-links a {
+        font-size: 13px;
+    }
+
+    .nav-button {
+        display: none;
+    }
+}

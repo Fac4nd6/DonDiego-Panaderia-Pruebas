@@ -4,7 +4,7 @@
     <div class="footer-top">
 
         <div class="footer-logo">
-            <img src="/DonDiego-Panaderia-Pruebas/public/img/logo.png"
+            <img src="/DonDiego-Panaderia-Pruebas/public/img/logo-don2.png"
                  alt="Don Diego Panadería y Confitería">
         </div>
 
@@ -12,10 +12,10 @@
             <span>Nuestras redes</span>
 
             <div class="social-links">
-                <a href="#" aria-label="Facebook">Facebook</a>
+                <a href="https://www.facebook.com/dondiego.uy/?locale=es_LA" aria-label="Facebook" target="_blank">Facebook</a>
                 <a href="#" aria-label="Pinterest">Pinterest</a>
-                <a href="#" aria-label="WhatsApp">WhatsApp</a>
-                <a href="#" aria-label="Instagram">Instagram</a>
+                <a href="https://wa.me/095005706" aria-label="WhatsApp" target="_blank">WhatsApp</a>
+                <a href="https://www.instagram.com/dondiego.uy/?hl=es" target="_blank" aria-label="Instagram">Instagram</a>
             </div>
         </div>
 
@@ -40,7 +40,7 @@
         <div class="footer-column">
             <h3>Explorar</h3>
 
-            <a href="#">Hogar</a>
+            <a href="/DonDiego-Panaderia-Pruebas/views/home/index.php">Hogar</a>
             <a href="#">Blog</a>
             <a href="#">Contacto</a>
             <a href="#">Servicios</a>
@@ -78,9 +78,8 @@
 
     </div>
 
-    <!-- Copyright -->
     <div class="footer-bottom">
-        <p>© 2026 [Empresa], Todos Los Derechos Reservados</p>
+        <p>© 2026 [ReptiTech], Todos Los Derechos Reservados</p>
     </div>
 
 </footer>

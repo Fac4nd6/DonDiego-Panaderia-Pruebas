@@ -1,0 +1,751 @@
+/* =========================================================
+   CARRITO
+========================================================= */
+
+/* ---------- HEADER DEL CARRITO ---------- */
+
+.pagina-carrito .header {
+    background-color: var(--color-primary);
+
+    /* Forma */
+    border-radius: 0 0 18px 18px;
+
+    /* Profundidad */
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.12);
+
+    /* Animación */
+    animation: headerCarritoEntrada 0.7s ease-out both;
+}
+
+
+/* ---------- CONTENEDOR ---------- */
+
+.carrito-container {
+    min-height: 100vh;
+
+    padding: 130px 8% 80px;
+
+    box-sizing: border-box;
+
+    background:
+        radial-gradient(
+            circle at 10% 20%,
+            rgba(179, 27, 33, 0.05),
+            transparent 30%
+        ),
+        var(--color-background);
+
+    /* ANIMACIÓN DE ENTRADA */
+    animation: carritoEntrada 0.7s ease-out both;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.carrito-header {
+    text-align: center;
+
+    margin-bottom: 50px;
+
+    /* ANIMACIÓN */
+    animation: carritoHeaderEntrada 0.8s ease-out 0.1s both;
+}
+
+.carrito-header h1 {
+    font-family: var(--font-main);
+
+    font-size: clamp(40px, 6vw, 64px);
+
+    margin: 0 0 10px;
+
+    color: var(--color-dark);
+}
+
+.carrito-header p {
+    margin: 0;
+
+    color: #666;
+
+    font-size: 17px;
+}
+
+
+/* =========================================================
+   CARRITO VACÍO
+========================================================= */
+
+.carrito-vacio {
+    max-width: 600px;
+
+    margin: 80px auto;
+
+    padding: 60px 30px;
+
+    text-align: center;
+
+    background: white;
+
+    border-radius: 24px;
+
+    box-shadow:
+        0 15px 40px rgba(0, 0, 0, 0.10);
+
+    /* ANIMACIÓN */
+    animation: carritoVacioEntrada 0.8s ease-out 0.2s both;
+}
+
+.carrito-vacio-icono {
+    font-size: 60px;
+
+    margin-bottom: 20px;
+
+    /* ANIMACIÓN */
+    animation: iconoCarrito 0.8s ease-out 0.4s both;
+}
+
+.carrito-vacio h2 {
+    margin-bottom: 10px;
+}
+
+.carrito-vacio p {
+    color: #777;
+
+    margin-bottom: 30px;
+}
+
+
+/* =========================================================
+   CONTENIDO
+========================================================= */
+
+.carrito-contenido {
+    max-width: 1200px;
+
+    margin: 0 auto;
+
+    display: grid;
+
+    grid-template-columns: 1fr 350px;
+
+    gap: 30px;
+
+    align-items: start;
+}
+
+
+/* =========================================================
+   PRODUCTOS
+========================================================= */
+
+.carrito-productos {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 20px;
+}
+
+
+/* =========================================================
+   ITEM
+========================================================= */
+
+.carrito-item {
+    position: relative;
+
+    display: grid;
+
+    grid-template-columns: 130px 1fr auto;
+
+    gap: 25px;
+
+    align-items: center;
+
+    padding: 20px;
+
+    background: white;
+
+    border-radius: 20px;
+
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.08);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+
+    /* ANIMACIÓN */
+    animation: productoEntrada 0.65s ease-out both;
+}
+
+
+/*
+    Los productos entran uno después del otro.
+*/
+
+.carrito-item:nth-child(1) {
+    animation-delay: 0.2s;
+}
+
+.carrito-item:nth-child(2) {
+    animation-delay: 0.3s;
+}
+
+.carrito-item:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+.carrito-item:nth-child(4) {
+    animation-delay: 0.5s;
+}
+
+.carrito-item:nth-child(5) {
+    animation-delay: 0.6s;
+}
+
+.carrito-item:nth-child(6) {
+    animation-delay: 0.7s;
+}
+
+
+.carrito-item:hover {
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 14px 30px rgba(0, 0, 0, 0.12);
+}
+
+
+/* =========================================================
+   IMAGEN
+========================================================= */
+
+.carrito-item-imagen {
+    width: 130px;
+    height: 110px;
+
+    overflow: hidden;
+
+    border-radius: 14px;
+}
+
+.carrito-item-imagen img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    display: block;
+
+    transition: transform 0.5s ease;
+}
+
+.carrito-item:hover .carrito-item-imagen img {
+    transform: scale(1.06);
+}
+
+
+/* =========================================================
+   INFO
+========================================================= */
+
+.carrito-item-info h2 {
+    width: auto;
+
+    text-align: left;
+
+    font-size: 22px;
+
+    margin: 0 0 8px;
+}
+
+.carrito-item-info h2::after {
+    display: none;
+}
+
+.item-precio {
+    margin: 0 0 15px;
+
+    color: #777;
+
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   CANTIDAD
+========================================================= */
+
+.cantidad-form {
+    display: flex;
+
+    align-items: center;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+
+    margin-bottom: 10px;
+}
+
+.cantidad-form label {
+    font-size: 13px;
+
+    color: #555;
+}
+
+.cantidad-form input {
+    width: 60px;
+
+    padding: 8px;
+
+    box-sizing: border-box;
+
+    border: 1px solid #ddd;
+
+    border-radius: 7px;
+
+    text-align: center;
+}
+
+.btn-actualizar {
+    padding: 8px 12px;
+
+    border: none;
+
+    border-radius: 7px;
+
+    background: var(--color-dark);
+
+    color: white;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.btn-actualizar:hover {
+    background: var(--color-primary);
+
+    transform: translateY(-2px);
+}
+
+
+/* =========================================================
+   ELIMINAR
+========================================================= */
+
+.btn-eliminar {
+    padding: 0;
+
+    border: none;
+
+    background: none;
+
+    color: #b51f2b;
+
+    cursor: pointer;
+
+    font-size: 13px;
+
+    font-weight: bold;
+}
+
+.btn-eliminar:hover {
+    text-decoration: underline;
+}
+
+
+/* =========================================================
+   SUBTOTAL
+========================================================= */
+
+.carrito-item-subtotal {
+    min-width: 110px;
+
+    text-align: right;
+}
+
+.carrito-item-subtotal span {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: #777;
+
+    font-size: 13px;
+}
+
+.carrito-item-subtotal strong {
+    font-size: 22px;
+
+    color: var(--color-dark);
+}
+
+
+/* =========================================================
+   RESUMEN
+========================================================= */
+
+.carrito-resumen {
+    position: sticky;
+
+    top: 100px;
+
+    padding: 30px;
+
+    background: white;
+
+    border-radius: 20px;
+
+    box-shadow:
+        0 12px 35px rgba(0, 0, 0, 0.10);
+
+    /* ANIMACIÓN */
+    animation: resumenEntrada 0.7s ease-out 0.35s both;
+}
+
+.carrito-resumen h2 {
+    width: auto;
+
+    text-align: left;
+
+    font-size: 25px;
+
+    margin-bottom: 25px;
+}
+
+.carrito-resumen h2::after {
+    margin: 10px 0 0;
+}
+
+
+/* =========================================================
+   LÍNEAS
+========================================================= */
+
+.resumen-linea {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 15px 0;
+
+    color: #666;
+
+    border-bottom: 1px solid #eee;
+}
+
+.resumen-linea.total {
+    color: var(--color-dark);
+
+    font-size: 20px;
+
+    border-bottom: none;
+}
+
+.resumen-linea.total strong {
+    font-size: 28px;
+}
+
+
+/* =========================================================
+   BOTONES
+========================================================= */
+
+.btn-continuar {
+    display: block;
+
+    padding: 14px;
+
+    margin-top: 20px;
+
+    text-align: center;
+
+    background: var(--color-primary);
+
+    color: white;
+
+    text-decoration: none;
+
+    font-weight: bold;
+
+    border-radius: var(--radius);
+
+    box-shadow:
+        0 6px 0 rgba(0, 0, 0, 0.15);
+
+    transition:
+        transform 0.2s ease,
+        background-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.btn-continuar:hover {
+    background: var(--color-secondary);
+
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 9px 16px rgba(0, 0, 0, 0.15);
+}
+
+
+.btn-seguir-comprando,
+.btn-volver {
+    display: block;
+
+    margin-top: 15px;
+
+    text-align: center;
+
+    color: var(--color-primary);
+
+    text-decoration: none;
+
+    font-weight: bold;
+
+    transition:
+        transform 0.2s ease;
+}
+
+.btn-seguir-comprando:hover,
+.btn-volver:hover {
+    text-decoration: underline;
+
+    transform: translateY(-2px);
+}
+
+
+/* =========================================================
+   ANIMACIONES
+========================================================= */
+
+
+/* ---------- Header ---------- */
+
+@keyframes headerCarritoEntrada {
+
+    from {
+        opacity: 0;
+
+        box-shadow:
+            0 0 0 rgba(0, 0, 0, 0);
+    }
+
+    to {
+        opacity: 1;
+
+        box-shadow:
+            0 8px 25px rgba(0, 0, 0, 0.12);
+    }
+
+}
+
+/* ---------- Entrada general ---------- */
+
+@keyframes carritoEntrada {
+
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+
+}
+
+
+/* ---------- Header contenido ---------- */
+
+@keyframes carritoHeaderEntrada {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(-25px);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0);
+    }
+
+}
+
+
+/* ---------- Productos ---------- */
+
+@keyframes productoEntrada {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateX(-35px);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateX(0);
+    }
+
+}
+
+
+/* ---------- Resumen ---------- */
+
+@keyframes resumenEntrada {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateX(35px);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateX(0);
+    }
+
+}
+
+
+/* ---------- Carrito vacío ---------- */
+
+@keyframes carritoVacioEntrada {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(30px)
+            scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+    }
+
+}
+
+
+/* ---------- Icono ---------- */
+
+@keyframes iconoCarrito {
+
+    0% {
+        opacity: 0;
+
+        transform:
+            scale(0.6)
+            rotate(-10deg);
+    }
+
+    70% {
+        transform:
+            scale(1.08)
+            rotate(3deg);
+    }
+
+    100% {
+        opacity: 1;
+
+        transform:
+            scale(1)
+            rotate(0);
+    }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .carrito-contenido {
+        grid-template-columns: 1fr;
+    }
+
+    .carrito-resumen {
+        position: static;
+
+        animation-name: productoEntrada;
+    }
+
+}
+
+
+@media (max-width: 650px) {
+
+    .carrito-container {
+        padding: 100px 5% 60px;
+    }
+
+    .carrito-item {
+        grid-template-columns: 90px 1fr;
+
+        gap: 15px;
+    }
+
+    .carrito-item-imagen {
+        width: 90px;
+        height: 90px;
+    }
+
+    .carrito-item-subtotal {
+        grid-column: 2;
+
+        text-align: left;
+    }
+
+}
+
+
+/* =========================================================
+   ACCESIBILIDAD
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .pagina-carrito .header,
+    .carrito-container,
+    .carrito-header,
+    .carrito-vacio,
+    .carrito-vacio-icono,
+    .carrito-item,
+    .carrito-resumen {
+        animation: none;
+    }
+
+    .carrito-item,
+    .carrito-item-imagen img,
+    .btn-continuar,
+    .btn-seguir-comprando,
+    .btn-volver {
+        transition: none;
+    }
+
+}

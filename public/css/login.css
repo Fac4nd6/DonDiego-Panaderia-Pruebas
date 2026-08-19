@@ -1,0 +1,667 @@
+html {
+    scrollbar-width: none;
+}
+
+html::-webkit-scrollbar {
+    display: none;
+}
+
+/* ==============================
+   FONDO DEL LOGIN
+============================== */
+
+.background-container {
+    position: relative;
+
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 40px 20px;
+
+    box-sizing: border-box;
+
+    background:
+        radial-gradient(
+            circle at 20% 20%,
+            rgba(255,255,255,0.12),
+            transparent 25%
+        ),
+        radial-gradient(
+            circle at 80% 80%,
+            rgba(0,0,0,0.15),
+            transparent 30%
+        ),
+        linear-gradient(
+            135deg,
+            #b31b21,
+            #8f151b
+        );
+
+    overflow: hidden;
+}
+
+
+/* ==============================
+   IMAGEN DE FONDO
+============================== */
+
+.background-container::before {
+    content: "";
+
+    position: absolute;
+
+    inset: -20px;
+
+    background:
+        linear-gradient(
+            rgba(179, 27, 33, 0.35),
+            rgba(179, 27, 33, 0.35)
+        ),
+        url('../img/bolsa-coca.avif')
+        center / cover no-repeat;
+
+    filter: blur(2px);
+
+    opacity: 0.75;
+
+    transform: scale(1.03);
+}
+
+
+/* ==============================
+   CÍRCULOS DECORATIVOS
+============================== */
+
+.background-container::after {
+    content: "";
+
+    position: absolute;
+
+    width: 500px;
+    height: 500px;
+
+    border: 2px solid rgba(255,255,255,0.12);
+
+    border-radius: 50%;
+
+    top: -180px;
+    left: -180px;
+
+    z-index: 0;
+
+    animation: circleFloat 8s ease-in-out infinite;
+
+    box-shadow:
+        950px 500px 0 -1px rgba(255,255,255,0.10);
+}
+
+
+/* ==============================
+   AISLAMIENTO
+============================== */
+
+.background-container {
+    isolation: isolate;
+}
+
+
+/* ==============================
+   TARJETA
+============================== */
+
+.login-card {
+    position: relative;
+
+    z-index: 1;
+
+    width: 100%;
+    max-width: 380px;
+
+    padding: 70px 35px 30px;
+
+    box-sizing: border-box;
+
+    background:
+        linear-gradient(
+            145deg,
+            #fffdf7,
+            #fffaf0
+        );
+
+    border-radius: 28px;
+
+    box-shadow:
+        0 25px 60px rgba(0,0,0,0.25),
+        0 5px 15px rgba(0,0,0,0.12);
+
+    text-align: center;
+
+    margin-top: 40px;
+
+    animation: loginAppear 0.8s ease-out;
+}
+
+
+/* ==============================
+   BRILLO DE LA TARJETA
+============================== */
+
+
+.login-card::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 8%;
+
+    width: 84%;
+    height: 3px;
+
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(179, 27, 33, 0.75),
+            rgba(220, 55, 60, 0.9),
+            rgba(179, 27, 33, 0.75),
+            transparent
+        );
+
+    box-shadow:
+        0 0 10px rgba(179, 27, 33, 0.35);
+
+    animation: cardGlow 3s ease-in-out infinite;
+}
+/* ==============================
+   LOGO
+============================== */
+
+.logo-container {
+    position: absolute;
+
+    top: -55px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    animation:
+        logoAppear 0.8s ease-out 0.2s both;
+}
+
+.logo-badge {
+    width: 110px;
+    height: 110px;
+
+    background-color: #fffdf7;
+
+    border: 3px solid #b31b21;
+
+    border-radius: 50%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 8px 20px rgba(0,0,0,0.15),
+        0 0 0 8px rgba(255,255,255,0.12);
+
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.logo-badge:hover {
+    transform: scale(1.05) rotate(-2deg);
+
+    box-shadow:
+        0 12px 25px rgba(0,0,0,0.2),
+        0 0 0 10px rgba(255,255,255,0.15);
+}
+
+.logo-badge img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    display: block;
+}
+
+
+/* ==============================
+   TÍTULO
+============================== */
+
+.form-header {
+    margin-top: 10px;
+    margin-bottom: 30px;
+
+    animation:
+        contentAppear 0.7s ease-out 0.3s both;
+}
+
+.form-title {
+    font-family: 'Playfair Display', serif;
+
+    font-style: italic;
+
+    font-size: 1.5rem;
+
+    color: #2b2b2b;
+
+    margin-bottom: 8px;
+
+    font-weight: 600;
+}
+
+
+/* ==============================
+   ERROR
+============================== */
+
+.error-msg {
+    color: #b31b21;
+
+    background: rgba(179,27,33,0.08);
+
+    border-radius: 8px;
+
+    padding: 9px 12px;
+
+    font-size: 0.8rem;
+
+    margin-bottom: 20px;
+
+    animation:
+        errorAppear 0.3s ease-out;
+}
+
+
+/* ==============================
+   FORMULARIO
+============================== */
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+
+    gap: 22px;
+
+    animation:
+        contentAppear 0.7s ease-out 0.4s both;
+}
+
+.login-form fieldset {
+    border: none;
+
+    padding: 0;
+
+    margin: 0;
+}
+
+
+/* ==============================
+   INPUTS
+============================== */
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+
+    width: 80%;
+
+    margin: 0 auto;
+
+    text-align: left;
+}
+
+.input-group label {
+    color: #555;
+
+    font-size: 0.75rem;
+
+   
+    margin-bottom: 7px;
+
+    transition:
+        color 0.2s ease;
+}
+
+.input-group input {
+    width: 100%;
+
+    border: none;
+
+    border-bottom: 2px solid #ccc;
+
+    background: transparent;
+
+    padding: 8px 4px;
+
+    font-family: 'Poppins', sans-serif;
+
+    font-size: 0.95rem;
+
+    color: #333;
+
+    outline: none;
+
+    box-sizing: border-box;
+
+    transition:
+        border-color 0.25s ease,
+        padding 0.25s ease;
+}
+
+.input-group input::placeholder {
+    color: #999;
+
+    transition:
+        opacity 0.2s ease;
+}
+
+.input-group input:focus {
+    border-bottom-color: #b31b21;
+
+    padding-left: 8px;
+
+    box-shadow:
+        0 5px 10px -8px rgba(179,27,33,0.8);
+}
+
+.input-group:focus-within label {
+    color: #b31b21;
+}
+
+.input-group input:focus::placeholder {
+    opacity: 0.5;
+}
+
+
+/* ==============================
+   BOTÓN
+============================== */
+
+.btn-submit {
+    position: relative;
+
+    background-color: #b31b21;
+
+    color: #fff;
+
+    border: none;
+
+    padding: 12px 28px;
+
+    border-radius: 8px;
+
+    font-family: 'Poppins', sans-serif;
+
+    font-size: 0.75rem;
+
+    font-weight: 600;
+
+    letter-spacing: 0.5px;
+
+    cursor: pointer;
+
+    align-self: center;
+
+    margin-top: 8px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 5px 0 #801318,
+        0 8px 15px rgba(179,27,33,0.2);
+
+    transition:
+        background-color 0.25s ease,
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+
+/* Brillo */
+
+.btn-submit::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: -120%;
+
+    width: 65%;
+    height: 100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255,255,255,0.3),
+            transparent
+        );
+
+    transform: skewX(-20deg);
+
+    transition:
+        left 0.5s ease;
+}
+
+
+/* Hover */
+
+.btn-submit:hover {
+    background-color: #c5242b;
+
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 8px 0 #801318,
+        0 12px 20px rgba(179,27,33,0.25);
+}
+
+
+/* Brillo */
+
+.btn-submit:hover::before {
+    left: 130%;
+}
+
+
+/* Click */
+
+.btn-submit:active {
+    transform: translateY(1px);
+
+    box-shadow:
+        0 3px 0 #801318,
+        0 5px 10px rgba(179,27,33,0.2);
+}
+/* ==============================
+   FOOTER
+============================== */
+
+.form-footer {
+    margin-top: 25px;
+
+    animation:
+        contentAppear 0.7s ease-out 0.5s both;
+}
+
+.form-footer p {
+    color: #777;
+
+    font-size: 0.8rem;
+
+    margin: 0;
+}
+
+.form-footer a {
+    color: #333;
+
+    font-size: 0.8rem;
+
+    font-weight: 500;
+
+    text-decoration: none;
+
+    transition:
+        color 0.2s ease;
+}
+
+.form-footer a:hover {
+    color: #b31b21;
+
+    text-decoration: underline;
+}
+
+
+/* ==============================
+   ANIMACIONES
+============================== */
+
+@keyframes cardGlow {
+
+    0%, 100% {
+        opacity: 0.55;
+        transform: scaleX(0.85);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scaleX(1);
+    }
+}
+
+@keyframes circleFloat {
+
+    0%, 100% {
+        transform: translate(0, 0);
+    }
+
+    50% {
+        transform: translate(20px, 15px);
+    }
+}
+
+
+@keyframes loginAppear {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(35px)
+            scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+    }
+}
+
+
+@keyframes logoAppear {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateX(-50%)
+            translateY(-20px)
+            scale(0.8);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateX(-50%)
+            translateY(0)
+            scale(1);
+    }
+}
+
+
+@keyframes contentAppear {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0);
+    }
+}
+
+
+@keyframes errorAppear {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0);
+    }
+}
+
+
+/* ==============================
+   RESPONSIVE
+============================== */
+
+@media (max-width: 480px) {
+
+    .background-container {
+        padding: 30px 15px;
+    }
+
+    .login-card {
+        padding: 65px 20px 25px;
+
+        border-radius: 24px;
+
+        margin-top: 30px;
+    }
+
+    .input-group {
+        width: 90%;
+    }
+
+    .logo-badge {
+        width: 100px;
+        height: 100px;
+    }
+
+    .form-title {
+        font-size: 1.35rem;
+    }
+}

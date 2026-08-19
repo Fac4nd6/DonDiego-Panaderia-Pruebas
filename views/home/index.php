@@ -8,9 +8,7 @@ require '../layouts/header.php';
 ?>
 
 <body>
-    <nav>
-        <!-- Barra de navegación -->
-    </nav>
+    
 
     <main>
 
@@ -18,9 +16,9 @@ require '../layouts/header.php';
 
         <section class="hero">
             <div class="hero-content">
-                <h1>Don Diego</h1>
+                <h1>El sabor de lo recién hecho</h1>
                 <p>Los mejores productos de panadería.</p>
-                <a href="#" class="hero-button">Ver catálogo</a>
+                <a href="/DonDiego-Panaderia-Pruebas/controllers/CatalogoController.php" class="hero-button">Ver catálogo</a>
             </div>
 
             <div class="hero-image">
@@ -32,7 +30,7 @@ require '../layouts/header.php';
 
         <section class="productos">
             <h2>Productos</h2>
-
+            <hr class="separador">
             <div class="productos-grid">
 
                 <article class="producto-card">
@@ -90,61 +88,116 @@ require '../layouts/header.php';
                 </article>
 
             </div>
-            
+
         </section>
-                <a href="catalogo.php" class="catalogo-button">
-                    Ver catálogo completo
-                </a>
-        
-       
+        <a href="/DonDiego-Panaderia-Pruebas/controllers/CatalogoController.php" class="catalogo-button">
+            Ver catálogo completo
+        </a>
+
+
 
         <!-- Productos recomendados para el usuario -->
 
         <section class="recommended">
             <h2>Recomendado para vos</h2>
+            <hr class="separador">
 
             <div class="productos-grid">
                 <article class="producto-card">
                     <img src="../../public/img/torta-chocolate.avif" alt="Torta de chocolate">
-                    <h3>Torta de chocolate</h3>
-                    <p>$450</p>
-
+                    <div class="producto-info">
+                        <h3>Torta de chocolate</h3>
+                        <p>$450</p>
+                    </div>
                 </article>
 
                 <article class="producto-card">
                     <img src="../../public/img/alfajores.avif" alt="Alfajor de chocolate">
-                    <h3>Alfajor de chocolate</h3>
-                    <p>$100</p>
+                    <div class="producto-info">
+                        <h3>Alfajor de chocolate</h3>
+                        <p>$100</p>
+                    </div>
                 </article>
-                
+
                 <article class="producto-card">
                     <img src="../../public/img/brownie.avif" alt="Alfajor de chocolate">
-                    <h3>Brownie Chocolate</h3>
-                    <p>$250</p>
-                    
+                    <div class="producto-info">
+                        <h3>Brownie Chocolate</h3>
+                        <p>$250</p>
+                    </div>
                 </article>
-                
+
             </div>
         </section>
 
-         <section class="conocenos">
-            
-            <div class="informacion">
+        <section class="conocenos">
+
+            <div class="conocenos-contenido">
+
+                <!-- INFORMACIÓN DEL LOCAL -->
+
                 <div class="info-texto">
-                    <h2>Animate y visitanos</h2>
-                    <p>Uruguay 1796<p>
-                    <p>de 6:00 a 20:00 hs</p>
-                    <P>+598 95 005 706</p>
-                    <P>473 49 924</p>
-                 </div>
-                <iframe class="mapa" src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d6811.739034260684!2d-57.9604178!3d-31.3901612!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95addd560a248351%3A0x31070367860ed798!2sPanader%C3%ADa%20y%20Confiter%C3%ADa%20Don%20Diego%20(Centro)!5e0!3m2!1ses-419!2suy!4v1786501316195!5m2!1ses-419!2suy" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
-                <img class="local" src="../../public/img/dondiego-local.jpg" alt="Productos de Don Diego">    
+
+                    
+
+                    <h2>Animate y<br>visitarnos</h2>
+
+                    <p class="info-descripcion">
+                        Vení a disfrutar de algo rico, recién hecho y preparado
+                        con mucho cariño. Te esperamos en nuestro local.
+                    </p>
+
+                    <div class="info-datos">
+
+                        <div class="info-dato">
+                            <span>📍</span>
+                            <p>Uruguay 1796</p>
+                        </div>
+
+                        <div class="info-dato">
+                            <span>🕐</span>
+                            <p>Todos los días · 6:00 a 20:00 hs</p>
+                        </div>
+
+                        <div class="info-dato">
+                            <span>📞</span>
+                            <p>095 005 706 · 473 49 924</p>
+                        </div>
+
+                    </div>
+
+                    <a href="https://www.google.com/maps/place/Panader%C3%ADa+y+Confiter%C3%ADa+Don+Diego+(Centro)/@-31.3889752,-57.9519957,17z/data=!4m6!3m5!1s0x95addd560a248351:0x31070367860ed798!8m2!3d-31.3889752!4d-57.9519957!16s%2Fg%2F11h2_b5sg3?hl=es-419&entry=ttu&g_ep=EgoyMDI2MDgxMi4wIKXMDSoASAFQAw%3D%3D" class="conocenos-button" target="_blank">
+                        Cómo llegar
+                        <span>→</span>
+                    </a>
+
                 </div>
-            
+
+
+                <!-- MAPA -->
+
+                <div class="mapa-container">
+
+                    <iframe
+                        class="mapa"
+                        src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d6811.739034260684!2d-57.9604178!3d-31.3901612!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95addd560a248351%3A0x31070367860ed798!2sPanader%C3%ADa%20y%20Confiter%C3%ADa%20Don%20Diego%20(Centro)!5e0!3m2!1ses-419!2suy!4v1786501316195!5m2!1ses-419!2suy"
+                        allowfullscreen=""
+                        loading="lazy"
+                        referrerpolicy="strict-origin-when-cross-origin">
+                    </iframe>
+
+                    <div class="mapa-label">
+                        📍 Encontranos acá
+                    </div>
+
+                </div>
+
+            </div>
+
         </section>
 
     </main>
-<?php require '../layouts/footer.php'; ?>
+    <?php require '../layouts/footer.php'; ?>
 
 </body>
 
