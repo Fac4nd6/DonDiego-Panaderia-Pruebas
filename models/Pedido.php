@@ -138,49 +138,55 @@ class Pedido
     public function obtenerPorUsuario($usuarioId)
     {
         $sql = "
-        SELECT
-            id,
-            usuario_id,
-            fecha_pedido,
-            fecha_recepcion,
-            franja_horaria,
-            direccion_entrega,
-            estado,
-            total
-        FROM pedidos
-        WHERE usuario_id = ?
-        ORDER BY fecha_pedido DESC
-    ";
+            SELECT
+                id,
+                usuario_id,
+                fecha_pedido,
+                fecha_recepcion,
+                franja_horaria,
+                direccion_entrega,
+                estado,
+                total
+            FROM pedidos
+            WHERE usuario_id = ?
+            ORDER BY fecha_pedido DESC
+        ";
 
         $stmt = $this->conn->prepare($sql);
 
         if (!$stmt) {
-
-            die("ERROR EN obtenerPorUsuario(): "
-                . $this->conn->error);
+            die(
+                "ERROR EN obtenerPorUsuario(): "
+                . $this->conn->error
+            );
         }
 
         if (!$stmt->bind_param("i", $usuarioId)) {
-
-            die("ERROR EN bind_param(): "
-                . $stmt->error);
+            die(
+                "ERROR EN bind_param(): "
+                . $stmt->error
+            );
         }
 
         if (!$stmt->execute()) {
-
-            die("ERROR EN execute(): "
-                . $stmt->error);
+            die(
+                "ERROR EN execute(): "
+                . $stmt->error
+            );
         }
 
         $resultado = $stmt->get_result();
 
         if (!$resultado) {
-
-            die("ERROR EN get_result(): "
-                . $stmt->error);
+            die(
+                "ERROR EN get_result(): "
+                . $stmt->error
+            );
         }
 
-        $pedidos = $resultado->fetch_all(MYSQLI_ASSOC);
+        $pedidos = $resultado->fetch_all(
+            MYSQLI_ASSOC
+        );
 
         $stmt->close();
 
@@ -208,12 +214,9 @@ class Pedido
                 direccion_entrega,
                 estado,
                 total
-
             FROM pedidos
-
             WHERE id = ?
             AND usuario_id = ?
-
             LIMIT 1
         ";
 
@@ -341,7 +344,8 @@ class Pedido
                 p.total,
 
                 u.nombre_completo,
-                u.email
+                u.email,
+                u.telefono
 
             FROM pedidos p
 
@@ -395,9 +399,7 @@ class Pedido
 
         $sql = "
             UPDATE pedidos
-
             SET estado = ?
-
             WHERE id = ?
         ";
 

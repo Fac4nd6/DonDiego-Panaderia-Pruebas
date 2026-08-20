@@ -4,7 +4,6 @@ error_reporting(E_ALL);
 ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');
 
-
 session_start();
 
 
@@ -50,6 +49,144 @@ $accion =
     $_POST['accion']
     ?? $_GET['accion']
     ?? 'listar';
+
+
+// =========================================================
+// COMPROBAR ROL DE ADMIN
+// =========================================================
+
+if (
+    $accion === 'admin' ||
+    $accion === 'actualizar_estado'
+) {
+
+    if (
+        !isset($_SESSION['usuario_rol']) ||
+        $_SESSION['usuario_rol'] !== 'admin'
+    ) {
+
+        http_response_code(403);
+
+        exit(
+            'No tenés permisos para acceder a esta sección.'
+        );
+    }
+}
+
+
+// =========================================================
+// PANEL ADMIN - PEDIDOS
+// =========================================================
+
+if ($accion === 'admin') {
+
+    $pedidos =
+        $pedidoModel->obtenerTodos();
+
+    require __DIR__ . '/../views/admin/pedidos.php';
+
+    exit;
+}
+
+
+// =========================================================
+// ACTUALIZAR ESTADO DEL PEDIDO
+// =========================================================
+
+if ($accion === 'actualizar_estado') {
+
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+
+        http_response_code(405);
+
+        exit(
+            'Método no permitido.'
+        );
+    }
+
+
+    // =====================================================
+    // OBTENER DATOS
+    // =====================================================
+
+    $pedidoId =
+        (int) ($_POST['pedido_id'] ?? 0);
+
+    $estado =
+        trim($_POST['estado'] ?? '');
+
+
+    // =====================================================
+    // VALIDAR ID
+    // =====================================================
+
+    if ($pedidoId <= 0) {
+
+        exit(
+            'Pedido no válido.'
+        );
+    }
+
+
+    // =====================================================
+    // ESTADOS PERMITIDOS
+    // =====================================================
+
+    $estadosPermitidos = [
+
+        'pendiente',
+        'confirmado',
+        'en_preparacion',
+        'listo',
+        'entregado',
+        'cancelado'
+
+    ];
+
+
+    if (
+        !in_array(
+            $estado,
+            $estadosPermitidos,
+            true
+        )
+    ) {
+
+        exit(
+            'El estado seleccionado no es válido.'
+        );
+    }
+
+
+    // =====================================================
+    // ACTUALIZAR
+    // =====================================================
+
+    $resultado =
+        $pedidoModel->actualizarEstado(
+            $pedidoId,
+            $estado
+        );
+
+
+    if (!$resultado) {
+
+        exit(
+            'No se pudo actualizar el estado del pedido.'
+        );
+    }
+
+
+    // =====================================================
+    // VOLVER AL PANEL
+    // =====================================================
+
+    header(
+        'Location: /DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=admin'
+    );
+
+    exit;
+}
 
 
 // =========================================================
@@ -441,7 +578,7 @@ if ($accion === 'crear') {
 
 
 // =========================================================
-// LISTAR PEDIDOS
+// LISTAR PEDIDOS DEL USUARIO
 // =========================================================
 
 if ($accion === 'listar') {
