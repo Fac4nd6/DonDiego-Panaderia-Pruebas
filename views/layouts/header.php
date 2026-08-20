@@ -45,7 +45,7 @@ if (isset($_SESSION['carrito'])) {
         <div class="nav-links">
 
             <a
-                href="/DonDiego-Panaderia-Pruebas/views/home/index.php"
+                href="/DonDiego-Panaderia-Pruebas/controllers/HomeController.php"
             >
                 Hogar
             </a>

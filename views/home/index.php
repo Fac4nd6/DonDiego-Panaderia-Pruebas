@@ -2,143 +2,166 @@
 
 $pageCss = "home.css";
 
-require '../layouts/head.php';
-require '../layouts/header.php';
+require __DIR__ . '/../layouts/head.php';
+require __DIR__ . '/../layouts/header.php';
 
 ?>
 
 <body>
-    
 
     <main>
 
-        <!-- Hero principal de la página -->
+        <!-- =====================================================
+             HERO
+        ====================================================== -->
 
         <section class="hero">
+
             <div class="hero-content">
+
                 <h1>El sabor de lo recién hecho</h1>
+
                 <p>Los mejores productos de panadería.</p>
-                <a href="/DonDiego-Panaderia-Pruebas/controllers/CatalogoController.php" class="hero-button">Ver catálogo</a>
+
+                <a
+                    href="/DonDiego-Panaderia-Pruebas/controllers/CatalogoController.php"
+                    class="hero-button">
+                    Ver catálogo
+                </a>
+
             </div>
 
             <div class="hero-image">
-                <img src="../../public/img/dondiego-algorico.jpeg" alt="Productos de Don Diego">
+
+                <img
+                    src="/DonDiego-Panaderia-Pruebas/public/img/dondiego-algorico.jpeg"
+                    alt="Productos de Don Diego">
+
             </div>
+
         </section>
 
-        <!-- Catálogo de productos destacados -->
+
+        <!-- =====================================================
+             PRODUCTOS DESTACADOS
+        ====================================================== -->
 
         <section class="productos">
+
             <h2>Productos</h2>
+
             <hr class="separador">
+
             <div class="productos-grid">
 
-                <article class="producto-card">
-                    <img src="/DonDiego-Panaderia-Pruebas/public/img/caja-alfajores.avif" alt="Caja de alfajorcitos">
+                <?php foreach ($productosDestacados as $producto): ?>
 
-                    <div class="producto-info">
-                        <h3>Caja de Alfajorcitos</h3>
-                        <p>$300</p>
-                    </div>
-                </article>
+                    <a
+                        href="/DonDiego-Panaderia-Pruebas/controllers/CatalogoController.php?producto=<?= (int) $producto['id'] ?>"
+                        class="producto-card"
+                    >
 
-                <article class="producto-card">
-                    <img src="/DonDiego-Panaderia-Pruebas/public/img/torta-crema.avif" alt="Torta de crema">
+                        <img
+                            src="/DonDiego-Panaderia-Pruebas/public/img/<?= htmlspecialchars($producto['imagen']) ?>"
+                            alt="<?= htmlspecialchars($producto['nombre']) ?>"
+                        >
 
-                    <div class="producto-info">
-                        <h3>Torta de Crema</h3>
-                        <p>$1200</p>
-                    </div>
-                </article>
+                        <div class="producto-info">
 
-                <article class="producto-card">
-                    <img src="/DonDiego-Panaderia-Pruebas/public/img/postre-massini.avif" alt="Postre Massini">
+                            <h3>
+                                <?= htmlspecialchars($producto['nombre']) ?>
+                            </h3>
 
-                    <div class="producto-info">
-                        <h3>Postre Massini</h3>
-                        <p>$175</p>
-                    </div>
-                </article>
+                            <p>
+                                $<?= number_format(
+                                    $producto['precio'],
+                                    0,
+                                    ',',
+                                    '.'
+                                ) ?>
+                            </p>
 
-                <article class="producto-card">
-                    <img src="/DonDiego-Panaderia-Pruebas/public/img/tronco-navidad.avif" alt="Tronco de Navidad">
+                        </div>
 
-                    <div class="producto-info">
-                        <h3>Tronco de Navidad</h3>
-                        <p>$300</p>
-                    </div>
-                </article>
+                    </a>
 
-                <article class="producto-card">
-                    <img src="/DonDiego-Panaderia-Pruebas/public/img/brownie.avif" alt="Brownie">
-
-                    <div class="producto-info">
-                        <h3>Brownie</h3>
-                        <p>$155</p>
-                    </div>
-                </article>
-
-                <article class="producto-card">
-                    <img src="/DonDiego-Panaderia-Pruebas/public/img/yema-quemada.avif" alt="Yema quemada">
-
-                    <div class="producto-info">
-                        <h3>Yema Quemada</h3>
-                        <p>$400</p>
-                    </div>
-                </article>
+                <?php endforeach; ?>
 
             </div>
 
         </section>
-        <a href="/DonDiego-Panaderia-Pruebas/controllers/CatalogoController.php" class="catalogo-button">
+
+
+        <!-- =====================================================
+             BOTÓN CATÁLOGO COMPLETO
+        ====================================================== -->
+
+        <a
+            href="/DonDiego-Panaderia-Pruebas/controllers/CatalogoController.php"
+            class="catalogo-button">
             Ver catálogo completo
         </a>
 
 
-
-        <!-- Productos recomendados para el usuario -->
+        <!-- =====================================================
+             PRODUCTOS RECOMENDADOS
+        ====================================================== -->
 
         <section class="recommended">
+
             <h2>Recomendado para vos</h2>
+
             <hr class="separador">
 
             <div class="productos-grid">
-                <article class="producto-card">
-                    <img src="../../public/img/torta-chocolate.avif" alt="Torta de chocolate">
-                    <div class="producto-info">
-                        <h3>Torta de chocolate</h3>
-                        <p>$450</p>
-                    </div>
-                </article>
 
-                <article class="producto-card">
-                    <img src="../../public/img/alfajores.avif" alt="Alfajor de chocolate">
-                    <div class="producto-info">
-                        <h3>Alfajor de chocolate</h3>
-                        <p>$100</p>
-                    </div>
-                </article>
+                <?php foreach ($productosRecomendados as $producto): ?>
 
-                <article class="producto-card">
-                    <img src="../../public/img/brownie.avif" alt="Alfajor de chocolate">
-                    <div class="producto-info">
-                        <h3>Brownie Chocolate</h3>
-                        <p>$250</p>
-                    </div>
-                </article>
+                    <a
+                        href="/DonDiego-Panaderia-Pruebas/controllers/CatalogoController.php?producto=<?= (int) $producto['id'] ?>"
+                        class="producto-card"
+                    >
+
+                        <img
+                            src="/DonDiego-Panaderia-Pruebas/public/img/<?= htmlspecialchars($producto['imagen']) ?>"
+                            alt="<?= htmlspecialchars($producto['nombre']) ?>"
+                        >
+
+                        <div class="producto-info">
+
+                            <h3>
+                                <?= htmlspecialchars($producto['nombre']) ?>
+                            </h3>
+
+                            <p>
+                                $<?= number_format(
+                                    $producto['precio'],
+                                    0,
+                                    ',',
+                                    '.'
+                                ) ?>
+                            </p>
+
+                        </div>
+
+                    </a>
+
+                <?php endforeach; ?>
 
             </div>
+
         </section>
+
+
+        <!-- =====================================================
+             INFORMACIÓN DEL LOCAL
+        ====================================================== -->
 
         <section class="conocenos">
 
             <div class="conocenos-contenido">
 
-                <!-- INFORMACIÓN DEL LOCAL -->
-
                 <div class="info-texto">
-
-                    
 
                     <h2>Animate y<br>visitarnos</h2>
 
@@ -150,25 +173,40 @@ require '../layouts/header.php';
                     <div class="info-datos">
 
                         <div class="info-dato">
+
                             <span>📍</span>
+
                             <p>Uruguay 1796</p>
+
                         </div>
 
                         <div class="info-dato">
+
                             <span>🕐</span>
+
                             <p>Todos los días · 6:00 a 20:00 hs</p>
+
                         </div>
 
                         <div class="info-dato">
+
                             <span>📞</span>
+
                             <p>095 005 706 · 473 49 924</p>
+
                         </div>
 
                     </div>
 
-                    <a href="https://www.google.com/maps/place/Panader%C3%ADa+y+Confiter%C3%ADa+Don+Diego+(Centro)/@-31.3889752,-57.9519957,17z/data=!4m6!3m5!1s0x95addd560a248351:0x31070367860ed798!8m2!3d-31.3889752!4d-57.9519957!16s%2Fg%2F11h2_b5sg3?hl=es-419&entry=ttu&g_ep=EgoyMDI2MDgxMi4wIKXMDSoASAFQAw%3D%3D" class="conocenos-button" target="_blank">
+                    <a
+                        href="https://www.google.com/maps/place/Panader%C3%ADa+y+Confiter%C3%ADa+Don+Diego+(Centro)/@-31.3889752,-57.9519957,17z/data=!4m6!3m5!1s0x95addd560a248351:0x31070367860ed798!8m2!3d-31.3889752!4d-57.9519957!16s%2Fg%2F11h2_b5sg3?hl=es-419&entry=ttu&g_ep=EgoyMDI2MDgxMi4wIKXMDSoASAFQAw%3D%3D"
+                        class="conocenos-button"
+                        target="_blank"
+                        rel="noopener noreferrer">
+
                         Cómo llegar
                         <span>→</span>
+
                     </a>
 
                 </div>
@@ -197,7 +235,9 @@ require '../layouts/header.php';
         </section>
 
     </main>
-    <?php require '../layouts/footer.php'; ?>
+
+
+    <?php require __DIR__ . '/../layouts/footer.php'; ?>
 
 </body>
 

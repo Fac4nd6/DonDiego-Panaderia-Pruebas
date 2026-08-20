@@ -595,6 +595,21 @@ require __DIR__ . '/../layouts/header.php';
 
     <script src="/DonDiego-Panaderia-Pruebas/public/js/catalogo.js"></script>
 
+    <?php if ($productoAbrir): ?>
+
+        <script>
+            const productoDesdeHome = <?= json_encode(
+                                            $productoAbrir,
+                                            JSON_HEX_TAG |
+                                                JSON_HEX_APOS |
+                                                JSON_HEX_QUOT |
+                                                JSON_HEX_AMP
+                                        ) ?>;
+
+            abrirProductoDesdeDatos(productoDesdeHome);
+        </script>
+
+    <?php endif; ?>
 
 </body>
 
