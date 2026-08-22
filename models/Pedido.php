@@ -245,6 +245,62 @@ class Pedido
 
 
     /* =========================================================
+   OBTENER PEDIDO POR ID - ADMIN
+========================================================= */
+
+public function obtenerPorIdAdmin($pedidoId)
+{
+
+    $sql = "
+        SELECT
+            p.id,
+            p.usuario_id,
+            p.fecha_pedido,
+            p.fecha_recepcion,
+            p.franja_horaria,
+            p.direccion_entrega,
+            p.estado,
+            p.total,
+
+            u.nombre_completo,
+            u.email,
+            u.telefono
+
+        FROM pedidos p
+
+        INNER JOIN usuarios u
+            ON p.usuario_id = u.id
+
+        WHERE p.id = ?
+
+        LIMIT 1
+    ";
+
+    $stmt = $this->conn->prepare($sql);
+
+    if (!$stmt) {
+        return null;
+    }
+
+    $stmt->bind_param(
+        "i",
+        $pedidoId
+    );
+
+    $stmt->execute();
+
+    $resultado =
+        $stmt->get_result();
+
+    $pedido =
+        $resultado->fetch_assoc();
+
+    $stmt->close();
+
+    return $pedido;
+}
+
+    /* =========================================================
        OBTENER DETALLES DE UN PEDIDO
     ========================================================= */
 
@@ -421,4 +477,43 @@ class Pedido
 
         return $resultado;
     }
+
+        /* =========================================================
+       CANCELAR PEDIDO
+    ========================================================= */
+
+    public function cancelarPedido(
+        $pedidoId,
+        $usuarioId
+    ) {
+
+        $sql = "
+            UPDATE pedidos
+
+            SET estado = 'cancelado'
+
+            WHERE id = ?
+            AND usuario_id = ?
+            AND estado = 'pendiente'
+        ";
+
+        $stmt = $this->conn->prepare($sql);
+
+        if (!$stmt) {
+            return false;
+        }
+
+        $stmt->bind_param(
+            "ii",
+            $pedidoId,
+            $usuarioId
+        );
+
+        $resultado = $stmt->execute();
+
+        $stmt->close();
+
+        return $resultado;
+    }
+
 }
