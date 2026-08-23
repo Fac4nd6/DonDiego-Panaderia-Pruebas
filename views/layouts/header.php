@@ -71,87 +71,129 @@ if (isset($_SESSION['carrito'])) {
         </div>
 
 
-      <!-- =================================================
-     ACCIONES
-================================================== -->
+        <!-- =================================================
+             ACCIONES
+        ================================================== -->
 
-<div class="nav-actions">
-
-
-    <?php if (isset($_SESSION['usuario_id'])): ?>
-
-        <a
-            href="/DonDiego-Panaderia-Pruebas/views/usuarios/cuenta.php"
-            class="login-button"
-        >
-
-            <i class="fa-solid fa-user"></i>
-
-            Mi cuenta
-
-        </a>
-
-    <?php else: ?>
-
-        <a
-            href="/DonDiego-Panaderia-Pruebas/views/usuarios/login.php"
-            class="login-button"
-        >
-            Iniciar sesión
-        </a>
-
-    <?php endif; ?>
+        <div class="nav-actions">
 
 
-    <!-- =================================================
-         CARRITO
-    ================================================== -->
+            <!-- =================================================
+                 CUENTA
+            ================================================== -->
 
-    <a
-        href="/DonDiego-Panaderia-Pruebas/controllers/CarritoController.php?accion=ver"
-        class="cart-button"
-        aria-label="Carrito"
-    >
+            <?php if (isset($_SESSION['usuario_id'])): ?>
 
-        <i class="fa-solid fa-cart-shopping"></i>
+                <a
+                    href="/DonDiego-Panaderia-Pruebas/views/usuarios/cuenta.php"
+                    class="login-button"
+                >
 
-        <span class="cart-count">
-            <?= $cantidadCarrito ?>
-        </span>
+                    <i class="fa-solid fa-user"></i>
 
-    </a>
+                    Mi cuenta
 
-    <!-- =================================================
-         PEDIDOS
-    ================================================== -->
+                </a>
 
-    <a
-        href="http://localhost/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=listar"
-        class="nav-button"
-    >
-        Mis pedidos
-    </a>
+            <?php else: ?>
 
-    <!-- =================================================
-         ADMIN
-    ================================================== -->
+                <a
+                    href="/DonDiego-Panaderia-Pruebas/views/usuarios/login.php"
+                    class="login-button"
+                >
 
-    <?php if (
-        isset($_SESSION['usuario_rol']) &&
-        $_SESSION['usuario_rol'] === 'admin'
-    ): ?>
+                    Iniciar sesión
 
-        <a
-            href="http://localhost/DonDiego-Panaderia-Pruebas/controllers/ProductoController.php?accion=listar"
-            class="nav-button"
-        >
-            Admin
-        </a>
+                </a>
 
-    <?php endif; ?>
+            <?php endif; ?>
 
 
+            <!-- =================================================
+                 CARRITO
+            ================================================== -->
 
-</div>
+            <a
+                href="/DonDiego-Panaderia-Pruebas/controllers/CarritoController.php?accion=ver"
+                class="cart-button"
+                aria-label="Carrito"
+            >
+
+                <i class="fa-solid fa-cart-shopping"></i>
+
+                <span class="cart-count">
+                    <?= $cantidadCarrito ?>
+                </span>
+
+            </a>
+
+
+            <!-- =================================================
+                 MIS PEDIDOS
+            ================================================== -->
+
+            <?php if (isset($_SESSION['usuario_id'])): ?>
+
+                <a
+                    href="/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=listar"
+                    class="nav-button"
+                >
+                    Mis pedidos
+                </a>
+
+            <?php endif; ?>
+
+
+            <!-- =================================================
+                 PEDIDOS - ADMIN / EMPLEADO
+            ================================================== -->
+
+            <?php if (
+                isset($_SESSION['usuario_rol']) &&
+                in_array(
+                    $_SESSION['usuario_rol'],
+                    ['admin', 'empleado'],
+                    true
+                )
+            ): ?>
+
+                <a
+                    href="/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=admin"
+                    class="nav-button"
+                >
+
+                    <i class="fa-solid fa-box"></i>
+
+                    Pedidos
+
+                </a>
+
+            <?php endif; ?>
+
+
+            <!-- =================================================
+                 ADMIN
+            ================================================== -->
+
+            <?php if (
+                isset($_SESSION['usuario_rol']) &&
+                $_SESSION['usuario_rol'] === 'admin'
+            ): ?>
+
+                <a
+                    href="/DonDiego-Panaderia-Pruebas/controllers/ProductoController.php?accion=listar"
+                    class="nav-button"
+                >
+
+                    Admin
+
+                </a>
+
+            <?php endif; ?>
+
+
+        </div>
+
+    </nav>
 
 </header>

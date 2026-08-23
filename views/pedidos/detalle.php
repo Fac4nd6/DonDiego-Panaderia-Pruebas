@@ -20,10 +20,19 @@ require __DIR__ . '/../layouts/header.php';
 
             <span class="detalle-etiqueta">
 
-                <?= !empty($esAdmin)
-                    ? 'ADMINISTRACIÓN'
-                    : 'PEDIDO CONFIRMADO'
-                ?>
+                <?php if (!empty($esEmpleado)): ?>
+
+                    GESTIÓN DE PEDIDOS
+
+                <?php elseif (!empty($esAdmin)): ?>
+
+                    ADMINISTRACIÓN
+
+                <?php else: ?>
+
+                    PEDIDO CONFIRMADO
+
+                <?php endif; ?>
 
             </span>
 
@@ -37,7 +46,11 @@ require __DIR__ . '/../layouts/header.php';
 
             <p>
 
-                <?php if (!empty($esAdmin)): ?>
+                <?php if (!empty($esEmpleado)): ?>
+
+                    Detalle del pedido para gestión y entrega.
+
+                <?php elseif (!empty($esAdmin)): ?>
 
                     Detalle completo del pedido realizado por el cliente.
 
@@ -57,10 +70,10 @@ require __DIR__ . '/../layouts/header.php';
 
 
             <!-- =================================================
-                 INFORMACIÓN DEL CLIENTE - ADMIN
+                 INFORMACIÓN DEL CLIENTE
             ================================================== -->
 
-            <?php if (!empty($esAdmin)): ?>
+            <?php if (!empty($esAdmin) || !empty($esEmpleado)): ?>
 
                 <div class="detalle-pedido-card">
 
@@ -89,6 +102,29 @@ require __DIR__ . '/../layouts/header.php';
                             </strong>
 
                         </div>
+
+
+                        <?php if (!empty($pedido['nombre_comercio'])): ?>
+
+                            <div class="detalle-info-item">
+
+                                <span>
+                                    Comercio
+                                </span>
+
+                                <strong>
+
+                                    <?= htmlspecialchars(
+                                        $pedido['nombre_comercio'],
+                                        ENT_QUOTES,
+                                        'UTF-8'
+                                    ) ?>
+
+                                </strong>
+
+                            </div>
+
+                        <?php endif; ?>
 
 
                         <div class="detalle-info-item">
@@ -417,7 +453,7 @@ require __DIR__ . '/../layouts/header.php';
             <div class="detalle-acciones">
 
 
-                <?php if (!empty($esAdmin)): ?>
+                <?php if (!empty($esAdmin) || !empty($esEmpleado)): ?>
 
                     <a
                         href="/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=admin"
