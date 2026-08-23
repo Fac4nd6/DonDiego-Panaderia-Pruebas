@@ -161,12 +161,10 @@ class Pedido
             );
         }
 
-        if (!$stmt->bind_param("i", $usuarioId)) {
-            die(
-                "ERROR EN bind_param(): "
-                . $stmt->error
-            );
-        }
+        $stmt->bind_param(
+            "i",
+            $usuarioId
+        );
 
         if (!$stmt->execute()) {
             die(
@@ -176,13 +174,6 @@ class Pedido
         }
 
         $resultado = $stmt->get_result();
-
-        if (!$resultado) {
-            die(
-                "ERROR EN get_result(): "
-                . $stmt->error
-            );
-        }
 
         $pedidos = $resultado->fetch_all(
             MYSQLI_ASSOC
@@ -195,8 +186,7 @@ class Pedido
 
 
     /* =========================================================
-       OBTENER PEDIDO POR ID
-       Y COMPROBAR QUE PERTENECE AL USUARIO
+       OBTENER PEDIDO POR ID - CLIENTE
     ========================================================= */
 
     public function obtenerPorId(
@@ -245,60 +235,62 @@ class Pedido
 
 
     /* =========================================================
-   OBTENER PEDIDO POR ID - ADMIN
-========================================================= */
+       OBTENER PEDIDO POR ID - ADMIN / EMPLEADO
+    ========================================================= */
 
-public function obtenerPorIdAdmin($pedidoId)
-{
+    public function obtenerPorIdAdmin($pedidoId)
+    {
 
-    $sql = "
-        SELECT
-            p.id,
-            p.usuario_id,
-            p.fecha_pedido,
-            p.fecha_recepcion,
-            p.franja_horaria,
-            p.direccion_entrega,
-            p.estado,
-            p.total,
+        $sql = "
+            SELECT
+                p.id,
+                p.usuario_id,
+                p.fecha_pedido,
+                p.fecha_recepcion,
+                p.franja_horaria,
+                p.direccion_entrega,
+                p.estado,
+                p.total,
 
-            u.nombre_completo,
-            u.email,
-            u.telefono
+                u.nombre_completo,
+                u.nombre_comercio,
+                u.email,
+                u.telefono
 
-        FROM pedidos p
+            FROM pedidos p
 
-        INNER JOIN usuarios u
-            ON p.usuario_id = u.id
+            INNER JOIN usuarios u
+                ON p.usuario_id = u.id
 
-        WHERE p.id = ?
+            WHERE p.id = ?
 
-        LIMIT 1
-    ";
+            LIMIT 1
+        ";
 
-    $stmt = $this->conn->prepare($sql);
+        $stmt = $this->conn->prepare($sql);
 
-    if (!$stmt) {
-        return null;
+        if (!$stmt) {
+            return null;
+        }
+
+        $stmt->bind_param(
+            "i",
+            $pedidoId
+        );
+
+        $stmt->execute();
+
+        $resultado =
+            $stmt->get_result();
+
+        $pedido =
+            $resultado->fetch_assoc();
+
+        $stmt->close();
+
+        return $pedido;
     }
 
-    $stmt->bind_param(
-        "i",
-        $pedidoId
-    );
-
-    $stmt->execute();
-
-    $resultado =
-        $stmt->get_result();
-
-    $pedido =
-        $resultado->fetch_assoc();
-
-    $stmt->close();
-
-    return $pedido;
-}
 
     /* =========================================================
        OBTENER DETALLES DE UN PEDIDO
@@ -400,6 +392,7 @@ public function obtenerPorIdAdmin($pedidoId)
                 p.total,
 
                 u.nombre_completo,
+                u.nombre_comercio,
                 u.email,
                 u.telefono
 
@@ -478,7 +471,8 @@ public function obtenerPorIdAdmin($pedidoId)
         return $resultado;
     }
 
-        /* =========================================================
+
+    /* =========================================================
        CANCELAR PEDIDO
     ========================================================= */
 
@@ -515,5 +509,4 @@ public function obtenerPorIdAdmin($pedidoId)
 
         return $resultado;
     }
-
 }

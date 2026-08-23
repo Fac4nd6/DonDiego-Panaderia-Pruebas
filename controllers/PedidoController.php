@@ -7,6 +7,7 @@ ini_set('display_startup_errors', '1');
 session_start();
 
 
+
 // =========================================================
 // COMPROBAR SESIÓN
 // =========================================================
@@ -52,8 +53,15 @@ $accion =
 
 
 // =========================================================
-// COMPROBAR ROL DE ADMIN
+// COMPROBAR ROL DE ADMIN / EMPLEADO
 // =========================================================
+//
+// Estas acciones pueden ser utilizadas por:
+// - admin
+// - empleado
+//
+// Los clientes NO pueden acceder.
+//
 
 if (
     $accion === 'admin' ||
@@ -63,7 +71,11 @@ if (
 
     if (
         !isset($_SESSION['usuario_rol']) ||
-        $_SESSION['usuario_rol'] !== 'admin'
+        !in_array(
+            $_SESSION['usuario_rol'],
+            ['admin', 'empleado'],
+            true
+        )
     ) {
 
         http_response_code(403);
@@ -74,15 +86,26 @@ if (
     }
 }
 
-
 // =========================================================
-// PANEL ADMIN - PEDIDOS
+// PANEL DE PEDIDOS - ADMIN / EMPLEADO
 // =========================================================
 
 if ($accion === 'admin') {
 
     $pedidos =
         $pedidoModel->obtenerTodos();
+
+
+    // -----------------------------------------------------
+    // INDICAR EL ROL
+    // -----------------------------------------------------
+
+    $esAdmin =
+        $_SESSION['usuario_rol'] === 'admin';
+
+    $esEmpleado =
+        $_SESSION['usuario_rol'] === 'empleado';
+
 
     require __DIR__ . '/../views/admin/pedidos.php';
 
@@ -91,7 +114,7 @@ if ($accion === 'admin') {
 
 
 // =========================================================
-// VER PEDIDO - ADMIN
+// VER PEDIDO - ADMIN / EMPLEADO
 // =========================================================
 
 if ($accion === 'ver_admin') {
@@ -147,10 +170,14 @@ if ($accion === 'ver_admin') {
 
 
     // -----------------------------------------------------
-    // INDICAR QUE ES ADMIN
+    // INDICAR ROL
     // -----------------------------------------------------
 
-    $esAdmin = true;
+    $esAdmin =
+        $_SESSION['usuario_rol'] === 'admin';
+
+    $esEmpleado =
+        $_SESSION['usuario_rol'] === 'empleado';
 
 
     // -----------------------------------------------------
@@ -165,6 +192,7 @@ if ($accion === 'ver_admin') {
 
 // =========================================================
 // ACTUALIZAR ESTADO DEL PEDIDO
+// ADMIN / EMPLEADO
 // =========================================================
 
 if ($accion === 'actualizar_estado') {
@@ -817,6 +845,8 @@ if ($accion === 'ver') {
     // -----------------------------------------------------
 
     $esAdmin = false;
+
+    $esEmpleado = false;
 
 
     // -----------------------------------------------------

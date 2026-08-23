@@ -15,18 +15,36 @@ require __DIR__ . '/../layouts/header.php';
 
             <div>
 
-                <span class="admin-etiqueta">
-                    ADMINISTRACIÓN
-                </span>
+                <?php if (!empty($esEmpleado)): ?>
 
-                <h1>
-                    Gestión de pedidos
-                </h1>
+                    <span class="admin-etiqueta">
+                        GESTIÓN DE PEDIDOS
+                    </span>
 
-                <p>
-                    Consultá y gestioná los pedidos realizados
-                    por los comercios.
-                </p>
+                    <h1>
+                        Pedidos
+                    </h1>
+
+                    <p>
+                        Consultá los pedidos y actualizá su estado.
+                    </p>
+
+                <?php else: ?>
+
+                    <span class="admin-etiqueta">
+                        ADMINISTRACIÓN
+                    </span>
+
+                    <h1>
+                        Gestión de pedidos
+                    </h1>
+
+                    <p>
+                        Consultá y gestioná los pedidos realizados
+                        por los comercios.
+                    </p>
+
+                <?php endif; ?>
 
             </div>
 
@@ -97,6 +115,10 @@ require __DIR__ . '/../layouts/header.php';
                                     Cambiar estado
                                 </th>
 
+                                <th>
+                                    Detalle
+                                </th>
+
                             </tr>
 
                         </thead>
@@ -136,6 +158,20 @@ require __DIR__ . '/../layouts/header.php';
                                                 ) ?>
 
                                             </strong>
+
+                                            <?php if (!empty($pedido['nombre_comercio'])): ?>
+
+                                                <span>
+
+                                                    <?= htmlspecialchars(
+                                                        $pedido['nombre_comercio'],
+                                                        ENT_QUOTES,
+                                                        'UTF-8'
+                                                    ) ?>
+
+                                                </span>
+
+                                            <?php endif; ?>
 
                                             <span>
 
@@ -192,7 +228,7 @@ require __DIR__ . '/../layouts/header.php';
                                     </td>
 
 
-                                    <!-- FECHA -->
+                                    <!-- FECHA DEL PEDIDO -->
 
                                     <td>
 
@@ -206,7 +242,7 @@ require __DIR__ . '/../layouts/header.php';
                                     </td>
 
 
-                                    <!-- HORARIO -->
+                                    <!-- FECHA Y HORARIO -->
 
                                     <td>
 
@@ -377,6 +413,20 @@ require __DIR__ . '/../layouts/header.php';
                                             </button>
 
                                         </form>
+
+                                    </td>
+
+
+                                    <!-- DETALLE -->
+
+                                    <td>
+
+                                        <a
+                                            href="/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=ver_admin&id=<?= (int) $pedido['id'] ?>"
+                                            class="btn-ver-pedido"
+                                        >
+                                            Ver
+                                        </a>
 
                                     </td>
 
