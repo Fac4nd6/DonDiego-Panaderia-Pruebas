@@ -281,11 +281,11 @@ require __DIR__ . '/../layouts/header.php';
                                         <strong class="pedido-total">
 
                                             $<?= number_format(
-                                                $pedido['total'],
-                                                0,
-                                                ',',
-                                                '.'
-                                            ) ?>
+                                                    $pedido['total'],
+                                                    0,
+                                                    ',',
+                                                    '.'
+                                                ) ?>
 
                                         </strong>
 
@@ -298,11 +298,10 @@ require __DIR__ . '/../layouts/header.php';
 
                                         <span
                                             class="estado estado-<?= htmlspecialchars(
-                                                $pedido['estado'],
-                                                ENT_QUOTES,
-                                                'UTF-8'
-                                            ) ?>"
-                                        >
+                                                                        $pedido['estado'],
+                                                                        ENT_QUOTES,
+                                                                        'UTF-8'
+                                                                    ) ?>">
 
                                             <?= htmlspecialchars(
                                                 ucfirst(
@@ -328,33 +327,36 @@ require __DIR__ . '/../layouts/header.php';
                                         <form
                                             method="POST"
                                             action="/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php"
-                                            class="form-estado"
-                                        >
+                                            class="form-estado">
+
+                                            <input
+                                                type="hidden"
+                                                name="csrf_token"
+                                                value="<?= htmlspecialchars(
+                                                            csrf_token(),
+                                                            ENT_QUOTES,
+                                                            'UTF-8'
+                                                        ) ?>">
 
                                             <input
                                                 type="hidden"
                                                 name="accion"
-                                                value="actualizar_estado"
-                                            >
+                                                value="actualizar_estado">
 
                                             <input
                                                 type="hidden"
                                                 name="pedido_id"
-                                                value="<?= (int) $pedido['id'] ?>"
-                                            >
-
+                                                value="<?= (int) $pedido['id'] ?>">
 
                                             <select
                                                 name="estado"
-                                                required
-                                            >
+                                                required>
 
                                                 <option
                                                     value="pendiente"
                                                     <?= $pedido['estado'] === 'pendiente'
                                                         ? 'selected'
-                                                        : '' ?>
-                                                >
+                                                        : '' ?>>
                                                     Pendiente
                                                 </option>
 
@@ -362,8 +364,7 @@ require __DIR__ . '/../layouts/header.php';
                                                     value="confirmado"
                                                     <?= $pedido['estado'] === 'confirmado'
                                                         ? 'selected'
-                                                        : '' ?>
-                                                >
+                                                        : '' ?>>
                                                     Confirmado
                                                 </option>
 
@@ -371,8 +372,7 @@ require __DIR__ . '/../layouts/header.php';
                                                     value="en_preparacion"
                                                     <?= $pedido['estado'] === 'en_preparacion'
                                                         ? 'selected'
-                                                        : '' ?>
-                                                >
+                                                        : '' ?>>
                                                     En preparación
                                                 </option>
 
@@ -380,8 +380,7 @@ require __DIR__ . '/../layouts/header.php';
                                                     value="listo"
                                                     <?= $pedido['estado'] === 'listo'
                                                         ? 'selected'
-                                                        : '' ?>
-                                                >
+                                                        : '' ?>>
                                                     Listo
                                                 </option>
 
@@ -389,8 +388,7 @@ require __DIR__ . '/../layouts/header.php';
                                                     value="entregado"
                                                     <?= $pedido['estado'] === 'entregado'
                                                         ? 'selected'
-                                                        : '' ?>
-                                                >
+                                                        : '' ?>>
                                                     Entregado
                                                 </option>
 
@@ -398,17 +396,14 @@ require __DIR__ . '/../layouts/header.php';
                                                     value="cancelado"
                                                     <?= $pedido['estado'] === 'cancelado'
                                                         ? 'selected'
-                                                        : '' ?>
-                                                >
+                                                        : '' ?>>
                                                     Cancelado
                                                 </option>
 
                                             </select>
 
-
                                             <button
-                                                type="submit"
-                                            >
+                                                type="submit">
                                                 Guardar
                                             </button>
 
@@ -423,8 +418,7 @@ require __DIR__ . '/../layouts/header.php';
 
                                         <a
                                             href="/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=ver_admin&id=<?= (int) $pedido['id'] ?>"
-                                            class="btn-ver-pedido"
-                                        >
+                                            class="btn-ver-pedido">
                                             Ver
                                         </a>
 
