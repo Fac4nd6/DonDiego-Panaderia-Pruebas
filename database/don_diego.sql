@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 19-08-2026 a las 19:25:55
+-- Tiempo de generación: 25-08-2026 a las 22:51:47
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -61,19 +61,6 @@ CREATE TABLE `pedidos` (
   `total` decimal(10,2) NOT NULL DEFAULT 0.00
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Volcado de datos para la tabla `pedidos`
---
-
-INSERT INTO `pedidos` (`id`, `usuario_id`, `fecha_pedido`, `fecha_recepcion`, `franja_horaria`, `direccion_entrega`, `metodo_pago`, `estado`, `total`) VALUES
-(1, 1, '2026-08-18 19:40:07', '2026-08-20', '12:00 - 14:00', 'Salto, Uruguay 1348', 'efectivo', 'pendiente', 360.00),
-(2, 1, '2026-08-18 19:43:20', '2026-08-28', '12:00 - 14:00', 'Salto, Uruguay 1348', 'efectivo', 'pendiente', 180.00),
-(3, 1, '2026-08-18 19:47:26', '2026-08-18', '10:00 - 12:00', 'Salto, Uruguay 1348', 'efectivo', 'pendiente', 180.00),
-(4, 1, '2026-08-18 19:48:26', '2026-08-31', '12:00 - 14:00', 'Salto, Uruguay 1348', 'efectivo', 'pendiente', 130.00),
-(5, 2, '2026-08-19 10:19:18', '2026-08-28', '12:00 - 14:00', 'Salto, jgjhhghjg 2123', 'efectivo', 'pendiente', 6300.00),
-(6, 2, '2026-08-19 10:22:31', '2026-08-26', '14:00 - 16:00', 'Salto, sfsdfsd 1234', 'efectivo', 'pendiente', 3900.00),
-(7, 4, '2026-08-19 10:36:31', '2026-09-15', '12:00 - 14:00', 'Salto, juan abreu 1313, tiene 99 pisos', 'efectivo', 'pendiente', 12870.00);
-
 -- --------------------------------------------------------
 
 --
@@ -88,21 +75,6 @@ CREATE TABLE `pedido_detalles` (
   `precio_unitario` decimal(10,2) NOT NULL,
   `subtotal` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Volcado de datos para la tabla `pedido_detalles`
---
-
-INSERT INTO `pedido_detalles` (`id`, `pedido_id`, `producto_id`, `cantidad`, `precio_unitario`, `subtotal`) VALUES
-(1, 1, 21, 2, 180.00, 360.00),
-(2, 2, 21, 1, 180.00, 180.00),
-(3, 3, 22, 1, 180.00, 180.00),
-(4, 4, 17, 1, 130.00, 130.00),
-(5, 5, 22, 4, 180.00, 720.00),
-(6, 5, 21, 6, 180.00, 1080.00),
-(7, 5, 14, 6, 750.00, 4500.00),
-(8, 6, 20, 6, 650.00, 3900.00),
-(9, 7, 17, 99, 130.00, 12870.00);
 
 -- --------------------------------------------------------
 
@@ -148,7 +120,7 @@ INSERT INTO `productos` (`id`, `nombre`, `descripcion`, `precio`, `categoria_id`
 (19, 'Arrollado de pollo', 'Arrollado artesanal relleno de pollo.', 650.00, 2, 'arrollado-pollo.avif', 0, '2026-08-17 17:34:48', '2026-08-17 23:15:01'),
 (20, 'Arrollado', 'Arrollado artesanal de Don Diego.', 650.00, 2, 'arrollado.avif', 1, '2026-08-17 17:34:48', '2026-08-17 17:34:48'),
 (21, 'Sándwiches', 'Sándwiches artesanales preparados por Don Diego.', 180.00, 2, 'sandwiches.avif', 1, '2026-08-17 17:34:48', '2026-08-17 23:03:06'),
-(22, 'Pan casero', 'Pan artesanal recién horneado.', 180.00, 5, 'producto_6a8397d2024dd0.57171791.jpg', 1, '2026-08-17 17:34:48', '2026-08-19 10:52:09');
+(22, 'Pan casero', 'Pan artesanal recién horneado.', 200.00, 5, 'producto_6a8397d2024dd0.57171791.jpg', 1, '2026-08-17 17:34:48', '2026-08-24 23:37:33');
 
 -- --------------------------------------------------------
 
@@ -165,18 +137,24 @@ CREATE TABLE `usuarios` (
   `direccion` varchar(255) DEFAULT NULL,
   `password` varchar(255) NOT NULL,
   `rol` enum('cliente','empleado','admin') DEFAULT 'cliente',
-  `fecha_registro` timestamp NOT NULL DEFAULT current_timestamp()
+  `fecha_registro` timestamp NOT NULL DEFAULT current_timestamp(),
+  `email_verificado` tinyint(1) NOT NULL DEFAULT 0,
+  `token_verificacion` varchar(64) DEFAULT NULL,
+  `token_expira` datetime DEFAULT NULL,
+  `ultimo_reenvio_verificacion` datetime DEFAULT NULL,
+  `intentos_reenvio_verificacion` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`id`, `nombre_completo`, `nombre_comercio`, `email`, `telefono`, `direccion`, `password`, `rol`, `fecha_registro`) VALUES
-(1, 'Facundo Leites', NULL, 'fac4nd6@gmail.com', NULL, NULL, '$2y$10$irfcPZofXadQA0.q9.U76uZXp.LbIwmNNp2LWUMwcVndGYTWl0r.G', 'admin', '2026-08-17 12:43:07'),
-(2, 'hoola', NULL, 'hola@gmail.com', NULL, NULL, '$2y$10$94.JpJaGHGIrI6ZxktaoSuBi1YZnj19I2wHWQMdnBxdOPy/U1i1Mi', 'cliente', '2026-08-19 10:16:33'),
-(3, 'a', NULL, 'e@gmail.com', NULL, NULL, '$2y$10$Fn5IljyMwC4JxlFIRZM8X.yr6V5DZ/YSInu/QNNXaLjcDTFn941xG', 'cliente', '2026-08-19 10:30:18'),
-(4, 'j', NULL, 'juan@gmail.com', NULL, NULL, '$2y$10$R//bmgMRFmAIHwnws4cA5.r3n0dqgnEpP45vFLRq2ZLrKITNWWWk6', 'cliente', '2026-08-19 10:31:19');
+INSERT INTO `usuarios` (`id`, `nombre_completo`, `nombre_comercio`, `email`, `telefono`, `direccion`, `password`, `rol`, `fecha_registro`, `email_verificado`, `token_verificacion`, `token_expira`, `ultimo_reenvio_verificacion`, `intentos_reenvio_verificacion`) VALUES
+(11, 'Facundo Leites', NULL, 'fac4nd6@gmail.com', NULL, NULL, '$2y$10$uP1ustgKzOyYBg/Bhe4M4.FCAifgJ50uILMPsqQ15JDgMQoOtcy/m', 'admin', '2026-08-25 19:36:06', 1, NULL, NULL, NULL, 0),
+(12, 'Cliente', NULL, 'cliente@gmail.com', NULL, NULL, '$2y$10$7IWB.gyPzAyLI0vK9HyzGupR7yJOxhfdTV3oPdwXW/kpASnt5IPlK', 'cliente', '2026-08-25 20:08:26', 1, 'bb9a6e806f74caf4e0029e3a42f460dce2b733391ad394c7a4c611af86969a15', '2026-08-26 22:08:26', NULL, 0),
+(13, 'pepe', NULL, 'pepe@gmail.com', NULL, NULL, '$2y$10$4g.2ImSrlMUe66tMr5PqburFTpo/cU0PcH6cxcpEcAi.dVCq7KCWC', 'cliente', '2026-08-25 20:40:53', 0, 'cf964e3abde8c3e8ac07ec9ac8b821c851bdd66443f234d6f7ba05c36e2321b9', '2026-08-26 22:40:53', NULL, 0),
+(14, 'empleado', NULL, 'empleado@gmail.com', NULL, NULL, '$2y$10$dxA9xOh8VOaLkPH/1aB/2eaEOG0P4cQuzb/nF6z4ODYbDxhwMjlp.', 'empleado', '2026-08-25 20:50:29', 1, 'e974532dee11145209191a781913f415adffeeaf9afcf35d4d3a85c564423ecd', '2026-08-26 22:50:29', NULL, 0),
+(15, 'admin', NULL, 'admin@gmail.com', NULL, NULL, '$2y$10$Ur6FnUxFn8.KxtMZLiGsKejpdjZTy5zCS1zAeluoHhmdfiIGLzY6m', 'admin', '2026-08-25 20:50:55', 1, '834939eaf9ebe7c915690b3ddc9b9eea8fa604136021f3c1783cd8ddc251830a', '2026-08-26 22:50:55', NULL, 0);
 
 --
 -- Índices para tablas volcadas
@@ -216,7 +194,7 @@ ALTER TABLE `productos`
 --
 ALTER TABLE `usuarios`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `email` (`email`);
+  ADD UNIQUE KEY `unique_email` (`email`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -232,13 +210,13 @@ ALTER TABLE `categorias`
 -- AUTO_INCREMENT de la tabla `pedidos`
 --
 ALTER TABLE `pedidos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `pedido_detalles`
 --
 ALTER TABLE `pedido_detalles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `productos`
@@ -250,7 +228,7 @@ ALTER TABLE `productos`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- Restricciones para tablas volcadas

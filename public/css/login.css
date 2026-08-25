@@ -1,10 +1,13 @@
-html {
-    scrollbar-width: none;
+.verification-resend {
+    color: #c62828;
+    font-weight: 600;
+    text-decoration: none;
 }
 
-html::-webkit-scrollbar {
-    display: none;
+.verification-resend:hover {
+    text-decoration: underline;
 }
+
 
 /* ==============================
    FONDO DEL LOGIN

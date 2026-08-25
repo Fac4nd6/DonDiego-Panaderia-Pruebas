@@ -31,7 +31,8 @@ class Usuario
                 direccion,
                 password,
                 rol,
-                fecha_registro
+                fecha_registro,
+                email_verificado
             FROM usuarios
             WHERE id = ?
             LIMIT 1
@@ -76,7 +77,8 @@ class Usuario
                 direccion,
                 password,
                 rol,
-                fecha_registro
+                fecha_registro,
+                email_verificado
             FROM usuarios
             WHERE email = ?
             LIMIT 1
@@ -246,7 +248,8 @@ class Usuario
                 telefono,
                 direccion,
                 rol,
-                fecha_registro
+                fecha_registro,
+                email_verificado
             FROM usuarios
             ORDER BY id DESC
         ";
