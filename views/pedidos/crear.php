@@ -43,6 +43,24 @@ require __DIR__ . '/../layouts/header.php';
                     action="/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php">
 
 
+                    <!-- =================================================
+                         CSRF
+                    ================================================== -->
+
+                    <input
+                        type="hidden"
+                        name="csrf_token"
+                        value="<?= htmlspecialchars(
+                                    csrf_token(),
+                                    ENT_QUOTES,
+                                    'UTF-8'
+                                ) ?>">
+
+
+                    <!-- =================================================
+                         ACCIÓN
+                    ================================================== -->
+
                     <input
                         type="hidden"
                         name="accion"
@@ -60,16 +78,12 @@ require __DIR__ . '/../layouts/header.php';
                         </h2>
 
 
-                        <!-- =================================================
-                             DEPARTAMENTO
-                        ================================================== -->
+                        <!-- DEPARTAMENTO -->
 
                         <div class="pedido-input">
 
                             <label for="departamento">
-
                                 Departamento
-
                             </label>
 
                             <select
@@ -95,16 +109,12 @@ require __DIR__ . '/../layouts/header.php';
                         </div>
 
 
-                        <!-- =================================================
-                             CALLE
-                        ================================================== -->
+                        <!-- CALLE -->
 
                         <div class="pedido-input">
 
                             <label for="calle">
-
                                 Calle
-
                             </label>
 
                             <input
@@ -118,16 +128,12 @@ require __DIR__ . '/../layouts/header.php';
                         </div>
 
 
-                        <!-- =================================================
-                             NÚMERO
-                        ================================================== -->
+                        <!-- NÚMERO DE PUERTA -->
 
                         <div class="pedido-input">
 
                             <label for="numero_puerta">
-
                                 Número de puerta
-
                             </label>
 
                             <input
@@ -141,9 +147,7 @@ require __DIR__ . '/../layouts/header.php';
                         </div>
 
 
-                        <!-- =================================================
-                             APARTAMENTO / REFERENCIA
-                        ================================================== -->
+                        <!-- REFERENCIA -->
 
                         <div class="pedido-input">
 
@@ -167,16 +171,12 @@ require __DIR__ . '/../layouts/header.php';
                         </div>
 
 
-                        <!-- =================================================
-                             FECHA
-                        ================================================== -->
+                        <!-- FECHA -->
 
                         <div class="pedido-input">
 
                             <label for="fecha_recepcion">
-
                                 Fecha de recepción
-
                             </label>
 
 
@@ -184,7 +184,6 @@ require __DIR__ . '/../layouts/header.php';
 
                             $fechaMinima =
                                 date('Y-m-d');
-
 
                             $fechaMaxima =
                                 date(
@@ -212,16 +211,12 @@ require __DIR__ . '/../layouts/header.php';
                         </div>
 
 
-                        <!-- =================================================
-                             FRANJA HORARIA
-                        ================================================== -->
+                        <!-- FRANJA HORARIA -->
 
                         <div class="pedido-input">
 
                             <label for="franja_horaria">
-
                                 Franja horaria
-
                             </label>
 
 
@@ -261,7 +256,6 @@ require __DIR__ . '/../layouts/header.php';
                             </select>
 
                         </div>
-
 
                     </section>
 
@@ -332,7 +326,6 @@ require __DIR__ . '/../layouts/header.php';
 
 
                         </div>
-
 
                     </section>
 
@@ -415,11 +408,11 @@ require __DIR__ . '/../layouts/header.php';
                                         ×
 
                                         $<?= number_format(
-                                            $item['precio'],
-                                            0,
-                                            ',',
-                                            '.'
-                                        ) ?>
+                                                $item['precio'],
+                                                0,
+                                                ',',
+                                                '.'
+                                            ) ?>
 
                                     </span>
 
@@ -429,12 +422,12 @@ require __DIR__ . '/../layouts/header.php';
                                 <strong>
 
                                     $<?= number_format(
-                                        $item['precio']
-                                        * $item['cantidad'],
-                                        0,
-                                        ',',
-                                        '.'
-                                    ) ?>
+                                            $item['precio']
+                                                * $item['cantidad'],
+                                            0,
+                                            ',',
+                                            '.'
+                                        ) ?>
 
                                 </strong>
 
@@ -462,11 +455,11 @@ require __DIR__ . '/../layouts/header.php';
                         <strong>
 
                             $<?= number_format(
-                                $total,
-                                0,
-                                ',',
-                                '.'
-                            ) ?>
+                                    $total,
+                                    0,
+                                    ',',
+                                    '.'
+                                ) ?>
 
                         </strong>
 

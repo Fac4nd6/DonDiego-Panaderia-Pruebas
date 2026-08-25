@@ -18,12 +18,19 @@ if (!isset($_SESSION['usuario_id'])) {
 
 
 // =========================================================
+// CSRF
+// =========================================================
+
+require_once __DIR__ . '/../config/Csrf.php';
+
+
+// =========================================================
 // MODELOS
 // =========================================================
 
-require_once '../config/Database.php';
-require_once '../models/Producto.php';
-require_once '../models/Carrito.php';
+require_once __DIR__ . '/../config/Database.php';
+require_once __DIR__ . '/../models/Producto.php';
+require_once __DIR__ . '/../models/Carrito.php';
 
 
 $productoModel = new Producto($conn);
@@ -42,7 +49,10 @@ $carritoModel->inicializar();
 // OBTENER ACCIÓN
 // =========================================================
 
-$accion = $_POST['accion'] ?? $_GET['accion'] ?? 'ver';
+$accion =
+    $_POST['accion']
+    ?? $_GET['accion']
+    ?? 'ver';
 
 
 // =========================================================
@@ -51,15 +61,17 @@ $accion = $_POST['accion'] ?? $_GET['accion'] ?? 'ver';
 
 if ($accion === 'ver') {
 
-    $carrito = $carritoModel->obtener();
+    $carrito =
+        $carritoModel->obtener();
 
-    $total = $carritoModel->calcularTotal();
+    $total =
+        $carritoModel->calcularTotal();
 
     $cantidadProductos =
         $carritoModel->cantidadProductos();
 
 
-    require '../views/carrito/index.php';
+    require __DIR__ . '/../views/carrito/index.php';
 
     exit;
 }
@@ -71,6 +83,28 @@ if ($accion === 'ver') {
 
 if ($accion === 'agregar') {
 
+
+    // -----------------------------------------------------
+    // SOLO POST
+    // -----------------------------------------------------
+
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+
+        http_response_code(405);
+
+        exit(
+            'Método no permitido.'
+        );
+    }
+
+
+    // -----------------------------------------------------
+    // CSRF
+    // -----------------------------------------------------
+
+    verificar_csrf();
+
+
     $productoId =
         (int) ($_POST['producto_id'] ?? 0);
 
@@ -78,24 +112,19 @@ if ($accion === 'agregar') {
         (int) ($_POST['cantidad'] ?? 1);
 
 
-    // =====================================================
-    // VALIDAR ID
-    // =====================================================
-
     if ($productoId <= 0) {
 
-        exit('Producto no válido.');
+        exit(
+            'Producto no válido.'
+        );
     }
 
-
-    // =====================================================
-    // VALIDAR CANTIDAD
-    // =====================================================
 
     if ($cantidad <= 0) {
 
         $cantidad = 1;
     }
+
 
     if ($cantidad > 99) {
 
@@ -103,43 +132,33 @@ if ($accion === 'agregar') {
     }
 
 
-    // =====================================================
-    // OBTENER PRODUCTO
-    // =====================================================
-
     $producto =
-        $productoModel->obtenerPorId($productoId);
+        $productoModel->obtenerPorId(
+            $productoId
+        );
 
 
     if (!$producto) {
 
-        exit('Producto no encontrado.');
+        exit(
+            'Producto no encontrado.'
+        );
     }
 
-
-    // =====================================================
-    // COMPROBAR PRODUCTO ACTIVO
-    // =====================================================
 
     if ((int) $producto['activo'] !== 1) {
 
-        exit('Este producto no está disponible.');
+        exit(
+            'Este producto no está disponible.'
+        );
     }
 
-
-    // =====================================================
-    // AGREGAR AL CARRITO
-    // =====================================================
 
     $carritoModel->agregar(
         $producto,
         $cantidad
     );
 
-
-    // =====================================================
-    // VOLVER AL CARRITO
-    // =====================================================
 
     header(
         'Location: /DonDiego-Panaderia-Pruebas/controllers/CarritoController.php?accion=ver'
@@ -155,6 +174,20 @@ if ($accion === 'agregar') {
 
 if ($accion === 'actualizar') {
 
+
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+
+        http_response_code(405);
+
+        exit(
+            'Método no permitido.'
+        );
+    }
+
+
+    verificar_csrf();
+
+
     $productoId =
         (int) ($_POST['producto_id'] ?? 0);
 
@@ -162,19 +195,13 @@ if ($accion === 'actualizar') {
         (int) ($_POST['cantidad'] ?? 0);
 
 
-    // -----------------------------------------------------
-    // VALIDAR
-    // -----------------------------------------------------
-
     if ($productoId <= 0) {
 
-        exit('Producto no válido.');
+        exit(
+            'Producto no válido.'
+        );
     }
 
-
-    // -----------------------------------------------------
-    // ACTUALIZAR
-    // -----------------------------------------------------
 
     if (
         !$carritoModel->actualizarCantidad(
@@ -183,16 +210,14 @@ if ($accion === 'actualizar') {
         )
     ) {
 
-        exit('Producto no encontrado en el carrito.');
+        exit(
+            'Producto no encontrado en el carrito.'
+        );
     }
 
 
-    // -----------------------------------------------------
-    // VOLVER
-    // -----------------------------------------------------
-
     header(
-        'Location: CarritoController.php?accion=ver'
+        'Location: /DonDiego-Panaderia-Pruebas/controllers/CarritoController.php?accion=ver'
     );
 
     exit;
@@ -205,25 +230,39 @@ if ($accion === 'actualizar') {
 
 if ($accion === 'eliminar') {
 
+
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+
+        http_response_code(405);
+
+        exit(
+            'Método no permitido.'
+        );
+    }
+
+
+    verificar_csrf();
+
+
     $productoId =
         (int) ($_POST['producto_id'] ?? 0);
 
 
     if ($productoId <= 0) {
 
-        exit('Producto no válido.');
+        exit(
+            'Producto no válido.'
+        );
     }
 
 
-    $carritoModel->eliminar($productoId);
+    $carritoModel->eliminar(
+        $productoId
+    );
 
-
-    // -----------------------------------------------------
-    // VOLVER
-    // -----------------------------------------------------
 
     header(
-        'Location: CarritoController.php?accion=ver'
+        'Location: /DonDiego-Panaderia-Pruebas/controllers/CarritoController.php?accion=ver'
     );
 
     exit;
@@ -236,11 +275,25 @@ if ($accion === 'eliminar') {
 
 if ($accion === 'vaciar') {
 
+
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+
+        http_response_code(405);
+
+        exit(
+            'Método no permitido.'
+        );
+    }
+
+
+    verificar_csrf();
+
+
     $carritoModel->vaciar();
 
 
     header(
-        'Location: CarritoController.php?accion=ver'
+        'Location: /DonDiego-Panaderia-Pruebas/controllers/CarritoController.php?accion=ver'
     );
 
     exit;

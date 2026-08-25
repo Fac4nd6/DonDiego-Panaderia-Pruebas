@@ -201,11 +201,10 @@ require __DIR__ . '/../layouts/header.php';
 
                         <strong
                             class="detalle-estado estado-<?= htmlspecialchars(
-                                $pedido['estado'],
-                                ENT_QUOTES,
-                                'UTF-8'
-                            ) ?>"
-                        >
+                                                                $pedido['estado'],
+                                                                ENT_QUOTES,
+                                                                'UTF-8'
+                                                            ) ?>">
 
                             <?= htmlspecialchars(
                                 ucfirst(
@@ -345,16 +344,15 @@ require __DIR__ . '/../layouts/header.php';
 
                                         <img
                                             src="/DonDiego-Panaderia-Pruebas/public/img/productos/<?= htmlspecialchars(
-                                                $item['imagen'],
-                                                ENT_QUOTES,
-                                                'UTF-8'
-                                            ) ?>"
+                                                                                                        $item['imagen'],
+                                                                                                        ENT_QUOTES,
+                                                                                                        'UTF-8'
+                                                                                                    ) ?>"
                                             alt="<?= htmlspecialchars(
-                                                $item['nombre'],
-                                                ENT_QUOTES,
-                                                'UTF-8'
-                                            ) ?>"
-                                        >
+                                                        $item['nombre'],
+                                                        ENT_QUOTES,
+                                                        'UTF-8'
+                                                    ) ?>">
 
                                     <?php endif; ?>
 
@@ -378,11 +376,11 @@ require __DIR__ . '/../layouts/header.php';
                                             ×
 
                                             $<?= number_format(
-                                                $item['precio_unitario'],
-                                                0,
-                                                ',',
-                                                '.'
-                                            ) ?>
+                                                    $item['precio_unitario'],
+                                                    0,
+                                                    ',',
+                                                    '.'
+                                                ) ?>
 
                                         </span>
 
@@ -394,11 +392,11 @@ require __DIR__ . '/../layouts/header.php';
                                 <strong class="detalle-subtotal">
 
                                     $<?= number_format(
-                                        $item['subtotal'],
-                                        0,
-                                        ',',
-                                        '.'
-                                    ) ?>
+                                            $item['subtotal'],
+                                            0,
+                                            ',',
+                                            '.'
+                                        ) ?>
 
                                 </strong>
 
@@ -432,11 +430,11 @@ require __DIR__ . '/../layouts/header.php';
                     <strong>
 
                         $<?= number_format(
-                            $pedido['total'],
-                            0,
-                            ',',
-                            '.'
-                        ) ?>
+                                $pedido['total'],
+                                0,
+                                ',',
+                                '.'
+                            ) ?>
 
                     </strong>
 
@@ -457,8 +455,7 @@ require __DIR__ . '/../layouts/header.php';
 
                     <a
                         href="/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=admin"
-                        class="btn-volver-pedidos"
-                    >
+                        class="btn-volver-pedidos">
 
                         ← Volver a pedidos
 
@@ -469,8 +466,7 @@ require __DIR__ . '/../layouts/header.php';
 
                         <a
                             href="/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=admin"
-                            class="btn-seguir-comprando"
-                        >
+                            class="btn-seguir-comprando">
 
                             Gestión de pedidos
 
@@ -484,8 +480,7 @@ require __DIR__ . '/../layouts/header.php';
 
                     <a
                         href="/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=listar"
-                        class="btn-volver-pedidos"
-                    >
+                        class="btn-volver-pedidos">
 
                         ← Mis pedidos
 
@@ -501,26 +496,30 @@ require __DIR__ . '/../layouts/header.php';
                                 method="POST"
                                 action="/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php"
                                 class="form-cancelar-pedido"
-                                onsubmit="return confirm('¿Estás seguro de que querés cancelar este pedido?');"
-                            >
+                                onsubmit="return confirm('¿Estás seguro de que querés cancelar este pedido?');">
+
+                                <input
+                                    type="hidden"
+                                    name="csrf_token"
+                                    value="<?= htmlspecialchars(
+                                                csrf_token(),
+                                                ENT_QUOTES,
+                                                'UTF-8'
+                                            ) ?>">
 
                                 <input
                                     type="hidden"
                                     name="accion"
-                                    value="cancelar"
-                                >
+                                    value="cancelar">
 
                                 <input
                                     type="hidden"
                                     name="pedido_id"
-                                    value="<?= (int) $pedido['id'] ?>"
-                                >
-
+                                    value="<?= (int) $pedido['id'] ?>">
 
                                 <button
                                     type="submit"
-                                    class="btn-cancelar-pedido"
-                                >
+                                    class="btn-cancelar-pedido">
 
                                     <i class="fa-solid fa-xmark"></i>
 
@@ -534,9 +533,8 @@ require __DIR__ . '/../layouts/header.php';
 
 
                         <a
-                            href="/DonDiego-Panaderia-Pruebas/controllers/ProductoController.php?accion=listar"
-                            class="btn-seguir-comprando"
-                        >
+                            href="/DonDiego-Panaderia-Pruebas/controllers/CatalogoController.php"
+                            class="btn-seguir-comprando">
 
                             Seguir comprando
 

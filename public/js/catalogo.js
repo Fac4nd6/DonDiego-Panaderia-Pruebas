@@ -338,25 +338,64 @@ if (agregarCarrito) {
 
 
             /* -------------------------------------------------
+               OBTENER CSRF
+            ------------------------------------------------- */
+
+            const csrfToken =
+                document.querySelector(
+                    'meta[name="csrf-token"]'
+                )?.content;
+
+
+            if (!csrfToken) {
+
+                console.error(
+                    'No se encontró el token CSRF.'
+                );
+
+                agregarCarrito.textContent =
+                    'Error de seguridad';
+
+                agregarCarrito.disabled =
+                    false;
+
+                return;
+            }
+
+
+            /* -------------------------------------------------
                CREAR DATOS
             ------------------------------------------------- */
 
             const datos =
                 new URLSearchParams();
 
+
             datos.append(
                 'accion',
                 'agregar'
             );
+
 
             datos.append(
                 'producto_id',
                 productoActual.id
             );
 
+
             datos.append(
                 'cantidad',
                 cantidadActual
+            );
+
+
+            /* -------------------------------------------------
+               CSRF
+            ------------------------------------------------- */
+
+            datos.append(
+                'csrf_token',
+                csrfToken
             );
 
 
