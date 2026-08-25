@@ -472,11 +472,8 @@ main
   ↑
 develop
   ↑
-├── facu
-├── mati
-├── cony
-└── cano
-```
+├── tarea individual
+
 
 ### `main`
 
