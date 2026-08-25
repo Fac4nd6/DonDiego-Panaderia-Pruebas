@@ -42,10 +42,10 @@
 
 .admin-pedidos-container {
     width:
-        90%;
+        92%;
 
     max-width:
-        1500px;
+        1600px;
 
     margin:
         120px auto 70px;
@@ -130,6 +130,9 @@
 ========================================================= */
 
 .admin-pedidos-tabla {
+    width:
+        100%;
+
     background:
         white;
 
@@ -157,6 +160,9 @@
 
     overflow-x:
         auto;
+
+    -webkit-overflow-scrolling:
+        touch;
 }
 
 
@@ -168,17 +174,17 @@
     width:
         100%;
 
-    min-width:
-        1350px;
-
     border-collapse:
         collapse;
+
+    table-layout:
+        auto;
 }
 
 
 .admin-pedidos-tabla th {
     padding:
-        18px 20px;
+        15px 14px;
 
     background:
         #fafafa;
@@ -193,7 +199,7 @@
         left;
 
     font-size:
-        0.8rem;
+        0.78rem;
 
     font-weight:
         700;
@@ -208,7 +214,7 @@
 
 .admin-pedidos-tabla td {
     padding:
-        18px 20px;
+        15px 14px;
 
     border-bottom:
         1px solid #eeeeee;
@@ -217,7 +223,7 @@
         var(--color-dark);
 
     font-size:
-        0.9rem;
+        0.88rem;
 
     vertical-align:
         middle;
@@ -273,7 +279,10 @@
         4px;
 
     min-width:
-        180px;
+        150px;
+
+    max-width:
+        190px;
 }
 
 
@@ -282,7 +291,7 @@
         var(--color-dark);
 
     font-size:
-        0.9rem;
+        0.88rem;
 
     font-weight:
         600;
@@ -294,7 +303,10 @@
         #888;
 
     font-size:
-        0.78rem;
+        0.76rem;
+
+    overflow-wrap:
+        anywhere;
 }
 
 
@@ -310,10 +322,13 @@
         column;
 
     gap:
-        6px;
+        5px;
 
     width:
-        250px;
+        190px;
+
+    max-width:
+        190px;
 }
 
 
@@ -322,7 +337,7 @@
         var(--color-primary);
 
     font-size:
-        0.78rem;
+        0.76rem;
 
     font-weight:
         700;
@@ -334,10 +349,23 @@
         var(--color-dark);
 
     font-size:
-        0.85rem;
+        0.82rem;
 
     line-height:
-        1.4;
+        1.35;
+
+    overflow-wrap:
+        anywhere;
+}
+
+
+/* =========================================================
+   FECHA DEL PEDIDO
+========================================================= */
+
+.admin-pedidos-tabla td:nth-child(4) {
+    white-space:
+        nowrap;
 }
 
 
@@ -353,7 +381,7 @@
         column;
 
     gap:
-        5px;
+        4px;
 
     white-space:
         nowrap;
@@ -365,7 +393,7 @@
         var(--color-dark);
 
     font-size:
-        0.85rem;
+        0.82rem;
 }
 
 
@@ -374,7 +402,7 @@
         #777;
 
     font-size:
-        0.78rem;
+        0.76rem;
 }
 
 
@@ -409,7 +437,7 @@
         center;
 
     padding:
-        7px 12px;
+        6px 10px;
 
     border:
         1px solid transparent;
@@ -418,7 +446,7 @@
         999px;
 
     font-size:
-        0.78rem;
+        0.74rem;
 
     font-weight:
         700;
@@ -427,6 +455,10 @@
         nowrap;
 }
 
+
+/* =========================================================
+   ESTADO PENDIENTE
+========================================================= */
 
 .estado-pendiente {
     background:
@@ -440,6 +472,10 @@
 }
 
 
+/* =========================================================
+   ESTADO CONFIRMADO
+========================================================= */
+
 .estado-confirmado {
     background:
         #eef4ff;
@@ -451,6 +487,10 @@
         #2855a5;
 }
 
+
+/* =========================================================
+   ESTADO EN PREPARACIÓN
+========================================================= */
 
 .estado-en_preparacion {
     background:
@@ -464,6 +504,10 @@
 }
 
 
+/* =========================================================
+   ESTADO LISTO
+========================================================= */
+
 .estado-listo {
     background:
         #edf9f2;
@@ -476,6 +520,10 @@
 }
 
 
+/* =========================================================
+   ESTADO ENTREGADO
+========================================================= */
+
 .estado-entregado {
     background:
         #eaf8ee;
@@ -487,6 +535,10 @@
         #1f6b35;
 }
 
+
+/* =========================================================
+   ESTADO CANCELADO
+========================================================= */
 
 .estado-cancelado {
     background:
@@ -512,16 +564,19 @@
         center;
 
     gap:
-        8px;
+        6px;
+
+    white-space:
+        nowrap;
 }
 
 
 .form-estado select {
-    min-width:
-        150px;
+    width:
+        135px;
 
     padding:
-        10px 12px;
+        9px 10px;
 
     background:
         white;
@@ -530,7 +585,7 @@
         1px solid #dddddd;
 
     border-radius:
-        9px;
+        8px;
 
     color:
         var(--color-dark);
@@ -539,7 +594,7 @@
         inherit;
 
     font-size:
-        0.85rem;
+        0.8rem;
 
     outline:
         none;
@@ -573,7 +628,7 @@
         center;
 
     padding:
-        10px 14px;
+        9px 11px;
 
     background:
         var(--color-primary);
@@ -582,7 +637,7 @@
         none;
 
     border-radius:
-        9px;
+        8px;
 
     color:
         white;
@@ -591,7 +646,7 @@
         inherit;
 
     font-size:
-        0.82rem;
+        0.78rem;
 
     font-weight:
         600;
@@ -746,6 +801,26 @@
    RESPONSIVE
 ========================================================= */
 
+@media (max-width: 1100px) {
+
+    .admin-pedidos-container {
+        width:
+            94%;
+    }
+
+
+    .admin-pedidos-tabla table {
+        min-width:
+            1100px;
+    }
+
+}
+
+
+/* =========================================================
+   TABLET / MÓVIL
+========================================================= */
+
 @media (max-width: 700px) {
 
     .admin-pedidos-container {
@@ -763,6 +838,9 @@
 
         align-items:
             flex-start;
+
+        gap:
+            15px;
     }
 
 
@@ -772,10 +850,44 @@
     }
 
 
+    .admin-pedidos-header p {
+        font-size:
+            0.9rem;
+    }
+
+
+    .tabla-scroll {
+        overflow-x:
+            auto;
+
+        -webkit-overflow-scrolling:
+            touch;
+    }
+
+
     .admin-pedidos-tabla table {
         min-width:
-            1350px;
+            1100px;
     }
+
+
+    .admin-pedidos-tabla th {
+        padding:
+            13px 12px;
+
+        font-size:
+            0.75rem;
+    }
+
+
+    .admin-pedidos-tabla td {
+        padding:
+            13px 12px;
+
+        font-size:
+            0.84rem;
+    }
+
 }
 
 
@@ -798,4 +910,5 @@
         transition:
             none;
     }
+
 }
