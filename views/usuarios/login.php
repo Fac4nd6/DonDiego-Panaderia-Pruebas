@@ -25,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if ($resultado['success']) {
 
-        header('Location: ../home/index.php');
+        header('Location: ../../controllers/HomeController.php');
         exit;
     }
 

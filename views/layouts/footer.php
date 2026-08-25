@@ -1,85 +1,369 @@
+<?php
+
+// =========================================================
+// CONEXIÓN A LA BASE DE DATOS
+// =========================================================
+
+$novedades = [];
+
+try {
+
+    $footerDb = new mysqli(
+        'localhost',
+        'root',
+        '',
+        'don_diego'
+    );
+
+    if ($footerDb->connect_error) {
+
+        throw new Exception(
+            'Error de conexión: ' . $footerDb->connect_error
+        );
+    }
+
+    $footerDb->set_charset('utf8mb4');
+
+
+    // =====================================================
+    // CARGAR MODELO
+    // =====================================================
+
+    require_once __DIR__ . '/../../models/Producto.php';
+
+
+    // =====================================================
+    // OBTENER NOVEDADES
+    // =====================================================
+
+    $productoModel = new Producto($footerDb);
+
+    $novedades = $productoModel->obtenerNovedades(3);
+
+
+} catch (Throwable $e) {
+
+    error_log(
+        'Error en novedades del footer: '
+        . $e->getMessage()
+    );
+
+    $novedades = [];
+
+}
+
+?>
+
+
 <footer class="footer">
 
-    <!-- Parte superior -->
+
+    <!-- =====================================================
+         PARTE SUPERIOR
+    ====================================================== -->
+
     <div class="footer-top">
 
+
+        <!-- LOGO -->
+
         <div class="footer-logo">
-            <img src="/DonDiego-Panaderia-Pruebas/public/img/logo-don2.png"
-                 alt="Don Diego Panadería y Confitería">
+
+            <img
+                src="/DonDiego-Panaderia-Pruebas/public/img/logo-don2.png"
+                alt="Don Diego Panadería y Confitería"
+            >
+
         </div>
 
+
+        <!-- REDES -->
+
         <div class="footer-social">
-            <span>Nuestras redes</span>
+
+            <span>
+                Nuestras redes
+            </span>
+
 
             <div class="social-links">
-                <a href="https://www.facebook.com/dondiego.uy/?locale=es_LA" aria-label="Facebook" target="_blank">Facebook</a>
-                <a href="#" aria-label="Pinterest">Pinterest</a>
-                <a href="https://wa.me/095005706" aria-label="WhatsApp" target="_blank">WhatsApp</a>
-                <a href="https://www.instagram.com/dondiego.uy/?hl=es" target="_blank" aria-label="Instagram">Instagram</a>
+
+
+                <!-- FACEBOOK -->
+
+                <a
+                    href="https://www.facebook.com/dondiego.uy/?locale=es_LA"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Facebook"
+                >
+
+                    <i class="fa-brands fa-facebook-f"></i>
+
+                    <span>
+                        Facebook
+                    </span>
+
+                </a>
+
+
+                <!-- WHATSAPP -->
+
+                <a
+                    href="https://wa.me/095005706"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="WhatsApp"
+                >
+
+                    <i class="fa-brands fa-whatsapp"></i>
+
+                    <span>
+                        WhatsApp
+                    </span>
+
+                </a>
+
+
+                <!-- INSTAGRAM -->
+
+                <a
+                    href="https://www.instagram.com/dondiego.uy/?hl=es"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Instagram"
+                >
+
+                    <i class="fa-brands fa-instagram"></i>
+
+                    <span>
+                        Instagram
+                    </span>
+
+                </a>
+
+
             </div>
+
         </div>
 
     </div>
+
 
     <hr>
 
-    <!-- Contenido principal -->
+
+    <!-- =====================================================
+         CONTENIDO
+    ====================================================== -->
+
     <div class="footer-content">
 
-        <!-- Sobre nosotros -->
-        <div class="footer-column">
-            <h3>Sobre nosotros</h3>
 
-            <p>473 49 924</p>
-            <p>Uruguay 1794</p>
-            <p>Departamento Salto</p>
+        <!-- =================================================
+             SOBRE NOSOTROS
+        ================================================== -->
+
+        <div class="footer-column">
+
+            <h3>
+                Sobre nosotros
+            </h3>
+
+            <p>
+                473 49 924
+            </p>
+
+            <p>
+                Uruguay 1794
+            </p>
+
+            <p>
+                Departamento Salto
+            </p>
+
         </div>
 
 
-        <!-- Explorar -->
-        <div class="footer-column">
-            <h3>Explorar</h3>
+        <!-- =================================================
+             EXPLORAR
+        ================================================== -->
 
-            <a href="/DonDiego-Panaderia-Pruebas/views/home/index.php">Hogar</a>
-            <a href="#">Blog</a>
-            <a href="#">Contacto</a>
-            <a href="#">Servicios</a>
+        <div class="footer-column">
+
+            <h3>
+                Explorar
+            </h3>
+
+            <a
+                href="/DonDiego-Panaderia-Pruebas/controllers/HomeController.php"
+            >
+                Hogar
+            </a>
+
+            <a
+                href="/DonDiego-Panaderia-Pruebas/views/blog.php"
+            >
+                Blog
+            </a>
+
+            <a
+                href="/DonDiego-Panaderia-Pruebas/views/contacto.php"
+            >
+                Contacto
+            </a>
+
+            <a
+                href="/DonDiego-Panaderia-Pruebas/views/servicios.php"
+            >
+                Servicios
+            </a>
+
         </div>
 
 
-        <!-- Novedades -->
+        <!-- =================================================
+             NOVEDADES
+        ================================================== -->
+
         <div class="footer-column">
-            <h3>Novedades</h3>
 
-            <div class="footer-news">
+            <h3>
+                Novedades
+            </h3>
 
-                <article class="news-item">
-                    <img src="/DonDiego-Panaderia-Pruebas/public/img/puff-pastry.avif"
-                         alt="Puff pastry">
 
-                    <div>
-                        <small>June 14, 2024</small>
-                        <p>Puff pastry bliss.</p>
-                    </div>
-                </article>
+            <?php if (count($novedades) > 0): ?>
 
-                <article class="news-item">
-                    <img src="/DonDiego-Panaderia-Pruebas/public/img/puff-pastry.avif"
-                         alt="Puff pastry">
 
-                    <div>
-                        <small>June 14, 2024</small>
-                        <p>Puff pastry bliss.</p>
-                    </div>
-                </article>
+                <div class="footer-news">
 
-            </div>
+
+                    <?php foreach ($novedades as $producto): ?>
+
+
+                        <article class="news-item">
+
+
+                            <!-- IMAGEN -->
+
+                            <?php if (!empty($producto['imagen'])): ?>
+
+                                <img
+                                    src="/DonDiego-Panaderia-Pruebas/public/img/<?= htmlspecialchars(
+                                        $producto['imagen'],
+                                        ENT_QUOTES,
+                                        'UTF-8'
+                                    ) ?>"
+                                    alt="<?= htmlspecialchars(
+                                        $producto['nombre'],
+                                        ENT_QUOTES,
+                                        'UTF-8'
+                                    ) ?>"
+                                >
+
+                            <?php endif; ?>
+
+
+                            <!-- INFORMACIÓN -->
+
+                            <div>
+
+                                <small>
+
+                                    <?php
+
+                                    if (
+                                        !empty($producto['created_at'])
+                                        &&
+                                        strtotime($producto['created_at']) !== false
+                                    ) {
+
+                                        echo date(
+                                            'd/m/Y',
+                                            strtotime(
+                                                $producto['created_at']
+                                            )
+                                        );
+
+                                    } else {
+
+                                        echo 'Nuevo';
+
+                                    }
+
+                                    ?>
+
+                                </small>
+
+
+                                <p>
+
+                                    <?= htmlspecialchars(
+                                        $producto['nombre'],
+                                        ENT_QUOTES,
+                                        'UTF-8'
+                                    ) ?>
+
+                                </p>
+
+                            </div>
+
+
+                        </article>
+
+
+                    <?php endforeach; ?>
+
+
+                </div>
+
+
+            <?php else: ?>
+
+
+                <p class="footer-sin-novedades">
+
+                    No hay novedades por el momento.
+
+                </p>
+
+
+            <?php endif; ?>
+
+
         </div>
+
 
     </div>
+
+
+    <!-- =====================================================
+         COPYRIGHT
+    ====================================================== -->
 
     <div class="footer-bottom">
-        <p>© 2026 [ReptiTech], Todos Los Derechos Reservados</p>
+
+        <p>
+            © 2026 Don Diego, Todos Los Derechos Reservados
+        </p>
+
     </div>
 
+
 </footer>
+
+
+<?php
+
+// =========================================================
+// CERRAR CONEXIÓN DEL FOOTER
+// =========================================================
+
+if (isset($footerDb) && $footerDb instanceof mysqli) {
+
+    $footerDb->close();
+
+}
+
+?>
