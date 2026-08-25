@@ -1,0 +1,202 @@
+/* =========================================================
+   PEDIDO - LÍMITE
+========================================================= */
+
+.limite-container {
+
+    min-height: 70vh;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 60px 20px;
+}
+
+
+/* =========================================================
+   TARJETA
+========================================================= */
+
+.limite-card {
+
+    width: 100%;
+    max-width: 550px;
+
+    background: #ffffff;
+
+    border-radius: 20px;
+
+    padding: 50px 40px;
+
+    text-align: center;
+
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+}
+
+
+/* =========================================================
+   ICONO
+========================================================= */
+
+.limite-icono {
+
+    width: 75px;
+    height: 75px;
+
+    margin: 0 auto 25px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #fff1f1;
+
+    color: #c62828;
+
+    font-size: 30px;
+}
+
+
+/* =========================================================
+   TÍTULO
+========================================================= */
+
+.limite-card h1 {
+
+    margin: 0 0 15px;
+
+    font-size: 30px;
+
+    color: #222;
+}
+
+
+/* =========================================================
+   TEXTO
+========================================================= */
+
+.limite-card p {
+
+    margin: 8px 0;
+
+    color: #555;
+
+    line-height: 1.6;
+
+}
+
+
+.limite-card strong {
+
+    color: #c62828;
+}
+
+
+.limite-descripcion {
+
+    max-width: 430px;
+
+    margin: 15px auto 30px !important;
+
+    font-size: 15px;
+
+}
+
+
+/* =========================================================
+   BOTONES
+========================================================= */
+
+.limite-acciones {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+
+    align-items: center;
+}
+
+
+.btn-pedidos,
+.btn-carrito {
+
+    width: 100%;
+    max-width: 300px;
+
+    padding: 13px 20px;
+
+    border-radius: 10px;
+
+    text-decoration: none;
+
+    font-weight: 600;
+
+    transition: 0.2s ease;
+}
+
+
+.btn-pedidos {
+
+    background: #c62828;
+
+    color: white;
+}
+
+
+.btn-pedidos:hover {
+
+    background: #a91f1f;
+
+    transform: translateY(-2px);
+}
+
+
+.btn-carrito {
+
+    background: #f3f3f3;
+
+    color: #333;
+}
+
+
+.btn-carrito:hover {
+
+    background: #e7e7e7;
+
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .limite-container {
+
+        padding: 40px 15px;
+
+    }
+
+
+    .limite-card {
+
+        padding: 40px 25px;
+
+    }
+
+
+    .limite-card h1 {
+
+        font-size: 25px;
+
+    }
+
+}

@@ -144,6 +144,15 @@ require __DIR__ . '/../layouts/header.php';
 
                                     <input
                                         type="hidden"
+                                        name="csrf_token"
+                                        value="<?= htmlspecialchars(
+                                                    csrf_token(),
+                                                    ENT_QUOTES,
+                                                    'UTF-8'
+                                                ) ?>">
+
+                                    <input
+                                        type="hidden"
                                         name="accion"
                                         value="actualizar">
 
@@ -181,6 +190,17 @@ require __DIR__ . '/../layouts/header.php';
                                 <form
                                     method="POST"
                                     action="/DonDiego-Panaderia-Pruebas/controllers/CarritoController.php">
+
+
+                                    <input
+                                        type="hidden"
+                                        name="csrf_token"
+                                        value="<?= htmlspecialchars(
+                                                    csrf_token(),
+                                                    ENT_QUOTES,
+                                                    'UTF-8'
+                                                ) ?>">
+
 
                                     <input
                                         type="hidden"

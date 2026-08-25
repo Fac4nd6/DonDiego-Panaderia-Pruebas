@@ -13,6 +13,33 @@
 
 
     <!-- =====================================================
+         CSRF TOKEN
+    ====================================================== -->
+
+    <?php
+
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    if (empty($_SESSION['csrf_token'])) {
+
+        $_SESSION['csrf_token'] =
+            bin2hex(random_bytes(32));
+    }
+
+    ?>
+
+    <meta
+        name="csrf-token"
+        content="<?= htmlspecialchars(
+            $_SESSION['csrf_token'],
+            ENT_QUOTES,
+            'UTF-8'
+        ) ?>">
+
+
+    <!-- =====================================================
          GOOGLE FONTS
     ====================================================== -->
 

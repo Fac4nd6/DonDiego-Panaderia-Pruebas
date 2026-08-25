@@ -30,11 +30,21 @@ require __DIR__ . '/../layouts/head.php';
 
             </div>
 
-            <a
-                href="/DonDiego-Panaderia-Pruebas/controllers/ProductoController.php?accion=crear"
-                class="btn-agregar">
-                + Agregar producto
-            </a>
+            <div class="admin-header-botones">
+
+                <a
+                    href="/DonDiego-Panaderia-Pruebas/controllers/ProductoController.php?accion=crear"
+                    class="btn-agregar">
+                    + Agregar producto
+                </a>
+
+                <a
+                    href="/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=admin"
+                    class="btn-agregar">
+                    + Ver pedidos
+                </a>
+
+            </div>
 
         </section>
 

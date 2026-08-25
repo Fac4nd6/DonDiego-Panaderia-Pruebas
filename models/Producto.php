@@ -351,12 +351,12 @@ class Producto
     }
 
     // =========================================================
-// OBTENER PRODUCTOS ACTIVOS PARA EL CATÁLOGO
-// =========================================================
+    // OBTENER PRODUCTOS ACTIVOS PARA EL CATÁLOGO
+    // =========================================================
 
-public function obtenerActivos()
-{
-    $sql = "
+    public function obtenerActivos()
+    {
+        $sql = "
         SELECT
             p.id,
             p.nombre,
@@ -372,14 +372,46 @@ public function obtenerActivos()
         ORDER BY p.id DESC
     ";
 
-    $resultado = $this->db->query($sql);
+        $resultado = $this->db->query($sql);
 
-    if (!$resultado) {
-        die("Error en obtenerActivos: " . $this->db->error);
+        if (!$resultado) {
+            die("Error en obtenerActivos: " . $this->db->error);
+        }
+
+        return $resultado->fetch_all(MYSQLI_ASSOC);
     }
 
-    return $resultado->fetch_all(MYSQLI_ASSOC);
-}
+    // =========================================================
+    // OBTENER NOVEDADES
+    // =========================================================
 
-}
+    public function obtenerNovedades($limite = 3)
+    {
+        $limite = (int) $limite;
 
+        if ($limite <= 0) {
+            $limite = 3;
+        }
+
+        $sql = "
+        SELECT
+            id,
+            nombre,
+            imagen,
+            created_at
+        FROM productos
+        WHERE activo = 1
+        ORDER BY created_at DESC, id DESC
+        LIMIT $limite
+    ";
+
+        $resultado = $this->db->query($sql);
+
+        if (!$resultado) {
+            die('Error en obtenerNovedades: '
+                . $this->db->error);
+        }
+
+        return $resultado->fetch_all(MYSQLI_ASSOC);
+    }
+}

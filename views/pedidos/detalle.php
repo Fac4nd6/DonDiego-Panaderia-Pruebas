@@ -11,6 +11,7 @@ require __DIR__ . '/../layouts/header.php';
 
     <main class="detalle-pedido-container">
 
+
         <!-- =====================================================
              ENCABEZADO
         ====================================================== -->
@@ -18,21 +19,162 @@ require __DIR__ . '/../layouts/header.php';
         <header class="detalle-pedido-header">
 
             <span class="detalle-etiqueta">
-                PEDIDO CONFIRMADO
+
+                <?php if (!empty($esEmpleado)): ?>
+
+                    GESTIÓN DE PEDIDOS
+
+                <?php elseif (!empty($esAdmin)): ?>
+
+                    ADMINISTRACIÓN
+
+                <?php else: ?>
+
+                    PEDIDO CONFIRMADO
+
+                <?php endif; ?>
+
             </span>
 
+
             <h1>
+
                 Pedido #<?= (int) $pedido['id'] ?>
+
             </h1>
 
+
             <p>
-                Tu pedido fue registrado correctamente.
+
+                <?php if (!empty($esEmpleado)): ?>
+
+                    Detalle del pedido para gestión y entrega.
+
+                <?php elseif (!empty($esAdmin)): ?>
+
+                    Detalle completo del pedido realizado por el cliente.
+
+                <?php else: ?>
+
+                    Tu pedido fue registrado correctamente.
+
+                <?php endif; ?>
+
             </p>
 
         </header>
 
 
+
         <section class="detalle-pedido-contenido">
+
+
+            <!-- =================================================
+                 INFORMACIÓN DEL CLIENTE
+            ================================================== -->
+
+            <?php if (!empty($esAdmin) || !empty($esEmpleado)): ?>
+
+                <div class="detalle-pedido-card">
+
+                    <h2>
+                        Información del cliente
+                    </h2>
+
+
+                    <div class="detalle-info-grid">
+
+
+                        <div class="detalle-info-item">
+
+                            <span>
+                                Nombre
+                            </span>
+
+                            <strong>
+
+                                <?= htmlspecialchars(
+                                    $pedido['nombre_completo'],
+                                    ENT_QUOTES,
+                                    'UTF-8'
+                                ) ?>
+
+                            </strong>
+
+                        </div>
+
+
+                        <?php if (!empty($pedido['nombre_comercio'])): ?>
+
+                            <div class="detalle-info-item">
+
+                                <span>
+                                    Comercio
+                                </span>
+
+                                <strong>
+
+                                    <?= htmlspecialchars(
+                                        $pedido['nombre_comercio'],
+                                        ENT_QUOTES,
+                                        'UTF-8'
+                                    ) ?>
+
+                                </strong>
+
+                            </div>
+
+                        <?php endif; ?>
+
+
+                        <div class="detalle-info-item">
+
+                            <span>
+                                Email
+                            </span>
+
+                            <strong>
+
+                                <?= htmlspecialchars(
+                                    $pedido['email'],
+                                    ENT_QUOTES,
+                                    'UTF-8'
+                                ) ?>
+
+                            </strong>
+
+                        </div>
+
+
+                        <?php if (!empty($pedido['telefono'])): ?>
+
+                            <div class="detalle-info-item">
+
+                                <span>
+                                    Teléfono
+                                </span>
+
+                                <strong>
+
+                                    <?= htmlspecialchars(
+                                        $pedido['telefono'],
+                                        ENT_QUOTES,
+                                        'UTF-8'
+                                    ) ?>
+
+                                </strong>
+
+                            </div>
+
+                        <?php endif; ?>
+
+
+                    </div>
+
+                </div>
+
+            <?php endif; ?>
+
 
 
             <!-- =================================================
@@ -57,18 +199,23 @@ require __DIR__ . '/../layouts/header.php';
                             Estado
                         </span>
 
-                        <strong class="detalle-estado estado-<?= htmlspecialchars(
-                            $pedido['estado'],
-                            ENT_QUOTES,
-                            'UTF-8'
-                        ) ?>">
+                        <strong
+                            class="detalle-estado estado-<?= htmlspecialchars(
+                                                                $pedido['estado'],
+                                                                ENT_QUOTES,
+                                                                'UTF-8'
+                                                            ) ?>">
 
-                            <?= ucfirst(
-                                str_replace(
-                                    '_',
-                                    ' ',
-                                    $pedido['estado']
-                                )
+                            <?= htmlspecialchars(
+                                ucfirst(
+                                    str_replace(
+                                        '_',
+                                        ' ',
+                                        $pedido['estado']
+                                    )
+                                ),
+                                ENT_QUOTES,
+                                'UTF-8'
                             ) ?>
 
                         </strong>
@@ -144,6 +291,7 @@ require __DIR__ . '/../layouts/header.php';
                 </div>
 
 
+
                 <!-- =================================================
                      DIRECCIÓN
                 ================================================== -->
@@ -167,6 +315,7 @@ require __DIR__ . '/../layouts/header.php';
                 </div>
 
             </div>
+
 
 
             <!-- =================================================
@@ -195,15 +344,15 @@ require __DIR__ . '/../layouts/header.php';
 
                                         <img
                                             src="/DonDiego-Panaderia-Pruebas/public/img/productos/<?= htmlspecialchars(
-                                                $item['imagen'],
-                                                ENT_QUOTES,
-                                                'UTF-8'
-                                            ) ?>"
+                                                                                                        $item['imagen'],
+                                                                                                        ENT_QUOTES,
+                                                                                                        'UTF-8'
+                                                                                                    ) ?>"
                                             alt="<?= htmlspecialchars(
-                                                $item['nombre'],
-                                                ENT_QUOTES,
-                                                'UTF-8'
-                                            ) ?>">
+                                                        $item['nombre'],
+                                                        ENT_QUOTES,
+                                                        'UTF-8'
+                                                    ) ?>">
 
                                     <?php endif; ?>
 
@@ -227,11 +376,11 @@ require __DIR__ . '/../layouts/header.php';
                                             ×
 
                                             $<?= number_format(
-                                                $item['precio_unitario'],
-                                                0,
-                                                ',',
-                                                '.'
-                                            ) ?>
+                                                    $item['precio_unitario'],
+                                                    0,
+                                                    ',',
+                                                    '.'
+                                                ) ?>
 
                                         </span>
 
@@ -243,11 +392,11 @@ require __DIR__ . '/../layouts/header.php';
                                 <strong class="detalle-subtotal">
 
                                     $<?= number_format(
-                                        $item['subtotal'],
-                                        0,
-                                        ',',
-                                        '.'
-                                    ) ?>
+                                            $item['subtotal'],
+                                            0,
+                                            ',',
+                                            '.'
+                                        ) ?>
 
                                 </strong>
 
@@ -267,6 +416,7 @@ require __DIR__ . '/../layouts/header.php';
                 </div>
 
 
+
                 <!-- =================================================
                      TOTAL
                 ================================================== -->
@@ -280,11 +430,11 @@ require __DIR__ . '/../layouts/header.php';
                     <strong>
 
                         $<?= number_format(
-                            $pedido['total'],
-                            0,
-                            ',',
-                            '.'
-                        ) ?>
+                                $pedido['total'],
+                                0,
+                                ',',
+                                '.'
+                            ) ?>
 
                     </strong>
 
@@ -293,28 +443,107 @@ require __DIR__ . '/../layouts/header.php';
             </div>
 
 
+
             <!-- =================================================
                  BOTONES
             ================================================== -->
 
             <div class="detalle-acciones">
 
-                <a
-                    href="/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=listar"
-                    class="btn-volver-pedidos">
 
-                    ← Mis pedidos
+                <?php if (!empty($esAdmin) || !empty($esEmpleado)): ?>
 
-                </a>
+                    <a
+                        href="/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=admin"
+                        class="btn-volver-pedidos">
+
+                        ← Volver a pedidos
+
+                    </a>
 
 
-                <a
-                    href="/DonDiego-Panaderia-Pruebas/controllers/ProductoController.php?accion=listar"
-                    class="btn-seguir-comprando">
+                    <div class="detalle-acciones-derecha">
 
-                    Seguir comprando
+                        <a
+                            href="/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=admin"
+                            class="btn-seguir-comprando">
 
-                </a>
+                            Gestión de pedidos
+
+                        </a>
+
+                    </div>
+
+
+                <?php else: ?>
+
+
+                    <a
+                        href="/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=listar"
+                        class="btn-volver-pedidos">
+
+                        ← Mis pedidos
+
+                    </a>
+
+
+                    <div class="detalle-acciones-derecha">
+
+
+                        <?php if ($pedido['estado'] === 'pendiente'): ?>
+
+                            <form
+                                method="POST"
+                                action="/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php"
+                                class="form-cancelar-pedido"
+                                onsubmit="return confirm('¿Estás seguro de que querés cancelar este pedido?');">
+
+                                <input
+                                    type="hidden"
+                                    name="csrf_token"
+                                    value="<?= htmlspecialchars(
+                                                csrf_token(),
+                                                ENT_QUOTES,
+                                                'UTF-8'
+                                            ) ?>">
+
+                                <input
+                                    type="hidden"
+                                    name="accion"
+                                    value="cancelar">
+
+                                <input
+                                    type="hidden"
+                                    name="pedido_id"
+                                    value="<?= (int) $pedido['id'] ?>">
+
+                                <button
+                                    type="submit"
+                                    class="btn-cancelar-pedido">
+
+                                    <i class="fa-solid fa-xmark"></i>
+
+                                    Cancelar pedido
+
+                                </button>
+
+                            </form>
+
+                        <?php endif; ?>
+
+
+                        <a
+                            href="/DonDiego-Panaderia-Pruebas/controllers/CatalogoController.php"
+                            class="btn-seguir-comprando">
+
+                            Seguir comprando
+
+                        </a>
+
+                    </div>
+
+                <?php endif; ?>
+
 
             </div>
 
@@ -329,4 +558,3 @@ require __DIR__ . '/../layouts/header.php';
 </body>
 
 </html>
-

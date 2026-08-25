@@ -4,7 +4,6 @@ error_reporting(E_ALL);
 ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');
 
-
 session_start();
 
 
@@ -20,6 +19,13 @@ if (!isset($_SESSION['usuario_id'])) {
 
     exit;
 }
+
+
+// =========================================================
+// CONFIGURACIÓN CSRF
+// =========================================================
+
+require_once __DIR__ . '/../config/Csrf.php';
 
 
 // =========================================================
@@ -53,15 +59,321 @@ $accion =
 
 
 // =========================================================
+// COMPROBAR ROL DE ADMIN / EMPLEADO
+// =========================================================
+
+if (
+    $accion === 'admin' ||
+    $accion === 'actualizar_estado' ||
+    $accion === 'ver_admin'
+) {
+
+    if (
+        !isset($_SESSION['usuario_rol']) ||
+        !in_array(
+            $_SESSION['usuario_rol'],
+            ['admin', 'empleado'],
+            true
+        )
+    ) {
+
+        http_response_code(403);
+
+        exit(
+            'No tenés permisos para acceder a esta sección.'
+        );
+    }
+}
+
+
+// =========================================================
+// PANEL DE PEDIDOS - ADMIN / EMPLEADO
+// =========================================================
+
+if ($accion === 'admin') {
+
+    $pedidos =
+        $pedidoModel->obtenerTodos();
+
+
+    $esAdmin =
+        $_SESSION['usuario_rol'] === 'admin';
+
+    $esEmpleado =
+        $_SESSION['usuario_rol'] === 'empleado';
+
+
+    require __DIR__ . '/../views/admin/pedidos.php';
+
+    exit;
+}
+
+
+// =========================================================
+// VER PEDIDO - ADMIN / EMPLEADO
+// =========================================================
+
+if ($accion === 'ver_admin') {
+
+    $pedidoId =
+        (int) ($_GET['id'] ?? 0);
+
+
+    if ($pedidoId <= 0) {
+
+        exit(
+            'Pedido no válido.'
+        );
+    }
+
+
+    $pedido =
+        $pedidoModel->obtenerPorIdAdmin(
+            $pedidoId
+        );
+
+
+    if (!$pedido) {
+
+        http_response_code(404);
+
+        exit(
+            'Pedido no encontrado.'
+        );
+    }
+
+
+    $detalles =
+        $pedidoModel->obtenerDetalles(
+            $pedidoId
+        );
+
+
+    $esAdmin =
+        $_SESSION['usuario_rol'] === 'admin';
+
+    $esEmpleado =
+        $_SESSION['usuario_rol'] === 'empleado';
+
+
+    require __DIR__ . '/../views/pedidos/detalle.php';
+
+    exit;
+}
+
+
+// =========================================================
+// ACTUALIZAR ESTADO DEL PEDIDO
+// ADMIN / EMPLEADO
+// =========================================================
+
+if ($accion === 'actualizar_estado') {
+
+
+    // -----------------------------------------------------
+    // SOLO POST
+    // -----------------------------------------------------
+
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+
+        http_response_code(405);
+
+        exit(
+            'Método no permitido.'
+        );
+    }
+
+
+    // -----------------------------------------------------
+    // VERIFICAR CSRF
+    // -----------------------------------------------------
+
+    verificar_csrf();
+
+
+    // -----------------------------------------------------
+    // OBTENER DATOS
+    // -----------------------------------------------------
+
+    $pedidoId =
+        (int) ($_POST['pedido_id'] ?? 0);
+
+    $estado =
+        trim($_POST['estado'] ?? '');
+
+
+    // -----------------------------------------------------
+    // VALIDAR ID
+    // -----------------------------------------------------
+
+    if ($pedidoId <= 0) {
+
+        exit(
+            'Pedido no válido.'
+        );
+    }
+
+
+    // -----------------------------------------------------
+    // ESTADOS PERMITIDOS
+    // -----------------------------------------------------
+
+    $estadosPermitidos = [
+
+        'pendiente',
+        'confirmado',
+        'en_preparacion',
+        'listo',
+        'entregado',
+        'cancelado'
+
+    ];
+
+
+    if (
+        !in_array(
+            $estado,
+            $estadosPermitidos,
+            true
+        )
+    ) {
+
+        exit(
+            'El estado seleccionado no es válido.'
+        );
+    }
+
+
+    // -----------------------------------------------------
+    // ACTUALIZAR
+    // -----------------------------------------------------
+
+    $resultado =
+        $pedidoModel->actualizarEstado(
+            $pedidoId,
+            $estado
+        );
+
+
+    if (!$resultado) {
+
+        exit(
+            'No se pudo actualizar el estado del pedido.'
+        );
+    }
+
+
+    // -----------------------------------------------------
+    // VOLVER AL PANEL
+    // -----------------------------------------------------
+
+    header(
+        'Location: /DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=admin'
+    );
+
+    exit;
+}
+
+
+// =========================================================
+// CANCELAR PEDIDO
+// =========================================================
+
+if ($accion === 'cancelar') {
+
+
+    // -----------------------------------------------------
+    // SOLO POST
+    // -----------------------------------------------------
+
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+
+        http_response_code(405);
+
+        exit(
+            'Método no permitido.'
+        );
+    }
+
+
+    // -----------------------------------------------------
+    // VERIFICAR CSRF
+    // -----------------------------------------------------
+
+    verificar_csrf();
+
+
+    // -----------------------------------------------------
+    // OBTENER ID
+    // -----------------------------------------------------
+
+    $pedidoId =
+        (int) ($_POST['pedido_id'] ?? 0);
+
+
+    // -----------------------------------------------------
+    // VALIDAR ID
+    // -----------------------------------------------------
+
+    if ($pedidoId <= 0) {
+
+        exit(
+            'Pedido no válido.'
+        );
+    }
+
+
+    // -----------------------------------------------------
+    // USUARIO
+    // -----------------------------------------------------
+
+    $usuarioId =
+        (int) $_SESSION['usuario_id'];
+
+
+    // -----------------------------------------------------
+    // CANCELAR
+    // -----------------------------------------------------
+
+    $resultado =
+        $pedidoModel->cancelarPedido(
+            $pedidoId,
+            $usuarioId
+        );
+
+
+    if (!$resultado) {
+
+        exit(
+            'No se pudo cancelar el pedido. '
+            . 'Es posible que ya haya sido confirmado o procesado.'
+        );
+    }
+
+
+    // -----------------------------------------------------
+    // VOLVER AL DETALLE
+    // -----------------------------------------------------
+
+    header(
+        'Location: /DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=ver&id='
+        . $pedidoId
+    );
+
+    exit;
+}
+
+
+// =========================================================
 // CREAR PEDIDO
 // =========================================================
 
 if ($accion === 'crear') {
 
 
-    // =====================================================
+    // -----------------------------------------------------
     // MOSTRAR FORMULARIO
-    // =====================================================
+    // -----------------------------------------------------
 
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
@@ -88,9 +400,16 @@ if ($accion === 'crear') {
     }
 
 
-    // =====================================================
+    // -----------------------------------------------------
+    // VERIFICAR CSRF
+    // -----------------------------------------------------
+
+    verificar_csrf();
+
+
+    // -----------------------------------------------------
     // OBTENER CARRITO
-    // =====================================================
+    // -----------------------------------------------------
 
     $carrito =
         $carritoModel->obtener();
@@ -104,17 +423,36 @@ if ($accion === 'crear') {
     }
 
 
-    // =====================================================
+    // -----------------------------------------------------
     // USUARIO
-    // =====================================================
+    // -----------------------------------------------------
 
     $usuarioId =
         (int) $_SESSION['usuario_id'];
 
 
-    // =====================================================
+    // -----------------------------------------------------
+    // COMPROBAR PEDIDOS PENDIENTES
+    // -----------------------------------------------------
+
+    $pedidosPendientes =
+        $pedidoModel->cantidadPendientes(
+            $usuarioId
+        );
+
+
+    if ($pedidosPendientes >= 3) {
+
+        exit(
+            'Ya tenés 3 pedidos pendientes. '
+            . 'Esperá a que sean confirmados o cancelá uno antes de realizar otro pedido.'
+        );
+    }
+
+
+    // -----------------------------------------------------
     // DATOS DEL FORMULARIO
-    // =====================================================
+    // -----------------------------------------------------
 
     $departamento =
         trim($_POST['departamento'] ?? '');
@@ -370,6 +708,7 @@ if ($accion === 'crear') {
             $fechaRecepcion,
             $franjaHoraria,
             $direccionEntrega,
+            $metodoPago,
             $total
         );
 
@@ -441,7 +780,7 @@ if ($accion === 'crear') {
 
 
 // =========================================================
-// LISTAR PEDIDOS
+// LISTAR PEDIDOS DEL USUARIO
 // =========================================================
 
 if ($accion === 'listar') {
@@ -463,7 +802,7 @@ if ($accion === 'listar') {
 
 
 // =========================================================
-// VER PEDIDO
+// VER PEDIDO - CLIENTE
 // =========================================================
 
 if ($accion === 'ver') {
@@ -486,10 +825,6 @@ if ($accion === 'ver') {
         (int) $_SESSION['usuario_id'];
 
 
-    // =====================================================
-    // OBTENER PEDIDO
-    // =====================================================
-
     $pedido =
         $pedidoModel->obtenerPorId(
             $pedidoId,
@@ -507,19 +842,16 @@ if ($accion === 'ver') {
     }
 
 
-    // =====================================================
-    // OBTENER DETALLES
-    // =====================================================
-
     $detalles =
         $pedidoModel->obtenerDetalles(
             $pedidoId
         );
 
 
-    // =====================================================
-    // MOSTRAR DETALLE
-    // =====================================================
+    $esAdmin = false;
+
+    $esEmpleado = false;
+
 
     require __DIR__ . '/../views/pedidos/detalle.php';
 

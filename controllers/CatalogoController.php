@@ -16,24 +16,63 @@ $categoriaSeleccionada = $_GET['categoria'] ?? 'todos';
 
 
 // =========================================================
-// OBTENER PRODUCTOS
+// OBTENER TODOS LOS PRODUCTOS ACTIVOS
 // =========================================================
 
-if ($busqueda !== '') {
+$productos = $productoModel->obtenerActivos();
 
-    // buscar() ya devuelve solamente productos activos
-    $productos = $productoModel->buscar($busqueda);
 
-} else {
+// =========================================================
+// PRODUCTO A ABRIR AUTOMÁTICAMENTE
+// =========================================================
 
-    // Solo productos activos
-    $productos = $productoModel->obtenerActivos();
+$productoAbrir = null;
 
+if (isset($_GET['producto'])) {
+
+    $productoId = (int) $_GET['producto'];
+
+    if ($productoId > 0) {
+
+        foreach ($productos as $producto) {
+
+            if ((int) $producto['id'] === $productoId) {
+
+                $productoAbrir = $producto;
+
+                break;
+            }
+        }
+    }
 }
 
 
 // =========================================================
-// FILTRAR CATEGORÍA
+// BUSCAR
+// =========================================================
+
+if ($busqueda !== '') {
+
+    $productos = array_filter(
+        $productos,
+        function ($producto) use ($busqueda) {
+
+            return stripos(
+                $producto['nombre'],
+                $busqueda
+            ) !== false
+            ||
+            stripos(
+                $producto['descripcion'],
+                $busqueda
+            ) !== false;
+        }
+    );
+}
+
+
+// =========================================================
+// FUNCIÓN CATEGORÍA
 // =========================================================
 
 function categoriaSlug($categoria)
@@ -50,17 +89,21 @@ function categoriaSlug($categoria)
 }
 
 
+// =========================================================
+// FILTRAR CATEGORÍA
+// =========================================================
+
 if ($categoriaSeleccionada !== 'todos') {
 
     $productos = array_filter(
         $productos,
         function ($producto) use ($categoriaSeleccionada) {
 
-            return categoriaSlug($producto['categoria'])
-                === $categoriaSeleccionada;
+            return categoriaSlug(
+                $producto['categoria']
+            ) === $categoriaSeleccionada;
         }
     );
-
 }
 
 
@@ -74,7 +117,9 @@ $totalProductos = count($productos);
 
 $totalPaginas = max(
     1,
-    (int) ceil($totalProductos / $productosPorPagina)
+    (int) ceil(
+        $totalProductos / $productosPorPagina
+    )
 );
 
 
@@ -89,7 +134,9 @@ $paginaActual = min(
 );
 
 
-$inicio = ($paginaActual - 1) * $productosPorPagina;
+$inicio = (
+    $paginaActual - 1
+) * $productosPorPagina;
 
 
 $productosPagina = array_slice(
@@ -100,35 +147,46 @@ $productosPagina = array_slice(
 
 
 // =========================================================
-// FUNCIÓN PARA GENERAR LINKS
+// LINKS DE PAGINACIÓN
 // =========================================================
 
 function linkCatalogo($pagina)
 {
-    global $busqueda, $categoriaSeleccionada;
+    global $busqueda;
+    global $categoriaSeleccionada;
 
     return '?pagina=' . $pagina
         . '&busqueda=' . urlencode($busqueda)
-        . '&categoria=' . urlencode($categoriaSeleccionada);
+        . '&categoria=' . urlencode(
+            $categoriaSeleccionada
+        );
 }
 
 
 // =========================================================
-// NOMBRE BONITO DE LA CATEGORÍA
+// NOMBRE BONITO DE CATEGORÍA
 // =========================================================
 
 function nombreCategoria($categoria)
 {
     $categorias = [
+
         'todos'      => 'Todos los productos',
+
         'dulces'     => 'Dulces',
+
         'tortas'     => 'Tortas',
+
         'reposteria' => 'Repostería',
+
         'panaderia'  => 'Panadería',
+
         'salados'    => 'Salados'
+
     ];
 
-    return $categorias[$categoria] ?? 'Productos';
+    return $categorias[$categoria]
+        ?? 'Productos';
 }
 
 

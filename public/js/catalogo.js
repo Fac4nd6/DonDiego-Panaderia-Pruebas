@@ -6,13 +6,17 @@ let cantidadActual = 1;
    ELEMENTOS
 ========================================================= */
 
-const overlay = document.getElementById('productoOverlay');
+const overlay =
+    document.getElementById('productoOverlay');
 
-const cerrarProducto = document.getElementById('cerrarProducto');
+const cerrarProducto =
+    document.getElementById('cerrarProducto');
 
-const detalleImagen = document.getElementById('detalleImagen');
+const detalleImagen =
+    document.getElementById('detalleImagen');
 
-const detalleNombre = document.getElementById('detalleNombre');
+const detalleNombre =
+    document.getElementById('detalleNombre');
 
 const detalleDescripcion =
     document.getElementById('detalleDescripcion');
@@ -37,12 +41,12 @@ const agregarCarrito =
 
 
 /* =========================================================
-   ABRIR PRODUCTO
+   ABRIR PRODUCTO DESDE BOTÓN DEL CATÁLOGO
 ========================================================= */
 
 function abrirProducto(boton) {
 
-    productoActual = {
+    const producto = {
 
         id: parseInt(boton.dataset.id),
 
@@ -58,12 +62,28 @@ function abrirProducto(boton) {
 
     };
 
+    mostrarProducto(producto);
+}
+
+
+/* =========================================================
+   MOSTRAR PRODUCTO
+========================================================= */
+
+function mostrarProducto(producto) {
+
+    if (!producto) {
+        return;
+    }
+
+
+    productoActual = producto;
 
     cantidadActual = 1;
 
 
     /* =====================================================
-       MOSTRAR INFORMACIÓN
+       INFORMACIÓN
     ===================================================== */
 
     detalleImagen.src =
@@ -103,6 +123,11 @@ function abrirProducto(boton) {
        ABRIR MODAL
     ===================================================== */
 
+    if (!overlay) {
+        return;
+    }
+
+
     overlay.classList.add('activo');
 
     document.body.classList.add('modal-abierto');
@@ -111,7 +136,44 @@ function abrirProducto(boton) {
         'aria-hidden',
         'false'
     );
+}
 
+
+/* =========================================================
+   ABRIR PRODUCTO DESDE HOME
+========================================================= */
+
+function abrirProductoDesdeDatos(producto) {
+
+    if (!producto) {
+        return;
+    }
+
+
+    const productoFormateado = {
+
+        id: parseInt(producto.id),
+
+        nombre: producto.nombre,
+
+        descripcion: producto.descripcion,
+
+        precio: parseFloat(producto.precio),
+
+        categoria: producto.categoria,
+
+        imagen:
+            producto.imagen
+                ? '/DonDiego-Panaderia-Pruebas/public/img/' +
+                  producto.imagen
+                : '/DonDiego-Panaderia-Pruebas/public/img/logo.avif'
+
+    };
+
+
+    mostrarProducto(
+        productoFormateado
+    );
 }
 
 
@@ -121,6 +183,11 @@ function abrirProducto(boton) {
 
 function cerrarDetalleProducto() {
 
+    if (!overlay) {
+        return;
+    }
+
+
     overlay.classList.remove('activo');
 
     document.body.classList.remove('modal-abierto');
@@ -129,7 +196,6 @@ function cerrarDetalleProducto() {
         'aria-hidden',
         'true'
     );
-
 }
 
 
@@ -143,7 +209,6 @@ if (cerrarProducto) {
         'click',
         cerrarDetalleProducto
     );
-
 }
 
 
@@ -155,7 +220,7 @@ if (overlay) {
 
     overlay.addEventListener(
         'click',
-        function(event) {
+        function (event) {
 
             if (event.target === overlay) {
 
@@ -165,17 +230,16 @@ if (overlay) {
 
         }
     );
-
 }
 
 
 /* =========================================================
-   ESC PARA CERRAR
+   CERRAR CON ESC
 ========================================================= */
 
 document.addEventListener(
     'keydown',
-    function(event) {
+    function (event) {
 
         if (
             event.key === 'Escape' &&
@@ -199,7 +263,7 @@ if (cantidadMenos) {
 
     cantidadMenos.addEventListener(
         'click',
-        function() {
+        function () {
 
             if (cantidadActual > 1) {
 
@@ -212,7 +276,6 @@ if (cantidadMenos) {
 
         }
     );
-
 }
 
 
@@ -224,7 +287,7 @@ if (cantidadMas) {
 
     cantidadMas.addEventListener(
         'click',
-        function() {
+        function () {
 
             if (cantidadActual < 99) {
 
@@ -237,7 +300,6 @@ if (cantidadMas) {
 
         }
     );
-
 }
 
 
@@ -249,7 +311,7 @@ if (agregarCarrito) {
 
     agregarCarrito.addEventListener(
         'click',
-        async function() {
+        async function () {
 
             /* -------------------------------------------------
                COMPROBAR PRODUCTO
@@ -276,25 +338,64 @@ if (agregarCarrito) {
 
 
             /* -------------------------------------------------
+               OBTENER CSRF
+            ------------------------------------------------- */
+
+            const csrfToken =
+                document.querySelector(
+                    'meta[name="csrf-token"]'
+                )?.content;
+
+
+            if (!csrfToken) {
+
+                console.error(
+                    'No se encontró el token CSRF.'
+                );
+
+                agregarCarrito.textContent =
+                    'Error de seguridad';
+
+                agregarCarrito.disabled =
+                    false;
+
+                return;
+            }
+
+
+            /* -------------------------------------------------
                CREAR DATOS
             ------------------------------------------------- */
 
             const datos =
                 new URLSearchParams();
 
+
             datos.append(
                 'accion',
                 'agregar'
             );
+
 
             datos.append(
                 'producto_id',
                 productoActual.id
             );
 
+
             datos.append(
                 'cantidad',
                 cantidadActual
+            );
+
+
+            /* -------------------------------------------------
+               CSRF
+            ------------------------------------------------- */
+
+            datos.append(
+                'csrf_token',
+                csrfToken
             );
 
 
@@ -364,11 +465,11 @@ if (agregarCarrito) {
 
 
                 /* =============================================
-                   CERRAR MODAL DESPUÉS DE UN MOMENTO
+                   CERRAR MODAL
                 ============================================= */
 
                 setTimeout(
-                    function() {
+                    function () {
 
                         cerrarDetalleProducto();
 
@@ -396,7 +497,7 @@ if (agregarCarrito) {
 
 
                 setTimeout(
-                    function() {
+                    function () {
 
                         agregarCarrito.textContent =
                             'Agregar al carrito';
@@ -412,7 +513,6 @@ if (agregarCarrito) {
 
         }
     );
-
 }
 
 
@@ -440,10 +540,9 @@ async function actualizarContadorCarrito() {
             await respuesta.text();
 
 
-        /*
-         * Buscamos la cantidad de productos
-         * directamente desde la página del carrito.
-         */
+        /* -------------------------------------------------
+           CREAR DOCUMENTO TEMPORAL
+        ------------------------------------------------- */
 
         const temporal =
             document.createElement('div');
@@ -451,6 +550,10 @@ async function actualizarContadorCarrito() {
         temporal.innerHTML =
             html;
 
+
+        /* -------------------------------------------------
+           BUSCAR CANTIDAD
+        ------------------------------------------------- */
 
         const cantidad =
             temporal.querySelector(

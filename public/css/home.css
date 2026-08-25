@@ -2,6 +2,11 @@
    HERO
 ========================================================= */
 
+.producto-card {
+    text-decoration: none;
+    color: inherit;
+}
+
 .hero {
     min-height: 100vh;
     height: 100vh;
@@ -483,6 +488,8 @@ h2::after {
 /* ---------- Botón catálogo ---------- */
 
 .catalogo-button {
+    
+
     position: relative;
 
     z-index: 2;
@@ -523,6 +530,28 @@ h2::after {
 
     box-shadow:
         0 9px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* =========================================================
+   recomendado
+========================================================= */
+
+.recommended {
+    position: relative;
+
+    min-height: 100vh;
+
+    box-sizing: border-box;
+
+    padding: 45px 0 35px;
+
+    margin: 0;
+
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 

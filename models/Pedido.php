@@ -24,6 +24,7 @@ class Pedido
         $fechaRecepcion,
         $franjaHoraria,
         $direccionEntrega,
+        $metodoPago,
         $total
     ) {
 
@@ -34,6 +35,7 @@ class Pedido
                 fecha_recepcion,
                 franja_horaria,
                 direccion_entrega,
+                metodo_pago,
                 estado,
                 total
             )
@@ -43,37 +45,91 @@ class Pedido
                 ?,
                 ?,
                 ?,
+                ?,
                 'pendiente',
                 ?
             )
         ";
 
-        $stmt = $this->conn->prepare($sql);
+        $stmt =
+            $this->conn->prepare($sql);
 
         if (!$stmt) {
             return false;
         }
 
         $stmt->bind_param(
-            "isssd",
+            "issssd",
             $usuarioId,
             $fechaRecepcion,
             $franjaHoraria,
             $direccionEntrega,
+            $metodoPago,
             $total
         );
 
         if (!$stmt->execute()) {
+
             $stmt->close();
 
             return false;
         }
 
-        $pedidoId = $this->conn->insert_id;
+        $pedidoId =
+            $this->conn->insert_id;
 
         $stmt->close();
 
         return $pedidoId;
+    }
+
+
+    /* =========================================================
+       CONTAR PEDIDOS PENDIENTES
+    ========================================================= */
+
+    public function cantidadPendientes($usuarioId)
+    {
+
+        $sql = "
+            SELECT
+                COUNT(*) AS cantidad
+
+            FROM pedidos
+
+            WHERE usuario_id = ?
+
+            AND estado = 'pendiente'
+        ";
+
+        $stmt =
+            $this->conn->prepare($sql);
+
+        if (!$stmt) {
+            return 0;
+        }
+
+        $stmt->bind_param(
+            "i",
+            $usuarioId
+        );
+
+        if (!$stmt->execute()) {
+
+            $stmt->close();
+
+            return 0;
+        }
+
+        $resultado =
+            $stmt->get_result();
+
+        $fila =
+            $resultado->fetch_assoc();
+
+        $stmt->close();
+
+        return (int) $fila['cantidad'];
     }
 
 
@@ -108,7 +164,8 @@ class Pedido
             )
         ";
 
-        $stmt = $this->conn->prepare($sql);
+        $stmt =
+            $this->conn->prepare($sql);
 
         if (!$stmt) {
             return false;
@@ -123,7 +180,8 @@ class Pedido
             $subtotal
         );
 
-        $resultado = $stmt->execute();
+        $resultado =
+            $stmt->execute();
 
         $stmt->close();
 
@@ -137,50 +195,53 @@ class Pedido
 
     public function obtenerPorUsuario($usuarioId)
     {
-        $sql = "
-        SELECT
-            id,
-            usuario_id,
-            fecha_pedido,
-            fecha_recepcion,
-            franja_horaria,
-            direccion_entrega,
-            estado,
-            total
-        FROM pedidos
-        WHERE usuario_id = ?
-        ORDER BY fecha_pedido DESC
-    ";
 
-        $stmt = $this->conn->prepare($sql);
+        $sql = "
+            SELECT
+                id,
+                usuario_id,
+                fecha_pedido,
+                fecha_recepcion,
+                franja_horaria,
+                direccion_entrega,
+                metodo_pago,
+                estado,
+                total
+
+            FROM pedidos
+
+            WHERE usuario_id = ?
+
+            ORDER BY fecha_pedido DESC
+        ";
+
+        $stmt =
+            $this->conn->prepare($sql);
 
         if (!$stmt) {
 
-            die("ERROR EN obtenerPorUsuario(): "
-                . $this->conn->error);
+            return [];
         }
 
-        if (!$stmt->bind_param("i", $usuarioId)) {
-
-            die("ERROR EN bind_param(): "
-                . $stmt->error);
-        }
+        $stmt->bind_param(
+            "i",
+            $usuarioId
+        );
 
         if (!$stmt->execute()) {
 
-            die("ERROR EN execute(): "
-                . $stmt->error);
+            $stmt->close();
+
+            return [];
         }
 
-        $resultado = $stmt->get_result();
+        $resultado =
+            $stmt->get_result();
 
-        if (!$resultado) {
-
-            die("ERROR EN get_result(): "
-                . $stmt->error);
-        }
-
-        $pedidos = $resultado->fetch_all(MYSQLI_ASSOC);
+        $pedidos =
+            $resultado->fetch_all(
+                MYSQLI_ASSOC
+            );
 
         $stmt->close();
 
@@ -189,8 +250,7 @@ class Pedido
 
 
     /* =========================================================
-       OBTENER PEDIDO POR ID
-       Y COMPROBAR QUE PERTENECE AL USUARIO
+       OBTENER PEDIDO POR ID - CLIENTE
     ========================================================= */
 
     public function obtenerPorId(
@@ -206,18 +266,21 @@ class Pedido
                 fecha_recepcion,
                 franja_horaria,
                 direccion_entrega,
+                metodo_pago,
                 estado,
                 total
 
             FROM pedidos
 
             WHERE id = ?
+
             AND usuario_id = ?
 
             LIMIT 1
         ";
 
-        $stmt = $this->conn->prepare($sql);
+        $stmt =
+            $this->conn->prepare($sql);
 
         if (!$stmt) {
             return null;
@@ -229,11 +292,83 @@ class Pedido
             $usuarioId
         );
 
-        $stmt->execute();
+        if (!$stmt->execute()) {
 
-        $resultado = $stmt->get_result();
+            $stmt->close();
 
-        $pedido = $resultado->fetch_assoc();
+            return null;
+        }
+
+        $resultado =
+            $stmt->get_result();
+
+        $pedido =
+            $resultado->fetch_assoc();
+
+        $stmt->close();
+
+        return $pedido;
+    }
+
+
+    /* =========================================================
+       OBTENER PEDIDO POR ID - ADMIN / EMPLEADO
+    ========================================================= */
+
+    public function obtenerPorIdAdmin($pedidoId)
+    {
+
+        $sql = "
+            SELECT
+                p.id,
+                p.usuario_id,
+                p.fecha_pedido,
+                p.fecha_recepcion,
+                p.franja_horaria,
+                p.direccion_entrega,
+                p.metodo_pago,
+                p.estado,
+                p.total,
+
+                u.nombre_completo,
+                u.nombre_comercio,
+                u.email,
+                u.telefono
+
+            FROM pedidos p
+
+            INNER JOIN usuarios u
+                ON p.usuario_id = u.id
+
+            WHERE p.id = ?
+
+            LIMIT 1
+        ";
+
+        $stmt =
+            $this->conn->prepare($sql);
+
+        if (!$stmt) {
+            return null;
+        }
+
+        $stmt->bind_param(
+            "i",
+            $pedidoId
+        );
+
+        if (!$stmt->execute()) {
+
+            $stmt->close();
+
+            return null;
+        }
+
+        $resultado =
+            $stmt->get_result();
+
+        $pedido =
+            $resultado->fetch_assoc();
 
         $stmt->close();
 
@@ -270,7 +405,8 @@ class Pedido
             ORDER BY pd.id ASC
         ";
 
-        $stmt = $this->conn->prepare($sql);
+        $stmt =
+            $this->conn->prepare($sql);
 
         if (!$stmt) {
             return [];
@@ -281,13 +417,20 @@ class Pedido
             $pedidoId
         );
 
-        $stmt->execute();
+        if (!$stmt->execute()) {
 
-        $resultado = $stmt->get_result();
+            $stmt->close();
 
-        $detalles = $resultado->fetch_all(
-            MYSQLI_ASSOC
-        );
+            return [];
+        }
+
+        $resultado =
+            $stmt->get_result();
+
+        $detalles =
+            $resultado->fetch_all(
+                MYSQLI_ASSOC
+            );
 
         $stmt->close();
 
@@ -304,10 +447,11 @@ class Pedido
         $usuarioId
     ) {
 
-        $pedido = $this->obtenerPorId(
-            $pedidoId,
-            $usuarioId
-        );
+        $pedido =
+            $this->obtenerPorId(
+                $pedidoId,
+                $usuarioId
+            );
 
         if (!$pedido) {
             return null;
@@ -337,11 +481,14 @@ class Pedido
                 p.fecha_recepcion,
                 p.franja_horaria,
                 p.direccion_entrega,
+                p.metodo_pago,
                 p.estado,
                 p.total,
 
                 u.nombre_completo,
-                u.email
+                u.nombre_comercio,
+                u.email,
+                u.telefono
 
             FROM pedidos p
 
@@ -351,7 +498,8 @@ class Pedido
             ORDER BY p.fecha_pedido DESC
         ";
 
-        $resultado = $this->conn->query($sql);
+        $resultado =
+            $this->conn->query($sql);
 
         if (!$resultado) {
             return [];
@@ -390,6 +538,7 @@ class Pedido
                 true
             )
         ) {
+
             return false;
         }
 
@@ -401,7 +550,8 @@ class Pedido
             WHERE id = ?
         ";
 
-        $stmt = $this->conn->prepare($sql);
+        $stmt =
+            $this->conn->prepare($sql);
 
         if (!$stmt) {
             return false;
@@ -413,7 +563,51 @@ class Pedido
             $pedidoId
         );
 
-        $resultado = $stmt->execute();
+        $resultado =
+            $stmt->execute();
+
+        $stmt->close();
+
+        return $resultado;
+    }
+
+
+    /* =========================================================
+       CANCELAR PEDIDO
+    ========================================================= */
+
+    public function cancelarPedido(
+        $pedidoId,
+        $usuarioId
+    ) {
+
+        $sql = "
+            UPDATE pedidos
+
+            SET estado = 'cancelado'
+
+            WHERE id = ?
+
+            AND usuario_id = ?
+
+            AND estado = 'pendiente'
+        ";
+
+        $stmt =
+            $this->conn->prepare($sql);
+
+        if (!$stmt) {
+            return false;
+        }
+
+        $stmt->bind_param(
+            "ii",
+            $pedidoId,
+            $usuarioId
+        );
+
+        $resultado =
+            $stmt->execute();
 
         $stmt->close();
 

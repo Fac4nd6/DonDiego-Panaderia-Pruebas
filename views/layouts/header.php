@@ -9,7 +9,6 @@ $cantidadCarrito = 0;
 if (isset($_SESSION['carrito'])) {
 
     foreach ($_SESSION['carrito'] as $item) {
-
         $cantidadCarrito += (int) $item['cantidad'];
     }
 }
@@ -20,13 +19,10 @@ if (isset($_SESSION['carrito'])) {
 
     <nav class="navbar">
 
-
-        <!-- =====================================================
-             LOGO
-        ====================================================== -->
+        <!-- LOGO -->
 
         <a
-            href="/DonDiego-Panaderia-Pruebas/views/home/index.php"
+            href="/DonDiego-Panaderia-Pruebas/controllers/HomeController.php"
             class="logo"
         >
 
@@ -38,29 +34,23 @@ if (isset($_SESSION['carrito'])) {
         </a>
 
 
-        <!-- =====================================================
-             MENÚ
-        ====================================================== -->
+        <!-- MENÚ PRINCIPAL -->
 
         <div class="nav-links">
 
             <a
-                href="/DonDiego-Panaderia-Pruebas/views/home/index.php"
+                href="/DonDiego-Panaderia-Pruebas/controllers/HomeController.php"
             >
                 Hogar
             </a>
 
-            <a
-                href="/DonDiego-Panaderia-Pruebas/views/servicios.php"
-            >
-                Servicios
-            </a>
 
             <a
-                href="/DonDiego-Panaderia-Pruebas/views/blog.php"
+                href="/DonDiego-Panaderia-Pruebas/controllers/CatalogoController.php"
             >
-                Blog
+                Productos
             </a>
+
 
             <a
                 href="/DonDiego-Panaderia-Pruebas/views/contacto.php"
@@ -71,12 +61,12 @@ if (isset($_SESSION['carrito'])) {
         </div>
 
 
-        <!-- =====================================================
-             ACCIONES
-        ====================================================== -->
+        <!-- ACCIONES -->
 
         <div class="nav-actions">
 
+
+            <!-- CUENTA -->
 
             <?php if (isset($_SESSION['usuario_id'])): ?>
 
@@ -97,15 +87,15 @@ if (isset($_SESSION['carrito'])) {
                     href="/DonDiego-Panaderia-Pruebas/views/usuarios/login.php"
                     class="login-button"
                 >
+
                     Iniciar sesión
+
                 </a>
 
             <?php endif; ?>
 
 
-            <!-- =================================================
-                 CARRITO
-            ================================================== -->
+            <!-- CARRITO -->
 
             <a
                 href="/DonDiego-Panaderia-Pruebas/controllers/CarritoController.php?accion=ver"
@@ -122,16 +112,62 @@ if (isset($_SESSION['carrito'])) {
             </a>
 
 
-            <!-- =================================================
-                 PEDIR AHORA
-            ================================================== -->
+            <!-- MIS PEDIDOS -->
 
-            <a
-                href="/DonDiego-Panaderia-Pruebas/controllers/CatalogoController.php"
-                class="nav-button"
-            >
-                Pedir ahora
-            </a>
+            <?php if (isset($_SESSION['usuario_id'])): ?>
+
+                <a
+                    href="/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=listar"
+                    class="nav-button"
+                >
+                    Mis pedidos
+                </a>
+
+            <?php endif; ?>
+
+
+            <!-- PEDIDOS ADMIN / EMPLEADO -->
+
+            <?php if (
+                isset($_SESSION['usuario_rol']) &&
+                in_array(
+                    $_SESSION['usuario_rol'],
+                    ['admin', 'empleado'],
+                    true
+                )
+            ): ?>
+
+                <a
+                    href="/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=admin"
+                    class="nav-button"
+                >
+
+                    <i class="fa-solid fa-box"></i>
+
+                    Pedidos
+
+                </a>
+
+            <?php endif; ?>
+
+
+            <!-- ADMIN -->
+
+            <?php if (
+                isset($_SESSION['usuario_rol']) &&
+                $_SESSION['usuario_rol'] === 'admin'
+            ): ?>
+
+                <a
+                    href="/DonDiego-Panaderia-Pruebas/controllers/ProductoController.php?accion=listar"
+                    class="nav-button"
+                >
+
+                    Admin
+
+                </a>
+
+            <?php endif; ?>
 
 
         </div>

@@ -1,5 +1,47 @@
 <?php
 
+// =========================================================
+// SESIÓN
+// =========================================================
+
+session_start();
+
+
+// =========================================================
+// COMPROBAR QUE HAYA SESIÓN
+// =========================================================
+
+if (!isset($_SESSION['usuario_id'])) {
+
+    header(
+        'Location: /DonDiego-Panaderia-Pruebas/views/usuarios/login.php'
+    );
+
+    exit;
+}
+
+
+// =========================================================
+// COMPROBAR QUE SEA ADMIN
+// =========================================================
+
+if (
+    !isset($_SESSION['usuario_rol']) ||
+    $_SESSION['usuario_rol'] !== 'admin'
+) {
+
+    http_response_code(403);
+
+    exit(
+        'No tenés permisos para acceder a la administración de productos.'
+    );
+}
+
+
+// =========================================================
+// MODELOS
+// =========================================================
+
 require_once '../config/Database.php';
 require_once '../models/Producto.php';
 
@@ -43,7 +85,11 @@ if ($accion === 'crear') {
 if ($accion === 'guardar') {
 
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-        header('Location: ProductoController.php?accion=listar');
+
+        header(
+            'Location: ProductoController.php?accion=listar'
+        );
+
         exit;
     }
 
@@ -63,7 +109,10 @@ if ($accion === 'guardar') {
         $precio === '' ||
         $categoriaId <= 0
     ) {
-        exit('Faltan datos obligatorios.');
+
+        exit(
+            'Faltan datos obligatorios.'
+        );
     }
 
 
@@ -72,7 +121,10 @@ if ($accion === 'guardar') {
     // -----------------------------------------------------
 
     if (!isset($_FILES['imagen'])) {
-        exit('No se recibió ninguna imagen.');
+
+        exit(
+            'No se recibió ninguna imagen.'
+        );
     }
 
 
@@ -98,13 +150,19 @@ if ($accion === 'guardar') {
     if (!is_dir($carpeta)) {
 
         if (!mkdir($carpeta, 0777, true)) {
-            exit('No se pudo crear la carpeta public/img.');
+
+            exit(
+                'No se pudo crear la carpeta public/img.'
+            );
         }
     }
 
 
     if (!is_writable($carpeta)) {
-        exit('La carpeta public/img no tiene permisos de escritura.');
+
+        exit(
+            'La carpeta public/img no tiene permisos de escritura.'
+        );
     }
 
 
@@ -112,12 +170,16 @@ if ($accion === 'guardar') {
     // VALIDAR IMAGEN
     // -----------------------------------------------------
 
-    $tipo = mime_content_type($archivo['tmp_name']);
+    $tipo = mime_content_type(
+        $archivo['tmp_name']
+    );
 
     $tiposPermitidos = [
+
         'image/jpeg' => 'jpg',
         'image/png'  => 'png',
         'image/webp' => 'webp'
+
     ];
 
 
@@ -136,23 +198,30 @@ if ($accion === 'guardar') {
 
     $extension = $tiposPermitidos[$tipo];
 
-    $nombreImagen = uniqid('producto_', true) . '.' . $extension;
+    $nombreImagen =
+        uniqid('producto_', true)
+        . '.'
+        . $extension;
 
-    $rutaDestino = $carpeta . $nombreImagen;
+    $rutaDestino =
+        $carpeta . $nombreImagen;
 
 
     // -----------------------------------------------------
     // GUARDAR IMAGEN
     // -----------------------------------------------------
 
-    if (!move_uploaded_file(
-        $archivo['tmp_name'],
-        $rutaDestino
-    )) {
+    if (
+        !move_uploaded_file(
+            $archivo['tmp_name'],
+            $rutaDestino
+        )
+    ) {
 
         exit(
-            'No se pudo guardar la imagen.<br><br>' .
-            'Ruta: ' . htmlspecialchars($rutaDestino)
+            'No se pudo guardar la imagen.<br><br>'
+            . 'Ruta: '
+            . htmlspecialchars($rutaDestino)
         );
     }
 
@@ -161,26 +230,32 @@ if ($accion === 'guardar') {
     // GUARDAR PRODUCTO
     // -----------------------------------------------------
 
-    $resultado = $productoModel->crear(
-        $nombre,
-        $descripcion,
-        $precio,
-        $categoriaId,
-        $nombreImagen
-    );
+    $resultado =
+        $productoModel->crear(
+            $nombre,
+            $descripcion,
+            $precio,
+            $categoriaId,
+            $nombreImagen
+        );
 
 
     if (!$resultado) {
 
         if (file_exists($rutaDestino)) {
+
             unlink($rutaDestino);
         }
 
-        exit('No se pudo guardar el producto en la base de datos.');
+        exit(
+            'No se pudo guardar el producto en la base de datos.'
+        );
     }
 
 
-    header('Location: ProductoController.php?accion=listar');
+    header(
+        'Location: ProductoController.php?accion=listar'
+    );
 
     exit;
 }
@@ -192,21 +267,33 @@ if ($accion === 'guardar') {
 
 if ($accion === 'editar') {
 
-    $id = (int) ($_GET['id'] ?? 0);
+    $id =
+        (int) ($_GET['id'] ?? 0);
+
 
     if ($id <= 0) {
-        exit('Producto no válido.');
+
+        exit(
+            'Producto no válido.'
+        );
     }
 
 
-    $producto = $productoModel->obtenerPorId($id);
+    $producto =
+        $productoModel->obtenerPorId($id);
+
 
     if (!$producto) {
-        exit('Producto no encontrado.');
+
+        exit(
+            'Producto no encontrado.'
+        );
     }
 
 
-    $categorias = $productoModel->obtenerCategorias();
+    $categorias =
+        $productoModel->obtenerCategorias();
+
 
     require '../views/admin/productos-form.php';
 
@@ -221,18 +308,32 @@ if ($accion === 'editar') {
 if ($accion === 'actualizar') {
 
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-        header('Location: ProductoController.php?accion=listar');
+
+        header(
+            'Location: ProductoController.php?accion=listar'
+        );
+
         exit;
     }
 
 
-    $id = (int) ($_POST['id'] ?? 0);
+    $id =
+        (int) ($_POST['id'] ?? 0);
 
-    $nombre = trim($_POST['nombre'] ?? '');
-    $descripcion = trim($_POST['descripcion'] ?? '');
-    $precio = $_POST['precio'] ?? '';
-    $categoriaId = (int) ($_POST['categoria_id'] ?? 0);
-    $activo = (int) ($_POST['activo'] ?? 1);
+    $nombre =
+        trim($_POST['nombre'] ?? '');
+
+    $descripcion =
+        trim($_POST['descripcion'] ?? '');
+
+    $precio =
+        $_POST['precio'] ?? '';
+
+    $categoriaId =
+        (int) ($_POST['categoria_id'] ?? 0);
+
+    $activo =
+        (int) ($_POST['activo'] ?? 1);
 
 
     if (
@@ -241,19 +342,31 @@ if ($accion === 'actualizar') {
         $precio === '' ||
         $categoriaId <= 0
     ) {
-        exit('Datos inválidos.');
+
+        exit(
+            'Datos inválidos.'
+        );
     }
 
 
-    $productoActual = $productoModel->obtenerPorId($id);
+    $productoActual =
+        $productoModel->obtenerPorId($id);
+
 
     if (!$productoActual) {
-        exit('Producto no encontrado.');
+
+        exit(
+            'Producto no encontrado.'
+        );
     }
 
 
-    // Mantener imagen actual
-    $imagen = $productoActual['imagen'];
+    // -----------------------------------------------------
+    // MANTENER IMAGEN ACTUAL
+    // -----------------------------------------------------
+
+    $imagen =
+        $productoActual['imagen'];
 
 
     // -----------------------------------------------------
@@ -265,39 +378,59 @@ if ($accion === 'actualizar') {
         $_FILES['imagen']['error'] === UPLOAD_ERR_OK
     ) {
 
-        $archivo = $_FILES['imagen'];
+        $archivo =
+            $_FILES['imagen'];
 
-        $tipo = mime_content_type($archivo['tmp_name']);
+
+        $tipo =
+            mime_content_type(
+                $archivo['tmp_name']
+            );
+
 
         $tiposPermitidos = [
+
             'image/jpeg' => 'jpg',
             'image/png'  => 'png',
             'image/webp' => 'webp'
+
         ];
 
 
         if (!isset($tiposPermitidos[$tipo])) {
-            exit('Formato de imagen no permitido.');
+
+            exit(
+                'Formato de imagen no permitido.'
+            );
         }
 
 
-        $carpeta = __DIR__ . '/../public/img/';
+        $carpeta =
+            __DIR__ . '/../public/img/';
 
 
         if (!is_dir($carpeta)) {
 
             if (!mkdir($carpeta, 0777, true)) {
-                exit('No se pudo crear la carpeta public/img.');
+
+                exit(
+                    'No se pudo crear la carpeta public/img.'
+                );
             }
         }
 
 
         if (!is_writable($carpeta)) {
-            exit('La carpeta public/img no tiene permisos de escritura.');
+
+            exit(
+                'La carpeta public/img no tiene permisos de escritura.'
+            );
         }
 
 
-        $extension = $tiposPermitidos[$tipo];
+        $extension =
+            $tiposPermitidos[$tipo];
+
 
         $nuevaImagen =
             uniqid('producto_', true)
@@ -305,27 +438,42 @@ if ($accion === 'actualizar') {
             . $extension;
 
 
-        $rutaDestino = $carpeta . $nuevaImagen;
+        $rutaDestino =
+            $carpeta . $nuevaImagen;
 
 
-        if (!move_uploaded_file(
-            $archivo['tmp_name'],
-            $rutaDestino
-        )) {
-            exit('No se pudo guardar la nueva imagen.');
+        if (
+            !move_uploaded_file(
+                $archivo['tmp_name'],
+                $rutaDestino
+            )
+        ) {
+
+            exit(
+                'No se pudo guardar la nueva imagen.'
+            );
         }
 
 
-        // Eliminar imagen anterior
+        // -------------------------------------------------
+        // ELIMINAR IMAGEN ANTERIOR
+        // -------------------------------------------------
+
         if (
             !empty($productoActual['imagen']) &&
-            file_exists($carpeta . $productoActual['imagen'])
+            file_exists(
+                $carpeta . $productoActual['imagen']
+            )
         ) {
-            unlink($carpeta . $productoActual['imagen']);
+
+            unlink(
+                $carpeta . $productoActual['imagen']
+            );
         }
 
 
-        $imagen = $nuevaImagen;
+        $imagen =
+            $nuevaImagen;
     }
 
 
@@ -333,23 +481,29 @@ if ($accion === 'actualizar') {
     // ACTUALIZAR BD
     // -----------------------------------------------------
 
-    $resultado = $productoModel->actualizar(
-        $id,
-        $nombre,
-        $descripcion,
-        $precio,
-        $categoriaId,
-        $imagen,
-        $activo
-    );
+    $resultado =
+        $productoModel->actualizar(
+            $id,
+            $nombre,
+            $descripcion,
+            $precio,
+            $categoriaId,
+            $imagen,
+            $activo
+        );
 
 
     if (!$resultado) {
-        exit('No se pudo actualizar el producto.');
+
+        exit(
+            'No se pudo actualizar el producto.'
+        );
     }
 
 
-    header('Location: ProductoController.php?accion=listar');
+    header(
+        'Location: ProductoController.php?accion=listar'
+    );
 
     exit;
 }
@@ -361,19 +515,31 @@ if ($accion === 'actualizar') {
 
 if ($accion === 'desactivar') {
 
-    $id = (int) ($_GET['id'] ?? 0);
+    $id =
+        (int) ($_GET['id'] ?? 0);
+
 
     if ($id <= 0) {
-        exit('Producto no válido.');
+
+        exit(
+            'Producto no válido.'
+        );
     }
 
 
-    if (!$productoModel->desactivar($id)) {
-        exit('No se pudo desactivar el producto.');
+    if (
+        !$productoModel->desactivar($id)
+    ) {
+
+        exit(
+            'No se pudo desactivar el producto.'
+        );
     }
 
 
-    header('Location: ProductoController.php?accion=listar');
+    header(
+        'Location: ProductoController.php?accion=listar'
+    );
 
     exit;
 }
@@ -385,22 +551,35 @@ if ($accion === 'desactivar') {
 
 if ($accion === 'activar') {
 
-    $id = (int) ($_GET['id'] ?? 0);
+    $id =
+        (int) ($_GET['id'] ?? 0);
+
 
     if ($id <= 0) {
-        exit('Producto no válido.');
+
+        exit(
+            'Producto no válido.'
+        );
     }
 
 
-    if (!$productoModel->activar($id)) {
-        exit('No se pudo activar el producto.');
+    if (
+        !$productoModel->activar($id)
+    ) {
+
+        exit(
+            'No se pudo activar el producto.'
+        );
     }
 
 
-    header('Location: ProductoController.php?accion=listar');
+    header(
+        'Location: ProductoController.php?accion=listar'
+    );
 
     exit;
 }
+
 
 // =========================================================
 // ELIMINAR PRODUCTO DEFINITIVAMENTE
@@ -408,11 +587,23 @@ if ($accion === 'activar') {
 
 if ($accion === 'eliminar') {
 
-    // Aceptar ID tanto por GET como por POST
-    $id = (int) ($_GET['id'] ?? $_POST['id'] ?? 0);
+    // -----------------------------------------------------
+    // ACEPTAR ID POR GET O POST
+    // -----------------------------------------------------
+
+    $id =
+        (int) (
+            $_GET['id']
+            ?? $_POST['id']
+            ?? 0
+        );
+
 
     if ($id <= 0) {
-        exit('Producto no válido.');
+
+        exit(
+            'Producto no válido.'
+        );
     }
 
 
@@ -420,10 +611,15 @@ if ($accion === 'eliminar') {
     // OBTENER PRODUCTO
     // -----------------------------------------------------
 
-    $producto = $productoModel->obtenerPorId($id);
+    $producto =
+        $productoModel->obtenerPorId($id);
+
 
     if (!$producto) {
-        exit('Producto no encontrado.');
+
+        exit(
+            'Producto no encontrado.'
+        );
     }
 
 
@@ -431,8 +627,13 @@ if ($accion === 'eliminar') {
     // ELIMINAR DE LA BASE DE DATOS
     // -----------------------------------------------------
 
-    if (!$productoModel->eliminar($id)) {
-        exit('No se pudo eliminar el producto.');
+    if (
+        !$productoModel->eliminar($id)
+    ) {
+
+        exit(
+            'No se pudo eliminar el producto.'
+        );
     }
 
 
@@ -442,9 +643,14 @@ if ($accion === 'eliminar') {
 
     if (!empty($producto['imagen'])) {
 
-        $rutaImagen = __DIR__ . '/../public/img/' . $producto['imagen'];
+        $rutaImagen =
+            __DIR__
+            . '/../public/img/'
+            . $producto['imagen'];
+
 
         if (file_exists($rutaImagen)) {
+
             unlink($rutaImagen);
         }
     }
@@ -454,10 +660,14 @@ if ($accion === 'eliminar') {
     // VOLVER A PRODUCTOS
     // -----------------------------------------------------
 
-    header('Location: ProductoController.php?accion=listar');
+    header(
+        'Location: ProductoController.php?accion=listar'
+    );
 
     exit;
 }
+
+
 // =========================================================
 // ACCIÓN NO EXISTENTE
 // =========================================================

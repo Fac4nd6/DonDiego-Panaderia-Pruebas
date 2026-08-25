@@ -2,35 +2,77 @@
 
 $pageCss = "login.css";
 
+
 require '../../controllers/UsuarioController.php';
+
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-$usuarioController = new UsuarioController();
+
+$usuarioController =
+    new UsuarioController();
+
 
 $error = '';
+
 $email = '';
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-    $email = trim($_POST['email'] ?? '');
-    $password = $_POST['password'] ?? '';
+/* =========================================================
+   PROCESAR LOGIN
+========================================================= */
 
-    $resultado = $usuarioController->login(
-        $email,
-        $password
-    );
+if (
+    $_SERVER["REQUEST_METHOD"] === "POST"
+) {
 
-    if ($resultado['success']) {
+    /*
+     * Verificar CSRF antes de procesar
+     * las credenciales.
+     */
 
-        header('Location: ../home/index.php');
+    verificar_csrf();
+
+
+    $email =
+        trim(
+            $_POST['email'] ?? ''
+        );
+
+
+    $password =
+        $_POST['password'] ?? '';
+
+
+    $resultado =
+        $usuarioController->login(
+            $email,
+            $password
+        );
+
+
+    if (
+        $resultado['success']
+    ) {
+
+        header(
+            'Location: ../../controllers/HomeController.php'
+        );
+
         exit;
     }
 
-    $error = $resultado['error'];
+
+    $error =
+        $resultado['error'];
 }
+
+
+/* =========================================================
+   HEAD
+========================================================= */
 
 require '../layouts/head.php';
 
@@ -40,7 +82,14 @@ require '../layouts/head.php';
 
     <main class="background-container">
 
-        <section class="login-card" aria-labelledby="login-title">
+        <section
+            class="login-card"
+            aria-labelledby="login-title">
+
+
+            <!-- =================================================
+                 LOGO
+            ================================================== -->
 
             <header class="logo-container">
 
@@ -48,8 +97,7 @@ require '../layouts/head.php';
 
                     <img
                         src="../../public/img/logo.avif"
-                        alt="Logo de Don Diego"
-                    >
+                        alt="Logo de Don Diego">
 
                 </div>
 
@@ -58,39 +106,67 @@ require '../layouts/head.php';
 
             <div class="login-content">
 
+
+                <!-- =================================================
+                     TÍTULO
+                ================================================== -->
+
                 <header class="form-header">
 
                     <h2
                         id="login-title"
-                        class="form-title"
-                    >
+                        class="form-title">
+
                         Iniciar sesión
+
                     </h2>
 
                 </header>
 
 
+                <!-- =================================================
+                     ERROR
+                ================================================== -->
+
                 <?php if (!empty($error)): ?>
 
                     <aside
                         class="error-msg"
-                        role="alert"
-                    >
+                        role="alert">
+
                         <?= htmlspecialchars(
                             $error,
                             ENT_QUOTES,
                             'UTF-8'
                         ) ?>
+
                     </aside>
 
                 <?php endif; ?>
 
 
+                <!-- =================================================
+                     FORMULARIO
+                ================================================== -->
+
                 <form
                     action="login.php"
                     method="POST"
                     class="login-form"
-                >
+                    id="loginForm">
+
+
+                    <!-- CSRF -->
+
+                    <input
+                        type="hidden"
+                        name="csrf_token"
+                        value="<?= htmlspecialchars(
+                            csrf_token(),
+                            ENT_QUOTES,
+                            'UTF-8'
+                        ) ?>">
+
 
                     <fieldset>
 
@@ -99,7 +175,9 @@ require '../layouts/head.php';
                         </legend>
 
 
-                        <!-- EMAIL -->
+                        <!-- =================================================
+                             EMAIL
+                        ================================================== -->
 
                         <div class="input-group">
 
@@ -118,47 +196,72 @@ require '../layouts/head.php';
                                     'UTF-8'
                                 ) ?>"
                                 autocomplete="email"
-                                required
-                            >
+                                maxlength="150"
+                                required>
 
                         </div>
 
 
-                        <!-- CONTRASEÑA -->
+                        <!-- =================================================
+                             CONTRASEÑA
+                        ================================================== -->
 
-                        <div class="input-group">
+                        <div class="input-group password-group">
 
                             <label for="password">
                                 Contraseña
                             </label>
 
-                            <input
-                                type="password"
-                                id="password"
-                                name="password"
-                                placeholder="Ingresa tu contraseña"
-                                autocomplete="current-password"
-                                required
-                            >
+
+                            <div class="password-wrapper">
+
+                                <input
+                                    type="password"
+                                    id="password"
+                                    name="password"
+                                    placeholder="Ingresa tu contraseña"
+                                    autocomplete="current-password"
+                                    required>
+
+
+                                <button
+                                    type="button"
+                                    class="toggle-password"
+                                    data-target="password"
+                                    aria-label="Mostrar contraseña"
+                                    aria-pressed="false">
+
+                                    <i class="fa-solid fa-eye"></i>
+
+                                </button>
+
+                            </div>
 
                         </div>
 
                     </fieldset>
 
 
-                    <!-- BOTÓN -->
+                    <!-- =================================================
+                         BOTÓN
+                    ================================================== -->
 
                     <button
                         type="submit"
                         class="btn-submit"
-                    >
+                        id="loginSubmit">
+
                         Iniciar sesión
+
                     </button>
+
 
                 </form>
 
 
-                <!-- REGISTRO -->
+                <!-- =================================================
+                     REGISTRO
+                ================================================== -->
 
                 <footer class="form-footer">
 
@@ -174,11 +277,22 @@ require '../layouts/head.php';
 
                 </footer>
 
+
             </div>
 
         </section>
 
     </main>
+
+
+    <!-- =========================================================
+         JAVASCRIPT
+    ========================================================== -->
+
+    <script
+        src="../../public/js/auth.js"
+        defer>
+    </script>
 
 </body>
 
