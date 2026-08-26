@@ -33,10 +33,23 @@ if (isset($_SESSION['carrito'])) {
 
         </a>
 
+        <button
+            type="button"
+            class="menu-toggle"
+            aria-label="Abrir menú"
+            aria-controls="menuPrincipal"
+            aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
 
         <!-- MENÚ PRINCIPAL -->
 
-        <div class="nav-links">
+        <div class="mobile-menu" id="menuPrincipal">
+
+            <div class="nav-links">
 
             <a
                 href="/DonDiego-Panaderia-Pruebas/controllers/HomeController.php"
@@ -58,12 +71,12 @@ if (isset($_SESSION['carrito'])) {
                 Contacto
             </a>
 
-        </div>
+            </div>
 
 
         <!-- ACCIONES -->
 
-        <div class="nav-actions">
+            <div class="nav-actions">
 
 
             <!-- CUENTA -->
@@ -169,6 +182,8 @@ if (isset($_SESSION['carrito'])) {
 
             <?php endif; ?>
 
+
+            </div>
 
         </div>
 

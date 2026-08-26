@@ -1,77 +1,179 @@
-# Don Diego 🍰
+# Don Diego Panadería 🍰
 
-Sistema web para **Don Diego Panadería**, desarrollado como proyecto académico.
+Sistema web desarrollado para **Don Diego Panadería** como proyecto académico.
 
-El objetivo del proyecto es desarrollar una plataforma web que permita a los clientes consultar productos, registrarse, verificar su correo electrónico, gestionar un carrito y realizar pedidos. También cuenta con un área administrativa para la gestión de productos y pedidos.
+El objetivo del proyecto es desarrollar una plataforma web destinada principalmente a los comercios que trabajan con Don Diego, permitiéndoles consultar un catálogo digital, seleccionar productos y cantidades, realizar pedidos y consultar el estado e historial de sus pedidos.
 
-El proyecto utiliza una arquitectura basada en el patrón **MVC (Model-View-Controller)**.
+El sistema también cuenta con un área administrativa destinada a la gestión de productos y pedidos.
+
+El proyecto utiliza una arquitectura organizada basada en el patrón **MVC (Model-View-Controller)**.
 
 ---
 
-## 🚀 Funcionalidades
+# 📌 Sobre Don Diego
 
-### 🏠 Inicio
+Don Diego Panadería cuenta con más de 20 años de funcionamiento y más de 25 personas trabajando en el local.
 
-* Página principal.
-* Productos destacados.
-* Productos recomendados aleatoriamente.
+Su principal actividad es la venta de productos de panadería y confitería. La empresa trabaja también con comercios que realizan pedidos de productos de manera frecuente.
+
+Actualmente, los comercios realizan principalmente sus pedidos mediante WhatsApp. Estos pedidos deben ser posteriormente ingresados manualmente por empleados de Don Diego en el sistema interno utilizado por la empresa.
+
+El proyecto busca digitalizar y organizar esta primera parte del proceso mediante una plataforma web.
+
+---
+
+# 🎯 Objetivo
+
+El objetivo principal es desarrollar una plataforma que permita a los comercios:
+
+* Consultar un catálogo digital.
+* Visualizar los productos disponibles.
+* Seleccionar cantidades.
+* Crear un carrito.
+* Realizar pedidos.
+* Seleccionar fecha y franja horaria de recepción.
+* Consultar pedidos anteriores.
+* Consultar el estado de sus pedidos.
+
+Para Don Diego, el sistema busca facilitar la gestión de los pedidos recibidos y reducir la cantidad de información que debe ser transcrita manualmente desde WhatsApp.
+
+Como objetivo futuro, se analizará la posibilidad de integrar la plataforma con el sistema utilizado actualmente por Don Diego para automatizar aún más el proceso.
+
+---
+
+# 🚀 Funcionalidades
+
+## 🏠 Página principal
+
+* Página de inicio.
 * Información sobre Don Diego.
-* Diseño adaptable.
+* Productos destacados.
+* Productos recomendados.
+* Navegación hacia el catálogo.
+* Diseño adaptable a diferentes dispositivos.
 
-### 👤 Usuarios
+---
 
-* Registro de usuarios.
-* Inicio de sesión.
-* Cierre de sesión.
-* Gestión de datos de la cuenta.
-* Contraseñas protegidas mediante `password_hash()`.
-* Verificación mediante `password_verify()`.
-* Sistema de roles:
+## 👤 Usuarios
 
-  * `cliente`
-  * `empleado`
-  * `admin`
+El sistema cuenta con diferentes tipos de usuario:
 
-### 📧 Verificación de correo
+* `cliente`
+* `empleado`
+* `admin`
 
-* Verificación de correo electrónico después del registro.
-* Tokens de verificación seguros.
-* Tokens con vencimiento de 24 horas.
+### Cliente
+
+Puede:
+
+* Registrarse.
+* Iniciar sesión.
+* Cerrar sesión.
+* Verificar su cuenta.
+* Gestionar sus datos.
+* Consultar el catálogo.
+* Agregar productos al carrito.
+* Realizar pedidos.
+* Consultar sus pedidos.
+* Consultar el detalle de sus pedidos.
+* Cancelar pedidos cuando corresponda.
+
+### Empleado
+
+Puede acceder a funcionalidades relacionadas con la gestión de pedidos, de acuerdo con los permisos establecidos.
+
+Puede:
+
+* Consultar pedidos.
+* Visualizar el detalle de los pedidos.
+* Actualizar estados.
+* Participar en el procesamiento de pedidos.
+
+### Administrador
+
+Dispone de funciones administrativas adicionales:
+
+* Gestionar productos.
+* Crear productos.
+* Editar productos.
+* Activar productos.
+* Desactivar productos.
+* Gestionar pedidos.
+* Consultar información administrativa.
+
+---
+
+# 📧 Verificación de correo
+
+El sistema incorpora un proceso de verificación de cuentas mediante correo electrónico.
+
+Actualmente contempla:
+
+* Envío de correo de verificación.
+* Tokens de verificación.
+* Vencimiento de tokens.
 * Página de aviso de verificación.
-* Reenvío del correo de verificación.
-* Límite de reenvíos para evitar abusos.
-* Las cuentas sin verificar no pueden iniciar sesión.
-* Integración con la API de **Brevo** para el envío de correos.
+* Reenvío de verificación.
+* Límite de reenvíos.
+* Restricción de inicio de sesión para cuentas que no hayan sido verificadas.
 
-### 🧁 Productos
+El envío de correos se realiza mediante la API de **Brevo**.
 
-* Catálogo de productos.
-* Visualización de productos.
-* Información de cada producto.
-* Productos activos.
-* Gestión de productos desde el panel administrativo.
+---
 
-### 🛒 Carrito
+# 🧁 Catálogo
+
+El catálogo permite:
+
+* Consultar los productos disponibles.
+* Visualizar información de cada producto.
+* Organizar productos mediante categorías.
+* Seleccionar cantidades.
+* Agregar productos al carrito.
+* Visualizar productos destacados.
+* Visualizar productos recomendados.
+
+Los productos pueden ser activados o desactivados desde el área administrativa.
+
+Los productos desactivados no se muestran normalmente en el catálogo público.
+
+---
+
+# 🛒 Carrito
+
+El sistema dispone de un carrito de compras.
+
+Permite:
 
 * Agregar productos.
 * Modificar cantidades.
-* Vaciar carrito.
-* Cálculo automático del total.
-* Persistencia del carrito mediante sesión.
+* Eliminar productos.
+* Vaciar el carrito.
+* Calcular el total.
+* Revisar los productos antes de confirmar el pedido.
 
-### 📦 Pedidos
+El carrito se mantiene mediante la sesión del usuario.
 
-* Creación de pedidos.
-* Consulta de pedidos realizados.
-* Visualización del detalle de un pedido.
-* Cancelación de pedidos.
-* Selección de fecha de recepción.
-* Selección de franja horaria.
-* Dirección de entrega.
-* Selección del método de pago.
-* Límite de pedidos pendientes por usuario.
+---
 
-Estados disponibles:
+# 📦 Pedidos
+
+Los usuarios pueden realizar pedidos mediante la plataforma.
+
+El proceso permite:
+
+* Seleccionar productos.
+* Seleccionar cantidades.
+* Revisar el carrito.
+* Seleccionar fecha de recepción.
+* Seleccionar franja horaria.
+* Utilizar la información de dirección registrada.
+* Seleccionar método de pago.
+* Revisar un resumen.
+* Confirmar el pedido.
+* Consultar posteriormente el pedido.
+
+Los estados actualmente contemplados son:
 
 ```text
 pendiente
@@ -82,53 +184,146 @@ entregado
 cancelado
 ```
 
-### 🛠️ Administración
+---
 
-Los usuarios con rol `admin` o `empleado` pueden acceder a funcionalidades administrativas.
+# 📋 Historial de pedidos
 
-* Panel de pedidos.
-* Visualización de pedidos.
-* Visualización del detalle de pedidos.
-* Actualización del estado de los pedidos.
-* Gestión de productos.
-* Creación y edición de productos.
-* Control de permisos según rol.
+Los usuarios pueden consultar los pedidos que realizaron anteriormente.
+
+El sistema permite visualizar:
+
+* Fecha.
+* Estado.
+* Total.
+* Productos incluidos.
+* Cantidades.
+* Información del pedido.
+
+También existe una vista específica para consultar el detalle de cada pedido.
+
+Una posible mejora futura es permitir repetir directamente un pedido anterior.
+
+---
+
+# 🛠️ Administración
+
+El sistema cuenta con un área administrativa para gestionar la información utilizada por la plataforma.
+
+## Productos
+
+El administrador puede:
+
+* Crear productos.
+* Editar productos.
+* Activar productos.
+* Desactivar productos.
+* Eliminar productos.
+* Asignar categorías.
+* Gestionar imágenes.
+
+## Pedidos
+
+Los usuarios autorizados pueden:
+
+* Consultar pedidos recibidos.
+* Visualizar información de los pedidos.
+* Consultar los productos incluidos.
+* Consultar información del cliente.
+* Actualizar estados.
+* Gestionar los pedidos durante su procesamiento.
+
+---
+
+# 💳 Métodos de pago
+
+El sistema contempla actualmente:
+
+* Efectivo.
+* Mercado Pago.
+
+El método de efectivo forma parte del flujo de pedidos.
+
+La integración con Mercado Pago se encuentra actualmente **en desarrollo**.
+
+---
+
+# 💳 Mercado Pago
+
+El proyecto cuenta con una estructura inicial para integrar Mercado Pago.
+
+Actualmente se dispone de:
+
+* Servicio para comunicarse con Mercado Pago.
+* Controlador para gestionar operaciones relacionadas con pagos.
+* Token de acceso.
+* Generación de checkout.
+* `external_reference` para relacionar operaciones con pedidos.
+* Consultas a la API desde el servidor.
+* Comprobaciones de respuestas.
+* Estructura inicial para recibir notificaciones mediante webhook.
+
+La integración todavía **no está preparada para producción**.
+
+Antes de habilitar pagos reales se deben completar, entre otras, las siguientes tareas:
+
+* Validar la firma de los webhooks.
+* Verificar correctamente la orden asociada al pago.
+* Persistir correctamente los identificadores de Mercado Pago.
+* Implementar idempotencia.
+* Prevenir pagos duplicados.
+* Validar monto y moneda.
+* Configurar una URL pública HTTPS.
+* Sincronizar completamente la base de datos con el código.
+* Realizar pruebas de errores y reintentos.
 
 ---
 
 # 🔐 Seguridad
 
-El proyecto incorpora diferentes medidas de seguridad:
+El proyecto incorpora diferentes mecanismos de seguridad.
+
+Actualmente se utilizan:
 
 * Consultas preparadas mediante `mysqli`.
-* Protección contra SQL Injection mediante prepared statements.
-* Contraseñas almacenadas mediante `password_hash()`.
-* Verificación mediante `password_verify()`.
-* Protección CSRF.
+* `password_hash()` para almacenar contraseñas.
+* `password_verify()` para comprobar contraseñas.
 * Regeneración del ID de sesión después del inicio de sesión.
-* Control de intentos de login.
-* Control de acceso mediante roles.
-* Verificación obligatoria del correo electrónico.
 * Tokens de verificación generados mediante `random_bytes()`.
 * Expiración de tokens.
-* Control de reenvíos de verificación.
-* Validación de datos recibidos desde formularios.
-* Escape de datos mostrados mediante `htmlspecialchars()`.
+* Protección CSRF en diferentes partes del sistema.
+* Control de acceso mediante roles.
+* Validación de información recibida desde formularios.
+* Escape de información mostrada en HTML.
+* Restricción de pedidos según el usuario correspondiente.
+
+Durante la auditoría de seguridad también se detectaron aspectos que deben corregirse antes de utilizar el sistema en producción.
+
+Entre ellos:
+
+* Protección CSRF todavía no aplicada de forma uniforme.
+* Algunas acciones administrativas utilizan GET.
+* Configuración de sesión pendiente de endurecimiento.
+* Configuración de MySQL de desarrollo que no debe utilizarse en producción.
+* Errores PHP visibles durante el desarrollo.
+* Seguridad del webhook de Mercado Pago pendiente.
+* Revisión de credenciales y secretos.
+* Necesidad de realizar pruebas de seguridad adicionales.
+
+No se encontró una inyección SQL directa confirmada durante la auditoría realizada.
+
+Tampoco se encontró una vulnerabilidad IDOR evidente en el acceso de clientes a sus pedidos durante las pruebas realizadas.
 
 ---
 
 # 📧 Brevo
 
-El proyecto utiliza la API de **Brevo** para enviar correos electrónicos.
+El sistema utiliza la API de **Brevo** para el envío de correos relacionados con la verificación de cuentas.
 
-Actualmente se utiliza para:
+Las credenciales reales no deben incluirse en el repositorio.
 
-* Verificación de cuentas.
-* Reenvío de enlaces de verificación.
+La configuración utiliza archivos separados para evitar almacenar las credenciales directamente en el código compartido.
 
-Por seguridad, las credenciales reales de Brevo no deben subirse a GitHub.
-
-El repositorio incluye:
+Ejemplo de configuración:
 
 ```text
 config/
@@ -136,13 +331,48 @@ config/
 └── Brevo.ejemplo.php
 ```
 
-`Brevo.ejemplo.php` sirve como plantilla para configurar el servicio.
+`Brevo.ejemplo.php` sirve como referencia para configurar el servicio.
 
-El archivo `Brevo.php` debe permanecer fuera del repositorio si contiene credenciales reales.
+`Brevo.php` debe mantenerse fuera del repositorio cuando contiene credenciales reales.
+
+> **Importante:** si una API Key real se encuentra expuesta, debe revocarse y reemplazarse inmediatamente.
 
 ---
 
-# 🛠️ Tecnologías
+# 🗄️ Base de datos
+
+El proyecto utiliza **MySQL**.
+
+Las principales tablas utilizadas son:
+
+```text
+usuarios
+productos
+categorias
+pedidos
+pedido_detalles
+```
+
+La base de datos relaciona usuarios, productos y pedidos para permitir el funcionamiento del sistema.
+
+Los pedidos contienen información relacionada con:
+
+* Usuario.
+* Productos.
+* Cantidades.
+* Precios.
+* Estado.
+* Fecha.
+* Recepción.
+* Método de pago.
+
+La estructura SQL debe mantenerse sincronizada con el código actual del proyecto.
+
+Actualmente existe una tarea pendiente de sincronización relacionada con los campos utilizados por Mercado Pago.
+
+---
+
+# ⚙️ Tecnologías
 
 * HTML5
 * CSS3
@@ -151,8 +381,10 @@ El archivo `Brevo.php` debe permanecer fuera del repositorio si contiene credenc
 * MySQL
 * Apache
 * XAMPP
+* `mysqli`
 * cURL
 * Brevo API
+* Mercado Pago API
 * Git
 * GitHub
 * Font Awesome
@@ -170,13 +402,16 @@ DonDiego-Panaderia-Pruebas/
 │   ├── Brevo.ejemplo.php
 │   ├── Brevo.php
 │   ├── Csrf.php
-│   └── Database.php
+│   ├── Database.php
+│   ├── MercadoPagoClient.php
+│   └── mercadopago.php
 │
 ├── controllers/
 │   ├── BrevoController.php
 │   ├── CarritoController.php
 │   ├── CatalogoController.php
 │   ├── HomeController.php
+│   ├── MercadoPagoController.php
 │   ├── PedidoController.php
 │   ├── ProductoController.php
 │   ├── UsuarioController.php
@@ -196,6 +431,9 @@ DonDiego-Panaderia-Pruebas/
 │   ├── img/
 │   └── js/
 │
+├── service/
+│   └── MercadoPagoService.php
+│
 └── views/
     ├── admin/
     ├── carrito/
@@ -206,57 +444,64 @@ DonDiego-Panaderia-Pruebas/
     └── usuarios/
 ```
 
-La aplicación separa sus responsabilidades de la siguiente manera:
+---
+
+# 🏗️ Arquitectura
+
+El proyecto utiliza una estructura basada en **MVC**.
 
 ### `controllers/`
 
-Contiene la lógica que procesa las solicitudes y conecta los modelos con las vistas.
+Procesa las solicitudes del usuario y coordina las acciones entre modelos y vistas.
 
 ### `models/`
 
-Contiene las operaciones relacionadas con la base de datos y la gestión de los datos.
+Contiene las operaciones relacionadas con los datos y la base de datos.
 
 ### `views/`
 
-Contiene las interfaces que ve el usuario.
+Contiene las interfaces que se muestran al usuario.
 
 ### `config/`
 
-Contiene configuraciones y servicios utilizados por el sistema.
+Contiene configuraciones y componentes necesarios para servicios externos y conexión con la base de datos.
+
+### `service/`
+
+Contiene servicios utilizados para comunicarse con sistemas externos.
 
 ### `public/`
 
-Contiene los archivos públicos del proyecto:
+Contiene los recursos públicos:
 
-* CSS
-* JavaScript
-* Imágenes
+* CSS.
+* JavaScript.
+* Imágenes.
 
 ### `database/`
 
-Contiene el archivo SQL utilizado para crear y configurar la base de datos.
+Contiene el archivo SQL utilizado para crear la base de datos.
 
 ---
 
-# 💻 Cómo levantar el proyecto
+# 💻 Instalación y ejecución
 
 ## 1. Requisitos
 
-Se necesita tener instalado:
+Para ejecutar el proyecto en un entorno local se necesita:
 
-* XAMPP
-* PHP 8.2 o superior
-* Apache
-* MySQL
-* Git
-
-También se necesita tener habilitada la extensión **cURL de PHP** para utilizar Brevo.
+* XAMPP.
+* PHP 8.2 o superior.
+* Apache.
+* MySQL.
+* Git.
+* Extensión cURL de PHP.
 
 ---
 
 ## 2. Clonar el repositorio
 
-Abrir una terminal en la carpeta `htdocs` de XAMPP:
+Desde la carpeta `htdocs` de XAMPP:
 
 ```bash
 git clone URL_DEL_REPOSITORIO
@@ -272,18 +517,16 @@ cd DonDiego-Panaderia-Pruebas
 
 ## 3. Iniciar XAMPP
 
-Abrir XAMPP y encender:
+Abrir XAMPP e iniciar:
 
 ```text
 Apache
 MySQL
 ```
 
-Ambos servicios deben aparecer como activos.
-
 ---
 
-# 🗄️ Configurar MySQL
+# 🗄️ Configurar la base de datos
 
 ## 4. Crear la base de datos
 
@@ -305,11 +548,11 @@ Luego importar:
 database/don_diego.sql
 ```
 
-Esto creará las tablas necesarias para el funcionamiento del sistema.
+> La estructura del archivo SQL debe coincidir con la versión actual del proyecto. Si se realizaron cambios recientes en el código relacionados con Mercado Pago, se debe actualizar el esquema antes de realizar una instalación limpia.
 
 ---
 
-# ⚙️ Configurar Database.php
+# ⚙️ Configurar la conexión
 
 Abrir:
 
@@ -317,9 +560,9 @@ Abrir:
 config/Database.php
 ```
 
-Configurar los datos de conexión correspondientes al entorno local.
+Configurar los datos correspondientes al entorno local.
 
-Una configuración típica de XAMPP puede ser:
+Una configuración típica de XAMPP es:
 
 ```php
 $host = 'localhost';
@@ -328,27 +571,27 @@ $password = '';
 $baseDatos = 'don_diego';
 ```
 
-Los valores pueden variar dependiendo de la configuración de cada integrante.
+Esta configuración está destinada al **entorno local de desarrollo**.
 
-> Si `Database.php` contiene credenciales privadas, no deben subirse al repositorio. En ese caso se recomienda utilizar un archivo `Database.ejemplo.php` como plantilla.
+Para producción se debe utilizar un usuario específico para la aplicación, con contraseña segura y permisos limitados.
 
 ---
 
 # 📧 Configurar Brevo
 
-El repositorio incluye:
+Crear una copia de:
 
 ```text
 config/Brevo.ejemplo.php
 ```
 
-Copiar el archivo como:
+y utilizarla como:
 
 ```text
 config/Brevo.php
 ```
 
-Luego completar la API Key y el correo remitente correspondiente.
+Completar las credenciales correspondientes.
 
 Ejemplo:
 
@@ -371,23 +614,37 @@ define(
 
 ### ⚠️ Importante
 
-**Nunca subir la API Key real a GitHub.**
+No subir nunca una API Key real a GitHub.
 
-El archivo:
+Si una credencial real fue expuesta, debe revocarse y reemplazarse.
+
+---
+
+# 💳 Configuración de Mercado Pago
+
+La integración de Mercado Pago se encuentra en desarrollo.
+
+La configuración utiliza componentes relacionados con:
 
 ```text
-Brevo.ejemplo.php
+config/mercadopago.php
+config/MercadoPagoClient.php
+service/MercadoPagoService.php
+controllers/MercadoPagoController.php
 ```
 
-sí debe estar en el repositorio.
+Para utilizar Mercado Pago en producción será necesario configurar:
 
-El archivo:
+* Credenciales reales.
+* URL pública HTTPS.
+* Webhook accesible desde Internet.
+* Validación de firma.
+* Identificación de pedidos.
+* Persistencia de identificadores de pago.
+* Idempotencia.
+* Validación de monto y moneda.
 
-```text
-Brevo.php
-```
-
-debe estar incluido en `.gitignore` si contiene credenciales reales.
+Actualmente el sistema no debe considerarse preparado para recibir pagos reales en producción.
 
 ---
 
@@ -399,13 +656,11 @@ Con Apache y MySQL funcionando, acceder desde:
 http://localhost/DonDiego-Panaderia-Pruebas/
 ```
 
-Dependiendo de la configuración del proyecto, las páginas también pueden utilizar los controladores correspondientes.
-
 ---
 
 # 📱 Acceso desde otros dispositivos
 
-Durante el desarrollo local, las URLs utilizan `localhost`.
+Durante el desarrollo local se utiliza `localhost`.
 
 Por ejemplo:
 
@@ -413,59 +668,193 @@ Por ejemplo:
 http://localhost/DonDiego-Panaderia-Pruebas/
 ```
 
-`localhost` hace referencia al propio dispositivo desde el que se accede.
+`localhost` hace referencia al propio dispositivo.
 
-Por lo tanto, un teléfono u otra computadora no puede utilizar directamente esa URL para acceder al servidor de tu PC.
+Para utilizar la plataforma desde otros dispositivos o desde Internet será necesario configurar un servidor accesible desde la red correspondiente.
 
-Para que el sistema pueda ser utilizado públicamente será necesario desplegarlo en un servidor accesible desde Internet y utilizar una URL o dominio público.
+Para una instalación pública se recomienda utilizar:
+
+* HTTPS.
+* Dominio.
+* Servidor web.
+* Base de datos protegida.
+* Variables de entorno para secretos.
+* Configuración de producción.
 
 ---
 
 # 🧪 Cuentas de prueba
 
-Para facilitar las pruebas del sistema, la base de datos de desarrollo incluye cuentas de prueba para cada rol.
+El entorno de desarrollo puede contar con cuentas destinadas a las pruebas de los diferentes roles.
 
-| Rol           | Correo               | Contraseña    |
-| ------------- | -------------------- | ------------- |
-| Administrador | `admin@gmail.com`    | `Admin123`    |
-| Empleado      | `empleado@gmail.com` | `empleado123` |
-| Cliente       | `cliente@gmail.com`  | `Cliente123`  |
+| Rol        | Función                    |
+| ---------- | -------------------------- |
+| `admin`    | Administración del sistema |
+| `empleado` | Gestión de pedidos         |
+| `cliente`  | Realización de pedidos     |
 
-Estas cuentas son **únicamente para el entorno de desarrollo y pruebas académicas**.
+Las credenciales de prueba deben mantenerse únicamente en entornos de desarrollo.
 
-Las credenciales no deben utilizarse en producción ni asociarse a información personal o datos reales.
+No deben utilizarse cuentas con contraseñas conocidas o datos ficticios en una instalación real.
 
-### Permisos de cada rol
+---
 
-**Administrador**
+# 🧪 Estado del proyecto
 
-* Acceso al panel administrativo.
-* Gestión de productos.
-* Visualización y gestión de pedidos.
-* Actualización de estados de pedidos.
+Actualmente el proyecto se encuentra en una **etapa avanzada de desarrollo**.
 
-**Empleado**
+## ✅ Implementado
 
-* Acceso al panel de pedidos.
-* Visualización de pedidos.
-* Visualización del detalle.
-* Actualización de estados de pedidos.
-* No posee las mismas funciones de administración que el rol `admin`.
-
-**Cliente**
-
-* Registro e inicio de sesión.
-* Consulta del catálogo.
-* Gestión del carrito.
+* Página principal.
+* Catálogo.
+* Categorías.
+* Productos destacados.
+* Productos recomendados.
+* Registro.
+* Inicio de sesión.
+* Cierre de sesión.
+* Gestión de cuenta.
+* Verificación de correo.
+* Reenvío de verificación.
+* Carrito.
 * Creación de pedidos.
-* Consulta de sus propios pedidos.
-* Cancelación de pedidos cuando corresponda.
-* Gestión de sus datos de cuenta.
+* Historial de pedidos.
+* Detalle de pedidos.
+* Cancelación de pedidos.
+* Estados de pedidos.
+* Panel administrativo.
+* Gestión de productos.
+* Gestión de pedidos.
+* Roles de usuario.
+* Selección de métodos de pago.
+* Integración inicial con Brevo.
+* Estructura inicial de Mercado Pago.
+* Diseño responsive.
 
+## 🟡 En desarrollo / corrección
+
+* Integración completa con Mercado Pago.
+* Seguridad del webhook.
+* Persistencia de información de pagos.
+* Idempotencia de operaciones de pago.
+* Sincronización completa de la base de datos.
+* Transacciones para la creación de pedidos.
+* Validación final de productos y precios.
+* Protección CSRF uniforme.
+* Endurecimiento de sesiones.
+* Correcciones de rutas y navegación.
+* Pruebas completas responsive.
+* Pruebas automatizadas.
+
+## 🔴 Pendiente
+
+* Integración con el sistema interno de Don Diego.
+* Despliegue en un servidor público.
+* Configuración definitiva de producción.
+* Dominio y HTTPS.
+* Pruebas finales de seguridad.
+* Pruebas completas de pagos.
+
+---
+
+# 🔒 Preparación para producción
+
+El proyecto funciona como aplicación de desarrollo y presentación académica, pero **todavía no debe considerarse listo para producción**.
+
+Antes de una implementación real se deben completar, entre otras, las siguientes tareas:
+
+* [ ] Revocar y reemplazar credenciales expuestas.
+* [ ] Utilizar variables de entorno para secretos.
+* [ ] Revisar el historial de Git.
+* [ ] Sincronizar completamente la base de datos.
+* [ ] Implementar CSRF en todas las operaciones necesarias.
+* [ ] Convertir acciones administrativas que modifican datos a POST.
+* [ ] Endurecer la configuración de sesiones.
+* [ ] Desactivar `display_errors` en producción.
+* [ ] Utilizar un usuario MySQL específico.
+* [ ] Implementar transacciones en la creación de pedidos.
+* [ ] Validar productos y precios nuevamente al confirmar.
+* [ ] Completar la integración segura con Mercado Pago.
+* [ ] Validar firmas de webhook.
+* [ ] Implementar idempotencia.
+* [ ] Validar montos y monedas.
+* [ ] Corregir rutas de imágenes.
+* [ ] Completar pruebas responsive.
+* [ ] Crear pruebas automatizadas.
+* [ ] Configurar HTTPS.
+* [ ] Analizar la integración con el sistema interno de Don Diego.
+
+---
+
+# 📱 Responsive y accesibilidad
+
+El sistema está diseñado para adaptarse a diferentes dispositivos.
+
+Se contemplan:
+
+* Computadoras.
+* Tablets.
+* Celulares.
+
+Entre las funcionalidades responsive implementadas se encuentran:
+
+* Menú hamburguesa.
+* Catálogo adaptable.
+* Carrito adaptable.
+* Formularios adaptados a pantallas pequeñas.
+* Modal de productos.
+* Controles táctiles.
+* Diferentes presentaciones según el tamaño de pantalla.
+
+Durante la revisión se comprobó el catálogo público en una pantalla de aproximadamente 390 px sin detectar overflow horizontal.
+
+Todavía deben realizarse pruebas completas en diferentes resoluciones y en las páginas que requieren autenticación.
+
+---
+
+# 🔍 Auditoría del proyecto
+
+Se realizó una auditoría estática del código para revisar:
+
+* Seguridad.
+* Autenticación.
+* Autorización.
+* Carrito.
+* Pedidos.
+* Productos.
+* Base de datos.
+* Mercado Pago.
+* Vistas.
+* Responsive.
+* Configuración.
+
+La auditoría no modificó ni eliminó archivos del proyecto.
+
+La revisión permitió detectar problemas que deben solucionarse antes de una utilización en producción, además de confirmar diferentes mecanismos de seguridad y funcionalidades que ya se encuentran implementados.
+
+---
+
+# 🧩 Mejoras futuras
+
+Entre las mejoras previstas se encuentran:
+
+* Integración con el sistema interno de Don Diego.
+* Repetición de pedidos anteriores.
+* Control de stock, si el negocio lo requiere.
+* Sistema de notificaciones.
+* Mejoras de accesibilidad.
+* Mejoras de rendimiento.
+* Paginación del catálogo.
+* Logs y monitoreo.
+* Pruebas automatizadas.
+* Mejoras adicionales de seguridad.
+* Despliegue en un servidor real.
+
+---
 
 # 🌿 Flujo de trabajo con Git
 
-Las ramas principales del proyecto son:
+El proyecto utiliza diferentes ramas para organizar el desarrollo.
 
 ```text
 main
@@ -481,86 +870,38 @@ Contiene la versión estable del proyecto.
 
 ### `develop`
 
-Rama utilizada para integrar los cambios realizados por el equipo.
+Se utiliza para integrar los cambios realizados por los integrantes antes de incorporarlos a la versión estable.
 
 ### Ramas individuales
 
-Cada integrante trabaja principalmente en su propia rama:
-
-```text
-facu
-mati
-cony
-cano
-```
-
-El flujo de trabajo recomendado es:
+Cada integrante trabaja principalmente desde su propia rama.
 
 ```text
 Rama individual
       ↓
    Commit
       ↓
-   Push
+    Push
       ↓
 Pull Request
       ↓
-   develop
+  develop
       ↓
    Pruebas
       ↓
     main
 ```
 
-Los cambios importantes deben integrarse mediante Pull Requests para facilitar la revisión y evitar conflictos.
+Los cambios importantes deben integrarse mediante Pull Requests para facilitar la revisión y reducir conflictos.
 
 ---
 
 # 👥 Equipo
 
-* Facu
-* Cano
-* Cony
-* Mati
-
----
-
-# 📌 Estado actual
-
-### Implementado
-
-* Página de inicio.
-* Catálogo de productos.
-* Productos destacados.
-* Productos recomendados aleatorios.
-* Registro.
-* Login.
-* Logout.
-* Gestión de cuenta.
-* Verificación de correo.
-* Reenvío de verificación.
-* Expiración de tokens.
-* Carrito.
-* Creación de pedidos.
-* Consulta de pedidos.
-* Detalle de pedidos.
-* Cancelación de pedidos.
-* Estados de pedidos.
-* Panel administrativo.
-* Gestión de productos.
-* Roles y permisos.
-* Protección CSRF.
-* Validaciones de formularios.
-* Integración con Brevo.
-
-### Pendiente / posibles mejoras
-
-* Integración completa con Mercado Pago.
-* Control de stock.
-* Mejoras adicionales de seguridad.
-* Mejoras de experiencia de usuario.
-* Despliegue en un servidor público.
-* Configuración de dominio para producción.
+* Thiago Cano
+* Facundo Leites
+* Constanza Ortiz
+* Matias Hernandes
 
 ---
 
@@ -569,3 +910,5 @@ Los cambios importantes deben integrarse mediante Pull Requests para facilitar l
 Proyecto desarrollado como parte del proyecto final de **Bachillerato en Tecnologías de la Información**.
 
 ## Don Diego Panadería 🍰
+
+La plataforma busca digitalizar el proceso de realización y gestión de pedidos de los comercios que trabajan con Don Diego, proporcionando una base para futuras mejoras e integraciones con los sistemas internos de la empresa.
