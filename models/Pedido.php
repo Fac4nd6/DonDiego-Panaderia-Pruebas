@@ -51,10 +51,15 @@ class Pedido
             )
         ";
 
-        $stmt =
-            $this->conn->prepare($sql);
+        $stmt = $this->conn->prepare($sql);
 
         if (!$stmt) {
+
+            error_log(
+                'Error preparando crearPedido: '
+                . $this->conn->error
+            );
+
             return false;
         }
 
@@ -70,13 +75,17 @@ class Pedido
 
         if (!$stmt->execute()) {
 
+            error_log(
+                'Error ejecutando crearPedido: '
+                . $stmt->error
+            );
+
             $stmt->close();
 
             return false;
         }
 
-        $pedidoId =
-            $this->conn->insert_id;
+        $pedidoId = $this->conn->insert_id;
 
         $stmt->close();
 
@@ -102,8 +111,7 @@ class Pedido
             AND estado = 'pendiente'
         ";
 
-        $stmt =
-            $this->conn->prepare($sql);
+        $stmt = $this->conn->prepare($sql);
 
         if (!$stmt) {
             return 0;
@@ -121,11 +129,9 @@ class Pedido
             return 0;
         }
 
-        $resultado =
-            $stmt->get_result();
+        $resultado = $stmt->get_result();
 
-        $fila =
-            $resultado->fetch_assoc();
+        $fila = $resultado->fetch_assoc();
 
         $stmt->close();
 
@@ -164,10 +170,15 @@ class Pedido
             )
         ";
 
-        $stmt =
-            $this->conn->prepare($sql);
+        $stmt = $this->conn->prepare($sql);
 
         if (!$stmt) {
+
+            error_log(
+                'Error preparando agregarDetalle: '
+                . $this->conn->error
+            );
+
             return false;
         }
 
@@ -180,8 +191,151 @@ class Pedido
             $subtotal
         );
 
-        $resultado =
-            $stmt->execute();
+        $resultado = $stmt->execute();
+
+        if (!$resultado) {
+
+            error_log(
+                'Error ejecutando agregarDetalle: '
+                . $stmt->error
+            );
+        }
+
+        $stmt->close();
+
+        return $resultado;
+    }
+
+
+    /* =========================================================
+       GUARDAR MERCADO PAGO ORDER ID
+    ========================================================= */
+
+    public function guardarMercadoPagoOrderId(
+        $pedidoId,
+        $orderId
+    ) {
+
+        $pedidoId = (int) $pedidoId;
+
+        $orderId = trim(
+            (string) $orderId
+        );
+
+        if (
+            $pedidoId <= 0 ||
+            $orderId === ''
+        ) {
+            return false;
+        }
+
+        if (strlen($orderId) > 100) {
+            return false;
+        }
+
+        $sql = "
+            UPDATE pedidos
+
+            SET mercado_pago_order_id = ?
+
+            WHERE id = ?
+        ";
+
+        $stmt = $this->conn->prepare($sql);
+
+        if (!$stmt) {
+
+            error_log(
+                'Error preparando guardarMercadoPagoOrderId: '
+                . $this->conn->error
+            );
+
+            return false;
+        }
+
+        $stmt->bind_param(
+            "si",
+            $orderId,
+            $pedidoId
+        );
+
+        $resultado = $stmt->execute();
+
+        if (!$resultado) {
+
+            error_log(
+                'Error ejecutando guardarMercadoPagoOrderId: '
+                . $stmt->error
+            );
+        }
+
+        $stmt->close();
+
+        return $resultado;
+    }
+
+
+    /* =========================================================
+       GUARDAR MERCADO PAGO PAYMENT ID
+    ========================================================= */
+
+    public function guardarMercadoPagoPaymentId(
+        $pedidoId,
+        $paymentId
+    ) {
+
+        $pedidoId = (int) $pedidoId;
+
+        $paymentId = trim(
+            (string) $paymentId
+        );
+
+        if (
+            $pedidoId <= 0 ||
+            $paymentId === ''
+        ) {
+            return false;
+        }
+
+        if (strlen($paymentId) > 100) {
+            return false;
+        }
+
+        $sql = "
+            UPDATE pedidos
+
+            SET mercado_pago_payment_id = ?
+
+            WHERE id = ?
+        ";
+
+        $stmt = $this->conn->prepare($sql);
+
+        if (!$stmt) {
+
+            error_log(
+                'Error preparando guardarMercadoPagoPaymentId: '
+                . $this->conn->error
+            );
+
+            return false;
+        }
+
+        $stmt->bind_param(
+            "si",
+            $paymentId,
+            $pedidoId
+        );
+
+        $resultado = $stmt->execute();
+
+        if (!$resultado) {
+
+            error_log(
+                'Error ejecutando guardarMercadoPagoPaymentId: '
+                . $stmt->error
+            );
+        }
 
         $stmt->close();
 
@@ -205,6 +359,8 @@ class Pedido
                 franja_horaria,
                 direccion_entrega,
                 metodo_pago,
+                mercado_pago_order_id,
+                mercado_pago_payment_id,
                 estado,
                 total
 
@@ -215,11 +371,9 @@ class Pedido
             ORDER BY fecha_pedido DESC
         ";
 
-        $stmt =
-            $this->conn->prepare($sql);
+        $stmt = $this->conn->prepare($sql);
 
         if (!$stmt) {
-
             return [];
         }
 
@@ -235,13 +389,11 @@ class Pedido
             return [];
         }
 
-        $resultado =
-            $stmt->get_result();
+        $resultado = $stmt->get_result();
 
-        $pedidos =
-            $resultado->fetch_all(
-                MYSQLI_ASSOC
-            );
+        $pedidos = $resultado->fetch_all(
+            MYSQLI_ASSOC
+        );
 
         $stmt->close();
 
@@ -267,6 +419,8 @@ class Pedido
                 franja_horaria,
                 direccion_entrega,
                 metodo_pago,
+                mercado_pago_order_id,
+                mercado_pago_payment_id,
                 estado,
                 total
 
@@ -279,8 +433,7 @@ class Pedido
             LIMIT 1
         ";
 
-        $stmt =
-            $this->conn->prepare($sql);
+        $stmt = $this->conn->prepare($sql);
 
         if (!$stmt) {
             return null;
@@ -299,11 +452,9 @@ class Pedido
             return null;
         }
 
-        $resultado =
-            $stmt->get_result();
+        $resultado = $stmt->get_result();
 
-        $pedido =
-            $resultado->fetch_assoc();
+        $pedido = $resultado->fetch_assoc();
 
         $stmt->close();
 
@@ -327,6 +478,8 @@ class Pedido
                 p.franja_horaria,
                 p.direccion_entrega,
                 p.metodo_pago,
+                p.mercado_pago_order_id,
+                p.mercado_pago_payment_id,
                 p.estado,
                 p.total,
 
@@ -345,8 +498,7 @@ class Pedido
             LIMIT 1
         ";
 
-        $stmt =
-            $this->conn->prepare($sql);
+        $stmt = $this->conn->prepare($sql);
 
         if (!$stmt) {
             return null;
@@ -364,11 +516,9 @@ class Pedido
             return null;
         }
 
-        $resultado =
-            $stmt->get_result();
+        $resultado = $stmt->get_result();
 
-        $pedido =
-            $resultado->fetch_assoc();
+        $pedido = $resultado->fetch_assoc();
 
         $stmt->close();
 
@@ -405,8 +555,7 @@ class Pedido
             ORDER BY pd.id ASC
         ";
 
-        $stmt =
-            $this->conn->prepare($sql);
+        $stmt = $this->conn->prepare($sql);
 
         if (!$stmt) {
             return [];
@@ -424,13 +573,11 @@ class Pedido
             return [];
         }
 
-        $resultado =
-            $stmt->get_result();
+        $resultado = $stmt->get_result();
 
-        $detalles =
-            $resultado->fetch_all(
-                MYSQLI_ASSOC
-            );
+        $detalles = $resultado->fetch_all(
+            MYSQLI_ASSOC
+        );
 
         $stmt->close();
 
@@ -447,11 +594,10 @@ class Pedido
         $usuarioId
     ) {
 
-        $pedido =
-            $this->obtenerPorId(
-                $pedidoId,
-                $usuarioId
-            );
+        $pedido = $this->obtenerPorId(
+            $pedidoId,
+            $usuarioId
+        );
 
         if (!$pedido) {
             return null;
@@ -482,6 +628,8 @@ class Pedido
                 p.franja_horaria,
                 p.direccion_entrega,
                 p.metodo_pago,
+                p.mercado_pago_order_id,
+                p.mercado_pago_payment_id,
                 p.estado,
                 p.total,
 
@@ -498,8 +646,7 @@ class Pedido
             ORDER BY p.fecha_pedido DESC
         ";
 
-        $resultado =
-            $this->conn->query($sql);
+        $resultado = $this->conn->query($sql);
 
         if (!$resultado) {
             return [];
@@ -542,6 +689,12 @@ class Pedido
             return false;
         }
 
+        $pedidoId = (int) $pedidoId;
+
+        if ($pedidoId <= 0) {
+            return false;
+        }
+
         $sql = "
             UPDATE pedidos
 
@@ -550,10 +703,15 @@ class Pedido
             WHERE id = ?
         ";
 
-        $stmt =
-            $this->conn->prepare($sql);
+        $stmt = $this->conn->prepare($sql);
 
         if (!$stmt) {
+
+            error_log(
+                'Error preparando actualizarEstado: '
+                . $this->conn->error
+            );
+
             return false;
         }
 
@@ -563,8 +721,15 @@ class Pedido
             $pedidoId
         );
 
-        $resultado =
-            $stmt->execute();
+        $resultado = $stmt->execute();
+
+        if (!$resultado) {
+
+            error_log(
+                'Error ejecutando actualizarEstado: '
+                . $stmt->error
+            );
+        }
 
         $stmt->close();
 
@@ -593,8 +758,7 @@ class Pedido
             AND estado = 'pendiente'
         ";
 
-        $stmt =
-            $this->conn->prepare($sql);
+        $stmt = $this->conn->prepare($sql);
 
         if (!$stmt) {
             return false;
@@ -606,8 +770,63 @@ class Pedido
             $usuarioId
         );
 
-        $resultado =
-            $stmt->execute();
+        $resultado = $stmt->execute();
+
+        $stmt->close();
+
+        return $resultado;
+    }
+
+
+    /* =========================================================
+       MARCAR PEDIDO COMO PAGADO
+    ========================================================= */
+
+    public function marcarComoPagado($pedidoId)
+    {
+
+        $pedidoId = (int) $pedidoId;
+
+        if ($pedidoId <= 0) {
+            return false;
+        }
+
+        $sql = "
+            UPDATE pedidos
+
+            SET estado = 'confirmado'
+
+            WHERE id = ?
+
+            AND estado = 'pendiente'
+        ";
+
+        $stmt = $this->conn->prepare($sql);
+
+        if (!$stmt) {
+
+            error_log(
+                'Error preparando marcarComoPagado: '
+                . $this->conn->error
+            );
+
+            return false;
+        }
+
+        $stmt->bind_param(
+            "i",
+            $pedidoId
+        );
+
+        $resultado = $stmt->execute();
+
+        if (!$resultado) {
+
+            error_log(
+                'Error ejecutando marcarComoPagado: '
+                . $stmt->error
+            );
+        }
 
         $stmt->close();
 

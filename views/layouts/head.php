@@ -106,6 +106,10 @@
         rel="stylesheet"
         href="/DonDiego-Panaderia-Pruebas/public/css/footer.css">
 
+    <link
+        rel="stylesheet"
+        href="/DonDiego-Panaderia-Pruebas/public/css/responsive.css">
+
 
     <!-- =====================================================
          FONT AWESOME
@@ -114,5 +118,9 @@
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <script
+        src="/DonDiego-Panaderia-Pruebas/public/js/mobile.js"
+        defer></script>
 
 </head>
