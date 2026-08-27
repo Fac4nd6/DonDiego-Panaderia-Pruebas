@@ -103,6 +103,7 @@ require __DIR__ . '/../layouts/head.php';
                                 <th>Producto</th>
                                 <th>Categoría</th>
                                 <th>Precio</th>
+                                <th>Stock</th>
                                 <th>Estado</th>
                                 <th>Acciones</th>
                             </tr>
@@ -113,6 +114,17 @@ require __DIR__ . '/../layouts/head.php';
                             <?php foreach ($productos as $producto): ?>
 
                                 <tr>
+
+                                    <td>
+
+                                        <?php if ((int) $producto['stock'] > 0): ?>
+                                            <?= (int) $producto['stock'] ?> unidades
+                                        <?php else: ?>
+                                            <span class="estado inactivo">Agotado</span>
+                                        <?php endif; ?>
+
+                                    </td>
+
 
                                     <td>
 
@@ -204,30 +216,29 @@ require __DIR__ . '/../layouts/head.php';
                                             <a
                                                 href="/DonDiego-Panaderia-Pruebas/controllers/ProductoController.php?accion=editar&id=<?= $producto['id'] ?>"
                                                 class="btn-editar"
-                                                title="Editar producto">
+                                                title="Editar producto"
+                                                aria-label="Editar producto">
                                                 ✏️
                                             </a>
 
 
                                             <?php if ($producto['activo'] == 1): ?>
 
-                                                <a
-                                                    href="/DonDiego-Panaderia-Pruebas/controllers/ProductoController.php?accion=desactivar&id=<?= $producto['id'] ?>"
-                                                    class="btn-eliminar"
-                                                    title="Desactivar producto"
-                                                    onclick="return confirm('¿Seguro que querés desactivar este producto?');">
-                                                    🗑️
-                                                </a>
+                                                <form method="POST" action="/DonDiego-Panaderia-Pruebas/controllers/ProductoController.php" onsubmit="return confirm('¿Seguro que querés desactivar este producto?');">
+                                                    <input type="hidden" name="accion" value="desactivar">
+                                                    <input type="hidden" name="id" value="<?= (int) $producto['id'] ?>">
+                                                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
+                                                    <button type="submit" class="btn-eliminar" title="Desactivar producto" aria-label="Desactivar producto">🗑️</button>
+                                                </form>
 
                                             <?php else: ?>
 
-                                                <a
-                                                    href="/DonDiego-Panaderia-Pruebas/controllers/ProductoController.php?accion=activar&id=<?= $producto['id'] ?>"
-                                                    class="btn-activar"
-                                                    title="Activar producto"
-                                                    onclick="return confirm('¿Querés volver a activar este producto?');">
-                                                    🔄
-                                                </a>
+                                                <form method="POST" action="/DonDiego-Panaderia-Pruebas/controllers/ProductoController.php" onsubmit="return confirm('¿Querés volver a activar este producto?');">
+                                                    <input type="hidden" name="accion" value="activar">
+                                                    <input type="hidden" name="id" value="<?= (int) $producto['id'] ?>">
+                                                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
+                                                    <button type="submit" class="btn-activar" title="Activar producto" aria-label="Activar producto">🔄</button>
+                                                </form>
 
                                             <?php endif; ?>
                                         </div>

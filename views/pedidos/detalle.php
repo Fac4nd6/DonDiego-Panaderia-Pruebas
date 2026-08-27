@@ -3,11 +3,12 @@
 $pageCss = "detalle-pedido.css";
 
 require __DIR__ . '/../layouts/head.php';
-require __DIR__ . '/../layouts/header.php';
 
 ?>
 
 <body class="pagina-pedido-detalle">
+
+    <?php require __DIR__ . '/../layouts/header.php'; ?>
 
     <main class="detalle-pedido-container">
 
@@ -343,7 +344,7 @@ require __DIR__ . '/../layouts/header.php';
                                     <?php if (!empty($item['imagen'])): ?>
 
                                         <img
-                                            src="/DonDiego-Panaderia-Pruebas/public/img/productos/<?= htmlspecialchars(
+                                            src="/DonDiego-Panaderia-Pruebas/public/img/<?= htmlspecialchars(
                                                                                                         $item['imagen'],
                                                                                                         ENT_QUOTES,
                                                                                                         'UTF-8'
@@ -488,6 +489,13 @@ require __DIR__ . '/../layouts/header.php';
 
 
                     <div class="detalle-acciones-derecha">
+
+                        <form method="POST" action="/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php">
+                            <input type="hidden" name="accion" value="repetir">
+                            <input type="hidden" name="pedido_id" value="<?= (int) $pedido['id'] ?>">
+                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
+                            <button type="submit" class="btn-seguir-comprando">Repetir pedido</button>
+                        </form>
 
 
                         <?php if ($pedido['estado'] === 'pendiente'): ?>

@@ -1,6 +1,8 @@
 <?php
 
 require_once __DIR__ . '/../config/Database.php';
+require_once __DIR__ . '/../config/Session.php';
+iniciar_sesion_segura();
 require_once __DIR__ . '/../config/Csrf.php';
 require_once __DIR__ . '/../models/Usuario.php';
 
@@ -382,7 +384,8 @@ class UsuarioController
             session_status() === PHP_SESSION_NONE
         ) {
 
-            session_start();
+            require_once __DIR__ . '/../config/Session.php';
+            iniciar_sesion_segura();
         }
 
 

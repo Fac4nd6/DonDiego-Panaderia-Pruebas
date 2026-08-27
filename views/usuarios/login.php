@@ -7,7 +7,8 @@ require '../../controllers/UsuarioController.php';
 
 
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+    require_once '../../config/Session.php';
+    iniciar_sesion_segura();
 }
 
 

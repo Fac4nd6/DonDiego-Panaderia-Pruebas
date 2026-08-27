@@ -56,6 +56,8 @@ function abrirProducto(boton) {
 
         precio: parseFloat(boton.dataset.precio),
 
+        stock: parseInt(boton.dataset.stock, 10) || 0,
+
         categoria: boton.dataset.categoria,
 
         imagen: boton.dataset.imagen
@@ -80,6 +82,17 @@ function mostrarProducto(producto) {
     productoActual = producto;
 
     cantidadActual = 1;
+
+    if (cantidadMas) {
+        cantidadMas.disabled = productoActual.stock <= 1;
+    }
+
+    if (agregarCarrito) {
+        agregarCarrito.disabled = productoActual.stock <= 0;
+        agregarCarrito.textContent = productoActual.stock > 0
+            ? 'Agregar al carrito'
+            : 'Producto agotado';
+    }
 
 
     /* =====================================================
@@ -159,6 +172,8 @@ function abrirProductoDesdeDatos(producto) {
         descripcion: producto.descripcion,
 
         precio: parseFloat(producto.precio),
+
+        stock: parseInt(producto.stock, 10) || 0,
 
         categoria: producto.categoria,
 
@@ -289,7 +304,11 @@ if (cantidadMas) {
         'click',
         function () {
 
-            if (cantidadActual < 99) {
+            if (
+                productoActual &&
+                cantidadActual < 99 &&
+                cantidadActual < productoActual.stock
+            ) {
 
                 cantidadActual++;
 

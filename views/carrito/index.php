@@ -11,6 +11,12 @@ require __DIR__ . '/../layouts/header.php';
 
     <main class="carrito-container">
 
+        <?php if (!empty($mensajeRepetir)): ?>
+            <div class="account-message success" role="status">
+                <?= htmlspecialchars($mensajeRepetir, ENT_QUOTES, 'UTF-8') ?>
+            </div>
+        <?php endif; ?>
+
         <header class="carrito-header">
 
             <h1>

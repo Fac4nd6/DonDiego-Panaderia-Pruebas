@@ -78,6 +78,11 @@ $editando = !empty($producto);
                     name="accion"
                     value="<?= $editando ? 'actualizar' : 'guardar' ?>">
 
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="<?= htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
+
 
                 <?php if ($editando): ?>
 
@@ -223,6 +228,28 @@ $editando = !empty($producto);
 
                         </div>
 
+                    </div>
+
+                </div>
+
+
+                <div class="form-seccion">
+
+                    <div class="form-seccion-header">
+                        <h2>Stock</h2>
+                        <p>Indicá la cantidad disponible del producto.</p>
+                    </div>
+
+                    <div class="form-grupo">
+                        <label for="stock">Cantidad disponible</label>
+                        <input
+                            type="number"
+                            id="stock"
+                            name="stock"
+                            min="0"
+                            step="1"
+                            value="<?= htmlspecialchars($producto['stock'] ?? '100') ?>"
+                            required>
                     </div>
 
                 </div>
@@ -442,6 +469,12 @@ $editando = !empty($producto);
                             type="hidden"
                             name="id"
                             value="<?= htmlspecialchars($producto['id']) ?>"
+                        >
+
+                        <input
+                            type="hidden"
+                            name="csrf_token"
+                            value="<?= htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8') ?>"
                         >
 
 

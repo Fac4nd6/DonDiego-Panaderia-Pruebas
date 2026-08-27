@@ -1018,3 +1018,12 @@
             none;
     }
 }
+
+.producto-form #stock {
+    font-variant-numeric: tabular-nums;
+}
+
+.producto-form #stock:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(179, 27, 33, 0.08);
+}

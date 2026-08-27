@@ -626,6 +626,21 @@
 
 }
 
+.carrito-container > .account-message {
+    max-width: 1200px;
+    margin: 0 auto 24px;
+    padding: 13px 16px;
+    box-sizing: border-box;
+    border-radius: 10px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.carrito-container > .account-message.success {
+    background: #e2f5e8;
+    color: #216b39;
+}
+
 
 /* ---------- Carrito vacío ---------- */
 
