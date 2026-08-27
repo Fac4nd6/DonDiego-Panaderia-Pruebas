@@ -773,6 +773,28 @@
     }
 }
 
+.detalle-acciones-derecha form {
+    margin: 0;
+}
+
+.detalle-acciones-derecha form .btn-seguir-comprando {
+    border: 0;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+@media (max-width: 550px) {
+    .detalle-acciones-derecha {
+        width: 100%;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .detalle-acciones-derecha form {
+        width: 100%;
+    }
+}
+
 /* =========================================================
    ACCIONES DERECHA
 ========================================================= */

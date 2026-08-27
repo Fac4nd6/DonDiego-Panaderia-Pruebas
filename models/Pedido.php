@@ -3,6 +3,7 @@
 class Pedido
 {
     private $conn;
+    private $ultimoError = '';
 
 
     /* =========================================================
@@ -90,6 +91,181 @@ class Pedido
         $stmt->close();
 
         return $pedidoId;
+    }
+
+    public function crearPedidoConDetalles(
+        $usuarioId,
+        $fechaRecepcion,
+        $franjaHoraria,
+        $direccionEntrega,
+        $metodoPago,
+        $detalles
+    ) {
+        if (empty($detalles)) {
+            $this->ultimoError = 'El carrito está vacío.';
+            return false;
+        }
+
+        $ids = array_map(
+            static fn ($detalle) => (int) ($detalle['producto_id'] ?? 0),
+            $detalles
+        );
+        $ids = array_values(array_unique($ids));
+        if (in_array(0, $ids, true) || !$this->conn->begin_transaction()) {
+            $this->ultimoError = 'Los productos del carrito no son válidos.';
+            return false;
+        }
+
+        try {
+            $marcadores = implode(',', array_fill(0, count($ids), '?'));
+            $tipos = str_repeat('i', count($ids));
+            $stmt = $this->conn->prepare(
+                "SELECT id, nombre, precio, stock, activo FROM productos WHERE id IN ($marcadores) FOR UPDATE"
+            );
+
+            if (!$stmt) {
+                throw new RuntimeException('No se pudieron consultar los productos.');
+            }
+
+            $stmt->bind_param($tipos, ...$ids);
+            if (!$stmt->execute()) {
+                $stmt->close();
+                throw new RuntimeException('No se pudieron consultar los productos.');
+            }
+
+            $productos = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+            $stmt->close();
+            $porId = [];
+            foreach ($productos as $producto) {
+                $porId[(int) $producto['id']] = $producto;
+            }
+
+            if (count($porId) !== count($ids)) {
+                throw new RuntimeException('Uno de los productos ya no existe.');
+            }
+
+            $detallesRevalidados = [];
+            $total = 0;
+            foreach ($detalles as $detalle) {
+                $productoId = (int) ($detalle['producto_id'] ?? 0);
+                $cantidad = filter_var($detalle['cantidad'] ?? null, FILTER_VALIDATE_INT);
+                $producto = $porId[$productoId] ?? null;
+
+                if (!$producto || (int) $producto['activo'] !== 1) {
+                    throw new RuntimeException('El producto seleccionado ya no está disponible.');
+                }
+                if ($cantidad === false || $cantidad <= 0 || $cantidad > (int) $producto['stock']) {
+                    throw new RuntimeException('Stock insuficiente para: ' . $producto['nombre']);
+                }
+
+                $precio = (float) $producto['precio'];
+                $detallesRevalidados[] = [
+                    'producto_id' => $productoId,
+                    'cantidad' => $cantidad,
+                    'precio_unitario' => $precio
+                ];
+                $total += $precio * $cantidad;
+            }
+
+            if ($total <= 0) {
+                throw new RuntimeException('El total del pedido no es válido.');
+            }
+
+            $pedidoId = $this->crearPedido(
+                $usuarioId,
+                $fechaRecepcion,
+                $franjaHoraria,
+                $direccionEntrega,
+                $metodoPago,
+                $total
+            );
+
+            if (!$pedidoId) {
+                throw new RuntimeException('No se pudo crear el pedido.');
+            }
+
+            foreach ($detallesRevalidados as $detalle) {
+                $subtotal = $detalle['precio_unitario'] * $detalle['cantidad'];
+
+                if (!$this->agregarDetalle(
+                    $pedidoId,
+                    $detalle['producto_id'],
+                    $detalle['cantidad'],
+                    $detalle['precio_unitario'],
+                    $subtotal
+                )) {
+                    throw new RuntimeException('No se pudo guardar un detalle.');
+                }
+
+                $stmtStock = $this->conn->prepare(
+                    'UPDATE productos SET stock = stock - ? WHERE id = ? AND stock >= ?'
+                );
+                if (!$stmtStock) {
+                    throw new RuntimeException('No se pudo descontar el stock.');
+                }
+                $stmtStock->bind_param(
+                    'iii',
+                    $detalle['cantidad'],
+                    $detalle['producto_id'],
+                    $detalle['cantidad']
+                );
+                if (!$stmtStock->execute() || $stmtStock->affected_rows !== 1) {
+                    $stmtStock->close();
+                    throw new RuntimeException('Stock insuficiente para el producto.');
+                }
+                $stmtStock->close();
+            }
+
+            $this->conn->commit();
+
+            return $pedidoId;
+        } catch (Throwable $e) {
+            $this->conn->rollback();
+            $this->ultimoError = $e->getMessage();
+            error_log('Error creando pedido transaccional: ' . $e->getMessage());
+
+            return false;
+        }
+    }
+
+    public function obtenerUltimoError()
+    {
+        return $this->ultimoError;
+    }
+
+    public function obtenerProductosActivos($ids)
+    {
+        $ids = array_values(array_unique(array_map('intval', $ids)));
+
+        if (empty($ids) || in_array(0, $ids, true)) {
+            return [];
+        }
+
+        $marcadores = implode(',', array_fill(0, count($ids), '?'));
+        $tipos = str_repeat('i', count($ids));
+        $sql = "SELECT id, precio FROM productos WHERE activo = 1 AND id IN ($marcadores)";
+        $stmt = $this->conn->prepare($sql);
+
+        if (!$stmt) {
+            return [];
+        }
+
+        $stmt->bind_param($tipos, ...$ids);
+
+        if (!$stmt->execute()) {
+            $stmt->close();
+            return [];
+        }
+
+        $productos = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+
+        $porId = [];
+        foreach ($productos as $producto) {
+            $porId[(int) $producto['id']] = $producto;
+        }
+
+        return $porId;
     }
 
 
@@ -201,9 +377,10 @@ class Pedido
             );
         }
 
+        $filasAfectadas = $stmt->affected_rows;
         $stmt->close();
 
-        return $resultado;
+        return $resultado && $filasAfectadas === 1;
     }
 
 
@@ -269,9 +446,10 @@ class Pedido
             );
         }
 
+        $filasAfectadas = $stmt->affected_rows;
         $stmt->close();
 
-        return $resultado;
+        return $resultado && $filasAfectadas === 1;
     }
 
 
@@ -584,6 +762,35 @@ class Pedido
         return $detalles;
     }
 
+    public function obtenerDetallesDeUsuario($pedidoId, $usuarioId)
+    {
+        $sql = "
+            SELECT pd.producto_id, pd.cantidad
+            FROM pedido_detalles pd
+            INNER JOIN pedidos p ON p.id = pd.pedido_id
+            WHERE pd.pedido_id = ? AND p.usuario_id = ?
+            ORDER BY pd.id ASC
+        ";
+
+        $stmt = $this->conn->prepare($sql);
+
+        if (!$stmt) {
+            return [];
+        }
+
+        $stmt->bind_param('ii', $pedidoId, $usuarioId);
+
+        if (!$stmt->execute()) {
+            $stmt->close();
+            return [];
+        }
+
+        $detalles = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+
+        return $detalles;
+    }
+
 
     /* =========================================================
        OBTENER PEDIDO COMPLETO
@@ -695,6 +902,25 @@ class Pedido
             return false;
         }
 
+        $pedido = $this->obtenerPorIdAdmin($pedidoId);
+
+        if (!$pedido) {
+            return false;
+        }
+
+        $transiciones = [
+            'pendiente' => ['confirmado', 'cancelado'],
+            'confirmado' => ['en_preparacion', 'cancelado'],
+            'en_preparacion' => ['listo', 'cancelado'],
+            'listo' => ['entregado'],
+            'entregado' => [],
+            'cancelado' => []
+        ];
+
+        if (!in_array($estado, $transiciones[$pedido['estado']], true)) {
+            return false;
+        }
+
         $sql = "
             UPDATE pedidos
 
@@ -731,9 +957,10 @@ class Pedido
             );
         }
 
+        $filasAfectadas = $stmt->affected_rows;
         $stmt->close();
 
-        return $resultado;
+        return $resultado && $filasAfectadas === 1;
     }
 
 
@@ -771,10 +998,11 @@ class Pedido
         );
 
         $resultado = $stmt->execute();
+        $filasAfectadas = $stmt->affected_rows;
 
         $stmt->close();
 
-        return $resultado;
+        return $resultado && $filasAfectadas === 1;
     }
 
 

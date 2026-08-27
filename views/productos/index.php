@@ -303,6 +303,10 @@ require __DIR__ . '/../layouts/header.php';
 
                                     </strong>
 
+                                    <span>
+                                        <?= (int) $producto['stock'] > 0 ? 'Disponible' : 'Agotado' ?>
+                                    </span>
+
 
                                     <!--
                                 BOTÓN DETALLE
@@ -331,6 +335,8 @@ require __DIR__ . '/../layouts/header.php';
 
                                         data-precio="<?= (float) $producto['precio'] ?>"
 
+                                        data-stock="<?= (int) $producto['stock'] ?>"
+
                                         data-categoria="<?= htmlspecialchars(
                                                             $producto['categoria'],
                                                             ENT_QUOTES
@@ -341,7 +347,7 @@ require __DIR__ . '/../layouts/header.php';
                                                             ENT_QUOTES
                                                         ) ?>">
 
-                                        Ver producto
+                                        <?= (int) $producto['stock'] > 0 ? 'Ver producto' : 'Agotado' ?>
 
                                     </button>
 

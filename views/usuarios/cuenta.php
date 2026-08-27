@@ -8,8 +8,11 @@ $pageCss = "cuenta.css";
 ========================================================= */
 
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+    require_once '../../config/Session.php';
+    iniciar_sesion_segura();
 }
+
+require_once '../../config/Csrf.php';
 
 
 /* =========================================================
@@ -93,6 +96,8 @@ $mensaje = '';
 ========================================================= */
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    verificar_csrf();
 
     $nombre =
         trim($_POST['nombre'] ?? '');
@@ -289,13 +294,10 @@ require '../layouts/head.php';
                     class="account-form"
                 >
 
-
-                    <!-- NOMBRE -->
-
-                    <div class="account-input">
-
-                        <label for="nombre">
-
+                    <input
+                        type="hidden"
+                        name="csrf_token"
+                        value="<?= htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
                             Nombre completo
 
                         </label>
@@ -541,18 +543,21 @@ require '../layouts/head.php';
             <footer class="account-footer">
 
 
-                <a
-                    href="/DonDiego-Panaderia-Pruebas/controllers/logout.php"
-                    class="logout-button"
-                >
+                <form method="POST" action="/DonDiego-Panaderia-Pruebas/controllers/logout.php">
+
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
+
+                    <button type="submit" class="logout-button">
 
                     <i
                         class="fa-solid fa-right-from-bracket"
                     ></i>
 
-                    Cerrar sesión
+                        Cerrar sesión
 
-                </a>
+                    </button>
+
+                </form>
 
 
             </footer>

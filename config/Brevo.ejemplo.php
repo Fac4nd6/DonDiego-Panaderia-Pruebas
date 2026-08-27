@@ -1,4 +1,3 @@
-```php
 <?php
 
 /*
@@ -209,4 +208,3 @@ function enviarCorreoBrevo(
             $codigoHTTP
     ];
 }
-```

@@ -4,7 +4,9 @@
 // SESIÓN
 // =========================================================
 
-session_start();
+require_once __DIR__ . '/../config/Session.php';
+iniciar_sesion_segura();
+require_once __DIR__ . '/../config/Csrf.php';
 
 
 // =========================================================
@@ -93,11 +95,14 @@ if ($accion === 'guardar') {
         exit;
     }
 
+    verificar_csrf();
+
 
     $nombre = trim($_POST['nombre'] ?? '');
     $descripcion = trim($_POST['descripcion'] ?? '');
     $precio = $_POST['precio'] ?? '';
     $categoriaId = (int) ($_POST['categoria_id'] ?? 0);
+    $stock = filter_var($_POST['stock'] ?? null, FILTER_VALIDATE_INT);
 
 
     // -----------------------------------------------------
@@ -107,7 +112,9 @@ if ($accion === 'guardar') {
     if (
         $nombre === '' ||
         $precio === '' ||
-        $categoriaId <= 0
+        $categoriaId <= 0 ||
+        $stock === false ||
+        $stock < 0
     ) {
 
         exit(
@@ -149,7 +156,7 @@ if ($accion === 'guardar') {
 
     if (!is_dir($carpeta)) {
 
-        if (!mkdir($carpeta, 0777, true)) {
+        if (!mkdir($carpeta, 0755, true)) {
 
             exit(
                 'No se pudo crear la carpeta public/img.'
@@ -173,6 +180,15 @@ if ($accion === 'guardar') {
     $tipo = mime_content_type(
         $archivo['tmp_name']
     );
+
+    if ((int) $archivo['size'] > 5 * 1024 * 1024) {
+        exit('La imagen no puede superar los 5 MB.');
+    }
+
+    $dimensiones = @getimagesize($archivo['tmp_name']);
+    if (!$dimensiones || $dimensiones[0] > 5000 || $dimensiones[1] > 5000) {
+        exit('Las dimensiones de la imagen no son válidas.');
+    }
 
     $tiposPermitidos = [
 
@@ -236,7 +252,8 @@ if ($accion === 'guardar') {
             $descripcion,
             $precio,
             $categoriaId,
-            $nombreImagen
+            $nombreImagen,
+            $stock
         );
 
 
@@ -316,6 +333,8 @@ if ($accion === 'actualizar') {
         exit;
     }
 
+    verificar_csrf();
+
 
     $id =
         (int) ($_POST['id'] ?? 0);
@@ -335,12 +354,16 @@ if ($accion === 'actualizar') {
     $activo =
         (int) ($_POST['activo'] ?? 1);
 
+    $stock = filter_var($_POST['stock'] ?? null, FILTER_VALIDATE_INT);
+
 
     if (
         $id <= 0 ||
         $nombre === '' ||
         $precio === '' ||
-        $categoriaId <= 0
+        $categoriaId <= 0 ||
+        $stock === false ||
+        $stock < 0
     ) {
 
         exit(
@@ -368,6 +391,9 @@ if ($accion === 'actualizar') {
     $imagen =
         $productoActual['imagen'];
 
+    $carpeta =
+        __DIR__ . '/../public/img/';
+
 
     // -----------------------------------------------------
     // NUEVA IMAGEN
@@ -387,6 +413,15 @@ if ($accion === 'actualizar') {
                 $archivo['tmp_name']
             );
 
+        if ((int) $archivo['size'] > 5 * 1024 * 1024) {
+            exit('La imagen no puede superar los 5 MB.');
+        }
+
+        $dimensiones = @getimagesize($archivo['tmp_name']);
+        if (!$dimensiones || $dimensiones[0] > 5000 || $dimensiones[1] > 5000) {
+            exit('Las dimensiones de la imagen no son válidas.');
+        }
+
 
         $tiposPermitidos = [
 
@@ -405,13 +440,9 @@ if ($accion === 'actualizar') {
         }
 
 
-        $carpeta =
-            __DIR__ . '/../public/img/';
-
-
         if (!is_dir($carpeta)) {
 
-            if (!mkdir($carpeta, 0777, true)) {
+            if (!mkdir($carpeta, 0755, true)) {
 
                 exit(
                     'No se pudo crear la carpeta public/img.'
@@ -455,23 +486,6 @@ if ($accion === 'actualizar') {
         }
 
 
-        // -------------------------------------------------
-        // ELIMINAR IMAGEN ANTERIOR
-        // -------------------------------------------------
-
-        if (
-            !empty($productoActual['imagen']) &&
-            file_exists(
-                $carpeta . $productoActual['imagen']
-            )
-        ) {
-
-            unlink(
-                $carpeta . $productoActual['imagen']
-            );
-        }
-
-
         $imagen =
             $nuevaImagen;
     }
@@ -489,15 +503,27 @@ if ($accion === 'actualizar') {
             $precio,
             $categoriaId,
             $imagen,
-            $activo
+            $activo,
+            $stock
         );
 
 
     if (!$resultado) {
 
+        if (isset($rutaDestino) && file_exists($rutaDestino)) {
+            unlink($rutaDestino);
+        }
+
         exit(
             'No se pudo actualizar el producto.'
         );
+    }
+
+    if (!empty($nuevaImagen) && !empty($productoActual['imagen'])) {
+        $rutaAnterior = $carpeta . $productoActual['imagen'];
+        if (file_exists($rutaAnterior)) {
+            unlink($rutaAnterior);
+        }
     }
 
 
@@ -515,8 +541,15 @@ if ($accion === 'actualizar') {
 
 if ($accion === 'desactivar') {
 
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        http_response_code(405);
+        exit('Método no permitido.');
+    }
+
+    verificar_csrf();
+
     $id =
-        (int) ($_GET['id'] ?? 0);
+        (int) ($_POST['id'] ?? 0);
 
 
     if ($id <= 0) {
@@ -551,8 +584,15 @@ if ($accion === 'desactivar') {
 
 if ($accion === 'activar') {
 
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        http_response_code(405);
+        exit('Método no permitido.');
+    }
+
+    verificar_csrf();
+
     $id =
-        (int) ($_GET['id'] ?? 0);
+        (int) ($_POST['id'] ?? 0);
 
 
     if ($id <= 0) {
@@ -587,16 +627,16 @@ if ($accion === 'activar') {
 
 if ($accion === 'eliminar') {
 
-    // -----------------------------------------------------
-    // ACEPTAR ID POR GET O POST
-    // -----------------------------------------------------
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        http_response_code(405);
+        exit('Método no permitido.');
+    }
 
+    verificar_csrf();
+
+    // -----------------------------------------------------
     $id =
-        (int) (
-            $_GET['id']
-            ?? $_POST['id']
-            ?? 0
-        );
+        (int) ($_POST['id'] ?? 0);
 
 
     if ($id <= 0) {

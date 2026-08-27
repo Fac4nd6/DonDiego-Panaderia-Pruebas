@@ -217,6 +217,7 @@ require __DIR__ . '/../layouts/header.php';
                 <div class="mapa-container">
 
                     <iframe
+                        title="Mapa de ubicación de Don Diego"
                         class="mapa"
                         src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d6811.739034260684!2d-57.9604178!3d-31.3901612!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95addd560a248351%3A0x31070367860ed798!2sPanader%C3%ADa%20y%20Confiter%C3%ADa%20Don%20Diego%20(Centro)!5e0!3m2!1ses-419!2suy!4v1786501316195!5m2!1ses-419!2suy"
                         allowfullscreen=""

@@ -58,7 +58,9 @@ CREATE TABLE `pedidos` (
   `direccion_entrega` varchar(255) NOT NULL,
   `metodo_pago` enum('efectivo','mercado_pago') NOT NULL DEFAULT 'efectivo',
   `estado` enum('pendiente','confirmado','en_preparacion','listo','entregado','cancelado') NOT NULL DEFAULT 'pendiente',
-  `total` decimal(10,2) NOT NULL DEFAULT 0.00
+  `total` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `mercado_pago_order_id` varchar(100) DEFAULT NULL,
+  `mercado_pago_payment_id` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -87,6 +89,7 @@ CREATE TABLE `productos` (
   `nombre` varchar(150) NOT NULL,
   `descripcion` text DEFAULT NULL,
   `precio` decimal(10,2) NOT NULL,
+  `stock` int(11) NOT NULL DEFAULT 100 CHECK (`stock` >= 0),
   `categoria_id` int(11) NOT NULL,
   `imagen` varchar(255) DEFAULT NULL,
   `activo` tinyint(1) NOT NULL DEFAULT 1,

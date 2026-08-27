@@ -1,10 +1,11 @@
 <?php
 
 error_reporting(E_ALL);
-ini_set('display_errors', '1');
-ini_set('display_startup_errors', '1');
+ini_set('display_errors', '0');
+ini_set('display_startup_errors', '0');
 
-session_start();
+require_once __DIR__ . '/../config/Session.php';
+iniciar_sesion_segura();
 
 
 // =========================================================
@@ -35,6 +36,7 @@ require_once __DIR__ . '/../config/Csrf.php';
 require_once __DIR__ . '/../config/Database.php';
 require_once __DIR__ . '/../models/Pedido.php';
 require_once __DIR__ . '/../models/Carrito.php';
+require_once __DIR__ . '/../models/Producto.php';
 
 
 // =========================================================
@@ -51,6 +53,7 @@ require_once __DIR__ . '/../service/MercadoPagoService.php';
 $pedidoModel = new Pedido($conn);
 
 $carritoModel = new Carrito();
+$productoModel = new Producto($conn);
 
 $carritoModel->inicializar();
 
@@ -182,6 +185,15 @@ if ($accion === 'actualizar_estado') {
         exit('Pedido no válido.');
     }
 
+    $pedidoActual = $pedidoModel->obtenerPorIdAdmin($pedidoId);
+    if (!$pedidoActual) {
+        exit('Pedido no encontrado.');
+    }
+
+    if ($pedidoActual['estado'] === $estado) {
+        exit('El pedido ya se encuentra en ese estado.');
+    }
+
     $estadosPermitidos = [
 
         'pendiente',
@@ -212,7 +224,7 @@ if ($accion === 'actualizar_estado') {
 
     if (!$resultado) {
 
-        exit('No se pudo actualizar el estado del pedido.');
+        exit('La transición de estado no es válida para este pedido.');
     }
 
     header(
@@ -266,6 +278,67 @@ if ($accion === 'cancelar') {
             . $pedidoId
     );
 
+    exit;
+}
+
+
+if ($accion === 'repetir') {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        http_response_code(405);
+        exit('Método no permitido.');
+    }
+
+    verificar_csrf();
+
+    $pedidoId = filter_var($_POST['pedido_id'] ?? null, FILTER_VALIDATE_INT);
+    $usuarioId = (int) $_SESSION['usuario_id'];
+
+    if ($pedidoId === false || $pedidoId <= 0) {
+        exit('Pedido no válido.');
+    }
+
+    $detalles = $pedidoModel->obtenerDetallesDeUsuario($pedidoId, $usuarioId);
+    if (empty($detalles)) {
+        http_response_code(404);
+        exit('El pedido no existe o no pertenece a tu cuenta.');
+    }
+
+    $agregados = [];
+    $noAgregados = [];
+
+    foreach ($detalles as $detalle) {
+        $productoId = (int) $detalle['producto_id'];
+        $cantidadOriginal = filter_var($detalle['cantidad'], FILTER_VALIDATE_INT);
+        $producto = $productoModel->obtenerPorId($productoId);
+
+        if (!$producto || (int) $producto['activo'] !== 1 || (int) $producto['stock'] <= 0) {
+            $noAgregados[] = $producto
+                ? $producto['nombre']
+                : ('Producto #' . $productoId);
+            continue;
+        }
+
+        $cantidadOriginal = max(0, (int) $cantidadOriginal);
+        $cantidadActual = (int) ($carritoModel->obtener()[$productoId]['cantidad'] ?? 0);
+        $cantidadDisponible = max(0, (int) $producto['stock'] - $cantidadActual);
+        $cantidadAgregar = min($cantidadOriginal, $cantidadDisponible);
+
+        if ($cantidadAgregar > 0) {
+            $carritoModel->agregar($producto, $cantidadAgregar);
+            $agregados[] = $producto['nombre'];
+        }
+
+        if ($cantidadAgregar < $cantidadOriginal) {
+            $noAgregados[] = $producto['nombre'];
+        }
+    }
+
+    $_SESSION['mensaje_repetir'] = empty($noAgregados)
+        ? 'Los productos del pedido fueron agregados al carrito.'
+        : 'Algunos productos no se agregaron por disponibilidad o stock: '
+            . implode(', ', $noAgregados) . '.';
+
+    header('Location: /DonDiego-Panaderia-Pruebas/controllers/CarritoController.php?accion=ver');
     exit;
 }
 
@@ -516,6 +589,10 @@ if ($accion === 'crear') {
         exit('El método de pago seleccionado no es válido.');
     }
 
+    if ($metodoPago === 'mercado_pago') {
+        exit('Mercado Pago todavía no está disponible. Seleccioná pago en efectivo.');
+    }
+
 
     // =====================================================
     // CONSTRUIR DIRECCIÓN
@@ -546,70 +623,49 @@ if ($accion === 'crear') {
     }
 
 
-    // =====================================================
-    // CALCULAR TOTAL
-    // =====================================================
+    $ids = [];
+    $cantidades = [];
+    foreach ($carrito as $item) {
+        $productoId = filter_var($item['id'] ?? null, FILTER_VALIDATE_INT);
+        $cantidad = filter_var($item['cantidad'] ?? null, FILTER_VALIDATE_INT);
 
-    $total =
-        $carritoModel->calcularTotal();
+        if ($productoId === false || $productoId <= 0 || $cantidad === false || $cantidad <= 0 || $cantidad > 99) {
+            exit('La cantidad o el producto del carrito no son válidos.');
+        }
 
-    if ($total <= 0) {
-
-        exit('El total del pedido no es válido.');
+        $ids[] = $productoId;
+        $cantidades[$productoId] = $cantidad;
     }
 
+    $productos = $pedidoModel->obtenerProductosActivos($ids);
 
-    // =====================================================
-    // CREAR PEDIDO
-    // =====================================================
+    if (count($productos) !== count(array_unique($ids))) {
+        exit('Uno de los productos ya no existe o dejó de estar disponible.');
+    }
 
-    $pedidoId =
-        $pedidoModel->crearPedido(
-            $usuarioId,
-            $fechaRecepcion,
-            $franjaHoraria,
-            $direccionEntrega,
-            $metodoPago,
-            $total
-        );
+    $detalles = [];
+    foreach ($ids as $productoId) {
+        $detalles[$productoId] = [
+            'producto_id' => $productoId,
+            'cantidad' => $cantidades[$productoId],
+            'precio_unitario' => (float) $productos[$productoId]['precio']
+        ];
+    }
+
+    $pedidoId = $pedidoModel->crearPedidoConDetalles(
+        $usuarioId,
+        $fechaRecepcion,
+        $franjaHoraria,
+        $direccionEntrega,
+        $metodoPago,
+        array_values($detalles)
+    );
 
     if (!$pedidoId) {
-
-        exit('No se pudo crear el pedido en la base de datos.');
-    }
-
-
-    // =====================================================
-    // GUARDAR DETALLES
-    // =====================================================
-
-    foreach ($carrito as $item) {
-
-        $productoId =
-            (int) $item['id'];
-
-        $cantidad =
-            (int) $item['cantidad'];
-
-        $precio =
-            (float) $item['precio'];
-
-        $subtotal =
-            $precio * $cantidad;
-
-        $resultado =
-            $pedidoModel->agregarDetalle(
-                $pedidoId,
-                $productoId,
-                $cantidad,
-                $precio,
-                $subtotal
-            );
-
-        if (!$resultado) {
-
-            exit('El pedido fue creado, pero ocurrió un error al guardar uno de los productos.');
-        }
+        $errorPedido = $pedidoModel->obtenerUltimoError();
+        exit($errorPedido !== ''
+            ? $errorPedido
+            : 'No se pudo crear el pedido en la base de datos.');
     }
 
     // =====================================================
