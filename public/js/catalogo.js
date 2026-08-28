@@ -24,6 +24,9 @@ const detalleDescripcion =
 const detallePrecio =
     document.getElementById('detallePrecio');
 
+const detalleStock =
+    document.getElementById('detalleStock');
+
 const detalleCategoria =
     document.getElementById('detalleCategoria');
 
@@ -126,6 +129,12 @@ function mostrarProducto(producto) {
                 maximumFractionDigits: 0
             }
         );
+
+    if (detalleStock) {
+        detalleStock.textContent = productoActual.stock > 0
+            ? 'Stock disponible: ' + productoActual.stock + ' unidades'
+            : 'Producto agotado';
+    }
 
 
     cantidadProducto.textContent =

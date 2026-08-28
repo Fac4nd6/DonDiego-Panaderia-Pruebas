@@ -56,11 +56,9 @@ CREATE TABLE `pedidos` (
   `fecha_recepcion` date NOT NULL,
   `franja_horaria` varchar(50) NOT NULL,
   `direccion_entrega` varchar(255) NOT NULL,
-  `metodo_pago` enum('efectivo','mercado_pago') NOT NULL DEFAULT 'efectivo',
+  `metodo_pago` enum('efectivo') NOT NULL DEFAULT 'efectivo',
   `estado` enum('pendiente','confirmado','en_preparacion','listo','entregado','cancelado') NOT NULL DEFAULT 'pendiente',
-  `total` decimal(10,2) NOT NULL DEFAULT 0.00,
-  `mercado_pago_order_id` varchar(100) DEFAULT NULL,
-  `mercado_pago_payment_id` varchar(100) DEFAULT NULL
+  `total` decimal(10,2) NOT NULL DEFAULT 0.00
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------

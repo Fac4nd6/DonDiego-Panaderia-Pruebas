@@ -2,17 +2,6 @@
 
 // =========================================================
 // SESIÓN
-// =========================================================
-
-require_once __DIR__ . '/../config/Session.php';
-iniciar_sesion_segura();
-require_once __DIR__ . '/../config/Csrf.php';
-
-
-// =========================================================
-// COMPROBAR QUE HAYA SESIÓN
-// =========================================================
-
 if (!isset($_SESSION['usuario_id'])) {
 
     header(
@@ -33,10 +22,13 @@ if (
 ) {
 
     http_response_code(403);
-
-    exit(
-        'No tenés permisos para acceder a la administración de productos.'
-    );
+    $codigoError = 404;
+    $tituloError = 'Página no encontrada';
+    $descripcionError = 'No pudimos encontrar lo que estabas buscando.';
+    $urlVolver = '/DonDiego-Panaderia-Pruebas/controllers/HomeController.php';
+    $textoVolver = 'Volver al inicio';
+    require __DIR__ . '/../views/errors/error.php';
+    exit;
 }
 
 
@@ -301,10 +293,14 @@ if ($accion === 'editar') {
 
 
     if (!$producto) {
-
-        exit(
-            'Producto no encontrado.'
-        );
+        http_response_code(404);
+        $codigoError = 404;
+        $tituloError = 'Producto no encontrado';
+        $descripcionError = 'El producto que buscás ya no está disponible.';
+        $urlVolver = '/DonDiego-Panaderia-Pruebas/controllers/CatalogoController.php';
+        $textoVolver = 'Volver al catálogo';
+        require __DIR__ . '/../views/errors/error.php';
+        exit;
     }
 
 
@@ -377,10 +373,14 @@ if ($accion === 'actualizar') {
 
 
     if (!$productoActual) {
-
-        exit(
-            'Producto no encontrado.'
-        );
+        http_response_code(404);
+        $codigoError = 404;
+        $tituloError = 'Producto no encontrado';
+        $descripcionError = 'El producto que buscás ya no está disponible.';
+        $urlVolver = '/DonDiego-Panaderia-Pruebas/controllers/ProductoController.php?accion=listar';
+        $textoVolver = 'Volver a productos';
+        require __DIR__ . '/../views/errors/error.php';
+        exit;
     }
 
 
@@ -656,10 +656,14 @@ if ($accion === 'eliminar') {
 
 
     if (!$producto) {
-
-        exit(
-            'Producto no encontrado.'
-        );
+        http_response_code(404);
+        $codigoError = 404;
+        $tituloError = 'Producto no encontrado';
+        $descripcionError = 'El producto que buscás ya no está disponible.';
+        $urlVolver = '/DonDiego-Panaderia-Pruebas/controllers/ProductoController.php?accion=listar';
+        $textoVolver = 'Volver a productos';
+        require __DIR__ . '/../views/errors/error.php';
+        exit;
     }
 
 

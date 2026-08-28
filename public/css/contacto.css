@@ -2,6 +2,15 @@
     background: var(--color-background);
 }
 
+/* Mantiene el header de Contacto igual que el resto de las páginas internas. */
+.pagina-contacto .header {
+    background-color: var(--color-primary);
+    border-radius: 0 0 18px 18px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    width: 90%;
+    max-width: 100%;
+}
+
 .contacto-container {
     min-height: 70vh;
     padding: 130px 8% 90px;
@@ -55,6 +64,26 @@
     color: #555;
 }
 
+.contacto-whatsapp {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    margin-top: 12px;
+    padding: 12px 18px;
+    border-radius: 5px;
+    background: #218838;
+    color: #ffffff;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.contacto-whatsapp:hover {
+    background: #176b2b;
+    transform: translateY(-2px);
+    box-shadow: 0 7px 16px rgba(33, 136, 56, 0.2);
+}
+
 .contacto-formulario form {
     display: flex;
     flex-direction: column;
@@ -87,6 +116,10 @@
 }
 
 .contacto-formulario button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
     margin-top: 14px;
     padding: 12px 20px;
     border: 0;

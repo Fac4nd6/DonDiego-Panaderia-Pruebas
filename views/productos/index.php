@@ -525,6 +525,11 @@ require __DIR__ . '/../layouts/header.php';
                         id="detallePrecio">
                     </strong>
 
+                    <span
+                        class="detalle-stock"
+                        id="detalleStock">
+                    </span>
+
 
                     <!-- =================================================
                      CANTIDAD

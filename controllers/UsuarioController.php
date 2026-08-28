@@ -282,18 +282,6 @@ class UsuarioController
 
 
         if (
-            empty($nombreComercio)
-        ) {
-
-            return [
-                'success' => false,
-                'error' =>
-                    'El nombre del comercio es obligatorio.'
-            ];
-        }
-
-
-        if (
             strlen($nombreComercio) > 150
         ) {
 
@@ -301,30 +289,6 @@ class UsuarioController
                 'success' => false,
                 'error' =>
                     'El nombre del comercio es demasiado largo.'
-            ];
-        }
-
-
-        if (
-            empty($telefono)
-        ) {
-
-            return [
-                'success' => false,
-                'error' =>
-                    'El teléfono es obligatorio.'
-            ];
-        }
-
-
-        if (
-            empty($direccion)
-        ) {
-
-            return [
-                'success' => false,
-                'error' =>
-                    'La dirección es obligatoria.'
             ];
         }
 
