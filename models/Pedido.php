@@ -385,143 +385,6 @@ class Pedido
 
 
     /* =========================================================
-       GUARDAR MERCADO PAGO ORDER ID
-    ========================================================= */
-
-    public function guardarMercadoPagoOrderId(
-        $pedidoId,
-        $orderId
-    ) {
-
-        $pedidoId = (int) $pedidoId;
-
-        $orderId = trim(
-            (string) $orderId
-        );
-
-        if (
-            $pedidoId <= 0 ||
-            $orderId === ''
-        ) {
-            return false;
-        }
-
-        if (strlen($orderId) > 100) {
-            return false;
-        }
-
-        $sql = "
-            UPDATE pedidos
-
-            SET mercado_pago_order_id = ?
-
-            WHERE id = ?
-        ";
-
-        $stmt = $this->conn->prepare($sql);
-
-        if (!$stmt) {
-
-            error_log(
-                'Error preparando guardarMercadoPagoOrderId: '
-                . $this->conn->error
-            );
-
-            return false;
-        }
-
-        $stmt->bind_param(
-            "si",
-            $orderId,
-            $pedidoId
-        );
-
-        $resultado = $stmt->execute();
-
-        if (!$resultado) {
-
-            error_log(
-                'Error ejecutando guardarMercadoPagoOrderId: '
-                . $stmt->error
-            );
-        }
-
-        $filasAfectadas = $stmt->affected_rows;
-        $stmt->close();
-
-        return $resultado && $filasAfectadas === 1;
-    }
-
-
-    /* =========================================================
-       GUARDAR MERCADO PAGO PAYMENT ID
-    ========================================================= */
-
-    public function guardarMercadoPagoPaymentId(
-        $pedidoId,
-        $paymentId
-    ) {
-
-        $pedidoId = (int) $pedidoId;
-
-        $paymentId = trim(
-            (string) $paymentId
-        );
-
-        if (
-            $pedidoId <= 0 ||
-            $paymentId === ''
-        ) {
-            return false;
-        }
-
-        if (strlen($paymentId) > 100) {
-            return false;
-        }
-
-        $sql = "
-            UPDATE pedidos
-
-            SET mercado_pago_payment_id = ?
-
-            WHERE id = ?
-        ";
-
-        $stmt = $this->conn->prepare($sql);
-
-        if (!$stmt) {
-
-            error_log(
-                'Error preparando guardarMercadoPagoPaymentId: '
-                . $this->conn->error
-            );
-
-            return false;
-        }
-
-        $stmt->bind_param(
-            "si",
-            $paymentId,
-            $pedidoId
-        );
-
-        $resultado = $stmt->execute();
-
-        if (!$resultado) {
-
-            error_log(
-                'Error ejecutando guardarMercadoPagoPaymentId: '
-                . $stmt->error
-            );
-        }
-
-        $stmt->close();
-
-        return $resultado;
-    }
-
-
-    /* =========================================================
        OBTENER PEDIDOS DE UN USUARIO
     ========================================================= */
 
@@ -537,8 +400,6 @@ class Pedido
                 franja_horaria,
                 direccion_entrega,
                 metodo_pago,
-                mercado_pago_order_id,
-                mercado_pago_payment_id,
                 estado,
                 total
 
@@ -597,8 +458,6 @@ class Pedido
                 franja_horaria,
                 direccion_entrega,
                 metodo_pago,
-                mercado_pago_order_id,
-                mercado_pago_payment_id,
                 estado,
                 total
 
@@ -656,8 +515,6 @@ class Pedido
                 p.franja_horaria,
                 p.direccion_entrega,
                 p.metodo_pago,
-                p.mercado_pago_order_id,
-                p.mercado_pago_payment_id,
                 p.estado,
                 p.total,
 
@@ -835,8 +692,6 @@ class Pedido
                 p.franja_horaria,
                 p.direccion_entrega,
                 p.metodo_pago,
-                p.mercado_pago_order_id,
-                p.mercado_pago_payment_id,
                 p.estado,
                 p.total,
 
@@ -921,6 +776,10 @@ class Pedido
             return false;
         }
 
+        if ($estado === 'cancelado') {
+            return $this->cancelarPedidoSeguro($pedidoId);
+        }
+
         $sql = "
             UPDATE pedidos
 
@@ -972,37 +831,106 @@ class Pedido
         $pedidoId,
         $usuarioId
     ) {
+        return $this->cancelarPedidoSeguro($pedidoId, $usuarioId);
+    }
 
-        $sql = "
-            UPDATE pedidos
+    /**
+     * Cancela un pedido pendiente y devuelve sus cantidades al stock.
+     * La transacción evita que el pedido quede cancelado sin recuperar inventario.
+     */
+    private function cancelarPedidoSeguro($pedidoId, $usuarioId = null)
+    {
+        $pedidoId = (int) $pedidoId;
+        $usuarioId = $usuarioId === null ? null : (int) $usuarioId;
 
-            SET estado = 'cancelado'
-
-            WHERE id = ?
-
-            AND usuario_id = ?
-
-            AND estado = 'pendiente'
-        ";
-
-        $stmt = $this->conn->prepare($sql);
-
-        if (!$stmt) {
+        if ($pedidoId <= 0 || ($usuarioId !== null && $usuarioId <= 0)) {
             return false;
         }
 
-        $stmt->bind_param(
-            "ii",
-            $pedidoId,
-            $usuarioId
-        );
+        if (!$this->conn->begin_transaction()) {
+            return false;
+        }
 
-        $resultado = $stmt->execute();
-        $filasAfectadas = $stmt->affected_rows;
+        try {
+            $sqlPedido = $usuarioId === null
+                ? "SELECT estado FROM pedidos WHERE id = ? FOR UPDATE"
+                : "SELECT estado FROM pedidos WHERE id = ? AND usuario_id = ? FOR UPDATE";
+            $stmtPedido = $this->conn->prepare($sqlPedido);
 
-        $stmt->close();
+            if (!$stmtPedido) {
+                throw new RuntimeException('No se pudo bloquear el pedido.');
+            }
 
-        return $resultado && $filasAfectadas === 1;
+            if ($usuarioId === null) {
+                $stmtPedido->bind_param('i', $pedidoId);
+            } else {
+                $stmtPedido->bind_param('ii', $pedidoId, $usuarioId);
+            }
+
+            if (!$stmtPedido->execute()) {
+                $stmtPedido->close();
+                throw new RuntimeException('No se pudo consultar el pedido.');
+            }
+
+            $pedido = $stmtPedido->get_result()->fetch_assoc();
+            $stmtPedido->close();
+
+            if (!$pedido || $pedido['estado'] !== 'pendiente') {
+                throw new RuntimeException('El pedido ya no está pendiente.');
+            }
+
+            $stmtDetalles = $this->conn->prepare(
+                'SELECT producto_id, cantidad FROM pedido_detalles WHERE pedido_id = ? FOR UPDATE'
+            );
+            if (!$stmtDetalles) {
+                throw new RuntimeException('No se pudieron consultar los detalles.');
+            }
+            $stmtDetalles->bind_param('i', $pedidoId);
+            if (!$stmtDetalles->execute()) {
+                $stmtDetalles->close();
+                throw new RuntimeException('No se pudieron consultar los detalles.');
+            }
+            $detalles = $stmtDetalles->get_result()->fetch_all(MYSQLI_ASSOC);
+            $stmtDetalles->close();
+
+            $stmtStock = $this->conn->prepare(
+                'UPDATE productos SET stock = stock + ? WHERE id = ?'
+            );
+            if (!$stmtStock) {
+                throw new RuntimeException('No se pudo preparar la devolución de stock.');
+            }
+
+            foreach ($detalles as $detalle) {
+                $cantidad = (int) $detalle['cantidad'];
+                $productoId = (int) $detalle['producto_id'];
+                $stmtStock->bind_param('ii', $cantidad, $productoId);
+                if (!$stmtStock->execute() || $stmtStock->affected_rows !== 1) {
+                    $stmtStock->close();
+                    throw new RuntimeException('No se pudo devolver el stock.');
+                }
+            }
+            $stmtStock->close();
+
+            $stmtCancelar = $this->conn->prepare(
+                'UPDATE pedidos SET estado = \'cancelado\' WHERE id = ? AND estado = \'pendiente\''
+            );
+            if (!$stmtCancelar) {
+                throw new RuntimeException('No se pudo cancelar el pedido.');
+            }
+            $stmtCancelar->bind_param('i', $pedidoId);
+            if (!$stmtCancelar->execute() || $stmtCancelar->affected_rows !== 1) {
+                $stmtCancelar->close();
+                throw new RuntimeException('No se pudo cancelar el pedido.');
+            }
+            $stmtCancelar->close();
+
+            $this->conn->commit();
+            return true;
+        } catch (Throwable $e) {
+            $this->conn->rollback();
+            error_log('Error cancelando pedido y devolviendo stock: ' . $e->getMessage());
+            return false;
+        }
     }
 
 

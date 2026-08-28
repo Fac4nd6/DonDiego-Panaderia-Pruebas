@@ -1,0 +1,90 @@
+.pagina-error {
+    background: var(--color-background);
+}
+
+/* Mantiene el header de errores alineado con las páginas internas. */
+.pagina-error .header {
+    background-color: var(--color-primary);
+    border-radius: 0 0 18px 18px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    width: 90%;
+    max-width: 100%;
+}
+
+.error-container {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 130px 8% 90px;
+    box-sizing: border-box;
+}
+
+.error-card {
+    width: 100%;
+    max-width: 620px;
+    padding: 52px 36px;
+    box-sizing: border-box;
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+    text-align: center;
+}
+
+.error-codigo {
+    display: block;
+    color: var(--color-primary);
+    font-family: var(--font-title);
+    font-size: clamp(72px, 14vw, 128px);
+    font-weight: 800;
+    line-height: 0.9;
+}
+
+.error-card h1 {
+    margin: 22px 0 10px;
+    color: var(--color-dark);
+    font-family: var(--font-title);
+    font-size: clamp(28px, 5vw, 42px);
+}
+
+.error-card p {
+    margin: 0 auto 28px;
+    max-width: 480px;
+    color: #666;
+}
+
+.error-boton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    padding: 12px 20px;
+    border-radius: 5px;
+    background: var(--color-primary);
+    color: #ffffff;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.error-boton:hover {
+    background: var(--color-secondary);
+    transform: translateY(-2px);
+    box-shadow: 0 7px 16px rgba(179, 27, 33, 0.18);
+}
+
+@media (max-width: 600px) {
+    .error-container {
+        padding: 110px 5% 70px;
+    }
+
+    .error-card {
+        padding: 42px 24px;
+    }
+
+    .error-boton {
+        width: 100%;
+        box-sizing: border-box;
+    }
+}

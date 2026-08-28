@@ -239,42 +239,8 @@ Los usuarios autorizados pueden:
 El sistema contempla actualmente:
 
 * Efectivo.
-* Mercado Pago.
 
 El método de efectivo forma parte del flujo de pedidos.
-
-La integración con Mercado Pago se encuentra actualmente **en desarrollo**.
-
----
-
-# 💳 Mercado Pago
-
-El proyecto cuenta con una estructura inicial para integrar Mercado Pago.
-
-Actualmente se dispone de:
-
-* Servicio para comunicarse con Mercado Pago.
-* Controlador para gestionar operaciones relacionadas con pagos.
-* Token de acceso.
-* Generación de checkout.
-* `external_reference` para relacionar operaciones con pedidos.
-* Consultas a la API desde el servidor.
-* Comprobaciones de respuestas.
-* Estructura inicial para recibir notificaciones mediante webhook.
-
-La integración todavía **no está preparada para producción**.
-
-Antes de habilitar pagos reales se deben completar, entre otras, las siguientes tareas:
-
-* Validar la firma de los webhooks.
-* Verificar correctamente la orden asociada al pago.
-* Persistir correctamente los identificadores de Mercado Pago.
-* Implementar idempotencia.
-* Prevenir pagos duplicados.
-* Validar monto y moneda.
-* Configurar una URL pública HTTPS.
-* Sincronizar completamente la base de datos con el código.
-* Realizar pruebas de errores y reintentos.
 
 ---
 
@@ -305,7 +271,6 @@ Entre ellos:
 * Configuración de sesión pendiente de endurecimiento.
 * Configuración de MySQL de desarrollo que no debe utilizarse en producción.
 * Errores PHP visibles durante el desarrollo.
-* Seguridad del webhook de Mercado Pago pendiente.
 * Revisión de credenciales y secretos.
 * Necesidad de realizar pruebas de seguridad adicionales.
 
@@ -368,8 +333,6 @@ Los pedidos contienen información relacionada con:
 
 La estructura SQL debe mantenerse sincronizada con el código actual del proyecto.
 
-Actualmente existe una tarea pendiente de sincronización relacionada con los campos utilizados por Mercado Pago.
-
 ---
 
 # ⚙️ Tecnologías
@@ -384,7 +347,6 @@ Actualmente existe una tarea pendiente de sincronización relacionada con los ca
 * `mysqli`
 * cURL
 * Brevo API
-* Mercado Pago API
 * Git
 * GitHub
 * Font Awesome
@@ -403,15 +365,12 @@ DonDiego-Panaderia-Pruebas/
 │   ├── Brevo.php
 │   ├── Csrf.php
 │   ├── Database.php
-│   ├── MercadoPagoClient.php
-│   └── mercadopago.php
 │
 ├── controllers/
 │   ├── BrevoController.php
 │   ├── CarritoController.php
 │   ├── CatalogoController.php
 │   ├── HomeController.php
-│   ├── MercadoPagoController.php
 │   ├── PedidoController.php
 │   ├── ProductoController.php
 │   ├── UsuarioController.php
@@ -431,8 +390,7 @@ DonDiego-Panaderia-Pruebas/
 │   ├── img/
 │   └── js/
 │
-├── service/
-│   └── MercadoPagoService.php
+├
 │
 └── views/
     ├── admin/
@@ -548,7 +506,7 @@ Luego importar:
 database/don_diego.sql
 ```
 
-> La estructura del archivo SQL debe coincidir con la versión actual del proyecto. Si se realizaron cambios recientes en el código relacionados con Mercado Pago, se debe actualizar el esquema antes de realizar una instalación limpia.
+> La estructura del archivo SQL debe coincidir con la versión actual del proyecto.
 
 ---
 
@@ -620,31 +578,13 @@ Si una credencial real fue expuesta, debe revocarse y reemplazarse.
 
 ---
 
-# 💳 Configuración de Mercado Pago
+## Configuración de pedidos y WhatsApp
 
-La integración de Mercado Pago se encuentra en desarrollo.
+Los pedidos se guardan en MySQL y luego se prepara un mensaje para contactar al comercio por WhatsApp.
 
-La configuración utiliza componentes relacionados con:
+No requiere dependencias externas.
 
-```text
-config/mercadopago.php
-config/MercadoPagoClient.php
-service/MercadoPagoService.php
-controllers/MercadoPagoController.php
-```
-
-Para utilizar Mercado Pago en producción será necesario configurar:
-
-* Credenciales reales.
-* URL pública HTTPS.
-* Webhook accesible desde Internet.
-* Validación de firma.
-* Identificación de pedidos.
-* Persistencia de identificadores de pago.
-* Idempotencia.
-* Validación de monto y moneda.
-
-Actualmente el sistema no debe considerarse preparado para recibir pagos reales en producción.
+El número se configura en `config/whatsapp.php` usando el placeholder `WHATSAPP_NUMERO_AQUI`. Debe reemplazarse por un número internacional sin símbolos.
 
 ---
 
@@ -728,16 +668,10 @@ Actualmente el proyecto se encuentra en una **etapa avanzada de desarrollo**.
 * Roles de usuario.
 * Selección de métodos de pago.
 * Integración inicial con Brevo.
-* Estructura inicial de Mercado Pago.
 * Diseño responsive.
 
 ## 🟡 En desarrollo / corrección
 
-* Integración completa con Mercado Pago.
-* Seguridad del webhook.
-* Persistencia de información de pagos.
-* Idempotencia de operaciones de pago.
-* Sincronización completa de la base de datos.
 * Transacciones para la creación de pedidos.
 * Validación final de productos y precios.
 * Protección CSRF uniforme.
@@ -774,10 +708,6 @@ Antes de una implementación real se deben completar, entre otras, las siguiente
 * [ ] Utilizar un usuario MySQL específico.
 * [ ] Implementar transacciones en la creación de pedidos.
 * [ ] Validar productos y precios nuevamente al confirmar.
-* [ ] Completar la integración segura con Mercado Pago.
-* [ ] Validar firmas de webhook.
-* [ ] Implementar idempotencia.
-* [ ] Validar montos y monedas.
 * [ ] Corregir rutas de imágenes.
 * [ ] Completar pruebas responsive.
 * [ ] Crear pruebas automatizadas.
@@ -823,7 +753,6 @@ Se realizó una auditoría estática del código para revisar:
 * Pedidos.
 * Productos.
 * Base de datos.
-* Mercado Pago.
 * Vistas.
 * Responsive.
 * Configuración.

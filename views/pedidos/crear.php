@@ -40,6 +40,7 @@ require __DIR__ . '/../layouts/header.php';
 
                 <form
                     method="POST"
+                    target="_blank"
                     action="/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php">
 
 
@@ -293,31 +294,6 @@ require __DIR__ . '/../layouts/header.php';
 
                                     <span>
                                         Pagás al recibir tu pedido.
-                                    </span>
-
-                                </div>
-
-                            </label>
-
-
-                            <!-- MERCADO PAGO -->
-
-                            <label class="metodo-pago">
-
-                                <input
-                                    type="radio"
-                                    name="metodo_pago"
-                                    value="mercado_pago">
-
-
-                                <div>
-
-                                    <strong>
-                                        Mercado Pago
-                                    </strong>
-
-                                    <span>
-                                        Pago online.
                                     </span>
 
                                 </div>

@@ -31,7 +31,7 @@ require __DIR__ . '/../layouts/head.php';
 
                 <?php else: ?>
 
-                    PEDIDO CONFIRMADO
+                    PEDIDO REGISTRADO
 
                 <?php endif; ?>
 

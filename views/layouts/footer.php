@@ -1,5 +1,8 @@
 <?php
 
+require_once __DIR__ . '/../../config/whatsapp.php';
+$footerWhatsAppUrl = crearUrlWhatsApp('Hola Don Diego, quisiera realizar una consulta.');
+
 // =========================================================
 // CONEXIÓN A LA BASE DE DATOS
 // =========================================================
@@ -109,20 +112,24 @@ try {
 
                 <!-- WHATSAPP -->
 
-                <a
-                    href="https://wa.me/095005706"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="WhatsApp"
-                >
+                <?php if ($footerWhatsAppUrl !== null): ?>
 
-                    <i class="fa-brands fa-whatsapp"></i>
+                    <a
+                        href="<?= htmlspecialchars($footerWhatsAppUrl, ENT_QUOTES, 'UTF-8') ?>"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="WhatsApp"
+                    >
 
-                    <span>
-                        WhatsApp
-                    </span>
+                        <i class="fa-brands fa-whatsapp"></i>
 
-                </a>
+                        <span>
+                            WhatsApp
+                        </span>
+
+                    </a>
+
+                <?php endif; ?>
 
 
                 <!-- INSTAGRAM -->
@@ -202,21 +209,15 @@ try {
             </a>
 
             <a
-                href="/DonDiego-Panaderia-Pruebas/views/blog.php"
+                href="/DonDiego-Panaderia-Pruebas/controllers/CatalogoController.php"
             >
-                Blog
+                Productos
             </a>
 
             <a
                 href="/DonDiego-Panaderia-Pruebas/views/contacto.php"
             >
                 Contacto
-            </a>
-
-            <a
-                href="/DonDiego-Panaderia-Pruebas/views/servicios.php"
-            >
-                Servicios
             </a>
 
         </div>

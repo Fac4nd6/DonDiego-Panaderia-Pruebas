@@ -39,11 +39,8 @@ require_once __DIR__ . '/../models/Carrito.php';
 require_once __DIR__ . '/../models/Producto.php';
 
 
-// =========================================================
-// SERVICIO MERCADO PAGO
-// =========================================================
-
-require_once __DIR__ . '/../service/MercadoPagoService.php';
+require_once __DIR__ . '/../config/whatsapp.php';
+require_once __DIR__ . '/../models/Usuario.php';
 
 
 // =========================================================
@@ -88,8 +85,13 @@ if (
     ) {
 
         http_response_code(403);
-
-        exit('No tenés permisos para acceder a esta sección.');
+        $codigoError = 404;
+        $tituloError = 'Página no encontrada';
+        $descripcionError = 'No pudimos encontrar lo que estabas buscando.';
+        $urlVolver = '/DonDiego-Panaderia-Pruebas/controllers/HomeController.php';
+        $textoVolver = 'Volver al inicio';
+        require __DIR__ . '/../views/errors/error.php';
+        exit;
     }
 }
 
@@ -135,10 +137,14 @@ if ($accion === 'ver_admin') {
         );
 
     if (!$pedido) {
-
         http_response_code(404);
-
-        exit('Pedido no encontrado.');
+        $codigoError = 404;
+        $tituloError = 'Pedido no encontrado';
+        $descripcionError = 'No pudimos encontrar el pedido solicitado.';
+        $urlVolver = '/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=listar';
+        $textoVolver = 'Volver a mis pedidos';
+        require __DIR__ . '/../views/errors/error.php';
+        exit;
     }
 
     $detalles =
@@ -187,7 +193,14 @@ if ($accion === 'actualizar_estado') {
 
     $pedidoActual = $pedidoModel->obtenerPorIdAdmin($pedidoId);
     if (!$pedidoActual) {
-        exit('Pedido no encontrado.');
+        http_response_code(404);
+        $codigoError = 404;
+        $tituloError = 'Pedido no encontrado';
+        $descripcionError = 'No pudimos encontrar el pedido solicitado.';
+        $urlVolver = '/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=admin';
+        $textoVolver = 'Volver a pedidos';
+        require __DIR__ . '/../views/errors/error.php';
+        exit;
     }
 
     if ($pedidoActual['estado'] === $estado) {
@@ -571,12 +584,7 @@ if ($accion === 'crear') {
     // VALIDAR MÉTODO DE PAGO
     // =====================================================
 
-    $metodosPermitidos = [
-
-        'efectivo',
-        'mercado_pago'
-
-    ];
+    $metodosPermitidos = ['efectivo'];
 
     if (
         !in_array(
@@ -588,11 +596,6 @@ if ($accion === 'crear') {
 
         exit('El método de pago seleccionado no es válido.');
     }
-
-    if ($metodoPago === 'mercado_pago') {
-        exit('Mercado Pago todavía no está disponible. Seleccioná pago en efectivo.');
-    }
-
 
     // =====================================================
     // CONSTRUIR DIRECCIÓN
@@ -668,173 +671,24 @@ if ($accion === 'crear') {
             : 'No se pudo crear el pedido en la base de datos.');
     }
 
-    // =====================================================
-    // MERCADO PAGO
-    // =====================================================
-
-    if ($metodoPago === 'mercado_pago') {
-
-        try {
-
-            /*
-         * Volvemos a obtener los detalles desde la BD.
-         *
-         * Esto evita confiar únicamente en los datos
-         * que llegaron desde el navegador.
-         */
-
-            $detalles =
-                $pedidoModel->obtenerDetalles(
-                    $pedidoId
-                );
-
-
-            if (empty($detalles)) {
-
-                exit('No se pudieron obtener los productos del pedido.');
-            }
-
-
-            /*
-         * Obtener los datos completos del pedido.
-         */
-
-            $pedido =
-                $pedidoModel->obtenerPorIdAdmin(
-                    $pedidoId
-                );
-
-
-            if (!$pedido) {
-
-                exit('No se pudo obtener el pedido creado.');
-            }
-
-
-            /*
-         * Crear servicio de Mercado Pago.
-         */
-
-            $mercadoPago =
-                new MercadoPagoService();
-
-
-            /*
-         * Crear la orden en Mercado Pago.
-         */
-
-            $resultado =
-                $mercadoPago->crearOrden(
-                    $pedido,
-                    $detalles
-                );
-
-
-            /*
-         * Obtener ID de la orden creada.
-         */
-
-            $orderId =
-                $resultado['id']
-                ?? null;
-
-
-            if (!$orderId) {
-
-                exit('Mercado Pago no devolvió el ID de la orden.');
-            }
-
-
-            /*
-         * Guardar el ID de la orden de Mercado Pago
-         * en nuestra base de datos.
-         */
-
-            $guardado =
-                $pedidoModel->guardarMercadoPagoOrderId(
-                    $pedidoId,
-                    $orderId
-                );
-
-
-            if (!$guardado) {
-
-                exit('La orden de Mercado Pago fue creada, '
-                    . 'pero no se pudo guardar su ID en la base de datos.');
-            }
-
-
-            /*
-         * Obtener URL del checkout.
-         */
-
-            $checkoutUrl =
-                $resultado['checkout_url']
-                ?? null;
-
-
-            if (!$checkoutUrl) {
-
-                exit('Mercado Pago no devolvió una URL de pago.');
-            }
-
-
-            /*
-         * Vaciar carrito solamente después de comprobar
-         * que la orden fue creada correctamente.
-         */
-
-            $carritoModel->vaciar();
-
-
-            /*
-         * Enviar al cliente al checkout de Mercado Pago.
-         */
-
-            header(
-                'Location: ' . $checkoutUrl
-            );
-
-            exit;
-        } catch (Throwable $e) {
-
-            /*
-         * El pedido ya existe en nuestra BD,
-         * pero el pago no pudo iniciarse.
-         *
-         * No lo marcamos como confirmado/pagado.
-         */
-
-            error_log(
-                'Error Mercado Pago pedido '
-                    . $pedidoId
-                    . ': '
-                    . $e->getMessage()
-            );
-
-
-            http_response_code(500);
-
-            exit('El pedido fue creado, pero no se pudo iniciar '
-                . 'el pago con Mercado Pago.');
-        }
+    $pedido = $pedidoModel->obtenerPorId($pedidoId, $usuarioId);
+    $usuario = (new Usuario($conn))->obtenerPorId($usuarioId);
+    if ($pedido && $usuario) {
+        // El aviso usa datos del cliente consultados desde MySQL, no del formulario.
+        $pedido['nombre_completo'] = $usuario['nombre_completo'];
     }
-    // =====================================================
-    // EFECTIVO
-    // =====================================================
+    $detallesGuardados = $pedidoModel->obtenerDetalles($pedidoId);
+    $mensaje = crearMensajeWhatsApp($pedido ?: [], $detallesGuardados);
+    $whatsappUrl = crearUrlWhatsApp($mensaje);
 
-    if ($metodoPago === 'efectivo') {
+    $carritoModel->vaciar();
 
-        $carritoModel->vaciar();
-
-
-        header(
-            'Location: /DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=ver&id='
-                . $pedidoId
-        );
-
-        exit;
+    if ($whatsappUrl === null) {
+        exit('El pedido #' . $pedidoId . ' fue creado correctamente. Configurá el número de WhatsApp para contactar al comercio.');
     }
+
+    header('Location: ' . $whatsappUrl);
+    exit;
 }
 
 
@@ -884,10 +738,14 @@ if ($accion === 'ver') {
         );
 
     if (!$pedido) {
-
         http_response_code(404);
-
-        exit('Pedido no encontrado.');
+        $codigoError = 404;
+        $tituloError = 'Pedido no encontrado';
+        $descripcionError = 'No pudimos encontrar el pedido solicitado.';
+        $urlVolver = '/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=listar';
+        $textoVolver = 'Volver a mis pedidos';
+        require __DIR__ . '/../views/errors/error.php';
+        exit;
     }
 
     $detalles =
