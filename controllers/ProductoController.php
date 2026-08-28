@@ -2,6 +2,17 @@
 
 // =========================================================
 // SESIÓN
+// =========================================================
+
+require_once __DIR__ . '/../config/Session.php';
+
+iniciar_sesion_segura();
+
+
+// =========================================================
+// COMPROBAR SESIÓN
+// =========================================================
+
 if (!isset($_SESSION['usuario_id'])) {
 
     header(
@@ -22,12 +33,15 @@ if (
 ) {
 
     http_response_code(403);
+
     $codigoError = 404;
     $tituloError = 'Página no encontrada';
     $descripcionError = 'No pudimos encontrar lo que estabas buscando.';
     $urlVolver = '/DonDiego-Panaderia-Pruebas/controllers/HomeController.php';
     $textoVolver = 'Volver al inicio';
+
     require __DIR__ . '/../views/errors/error.php';
+
     exit;
 }
 
@@ -36,8 +50,9 @@ if (
 // MODELOS
 // =========================================================
 
-require_once '../config/Database.php';
-require_once '../models/Producto.php';
+require_once __DIR__ . '/../config/Database.php';
+require_once __DIR__ . '/../models/Producto.php';
+
 
 $productoModel = new Producto($conn);
 
@@ -52,7 +67,7 @@ if ($accion === 'listar') {
 
     $productos = $productoModel->obtenerTodos();
 
-    require '../views/admin/productos.php';
+    require __DIR__ . '/../views/admin/productos.php';
 
     exit;
 }
@@ -66,7 +81,7 @@ if ($accion === 'crear') {
 
     $categorias = $productoModel->obtenerCategorias();
 
-    require '../views/admin/productos-form.php';
+    require __DIR__ . '/../views/admin/productos-form.php';
 
     exit;
 }
@@ -87,14 +102,27 @@ if ($accion === 'guardar') {
         exit;
     }
 
+
     verificar_csrf();
 
 
-    $nombre = trim($_POST['nombre'] ?? '');
-    $descripcion = trim($_POST['descripcion'] ?? '');
-    $precio = $_POST['precio'] ?? '';
-    $categoriaId = (int) ($_POST['categoria_id'] ?? 0);
-    $stock = filter_var($_POST['stock'] ?? null, FILTER_VALIDATE_INT);
+    $nombre =
+        trim($_POST['nombre'] ?? '');
+
+    $descripcion =
+        trim($_POST['descripcion'] ?? '');
+
+    $precio =
+        $_POST['precio'] ?? '';
+
+    $categoriaId =
+        (int) ($_POST['categoria_id'] ?? 0);
+
+    $stock =
+        filter_var(
+            $_POST['stock'] ?? null,
+            FILTER_VALIDATE_INT
+        );
 
 
     // -----------------------------------------------------
@@ -143,7 +171,8 @@ if ($accion === 'guardar') {
     // CARPETA
     // -----------------------------------------------------
 
-    $carpeta = __DIR__ . '/../public/img/';
+    $carpeta =
+        __DIR__ . '/../public/img/';
 
 
     if (!is_dir($carpeta)) {
@@ -169,18 +198,37 @@ if ($accion === 'guardar') {
     // VALIDAR IMAGEN
     // -----------------------------------------------------
 
-    $tipo = mime_content_type(
-        $archivo['tmp_name']
-    );
+    $tipo =
+        mime_content_type(
+            $archivo['tmp_name']
+        );
+
 
     if ((int) $archivo['size'] > 5 * 1024 * 1024) {
-        exit('La imagen no puede superar los 5 MB.');
+
+        exit(
+            'La imagen no puede superar los 5 MB.'
+        );
     }
 
-    $dimensiones = @getimagesize($archivo['tmp_name']);
-    if (!$dimensiones || $dimensiones[0] > 5000 || $dimensiones[1] > 5000) {
-        exit('Las dimensiones de la imagen no son válidas.');
+
+    $dimensiones =
+        @getimagesize(
+            $archivo['tmp_name']
+        );
+
+
+    if (
+        !$dimensiones ||
+        $dimensiones[0] > 5000 ||
+        $dimensiones[1] > 5000
+    ) {
+
+        exit(
+            'Las dimensiones de la imagen no son válidas.'
+        );
     }
+
 
     $tiposPermitidos = [
 
@@ -204,12 +252,15 @@ if ($accion === 'guardar') {
     // NOMBRE DE IMAGEN
     // -----------------------------------------------------
 
-    $extension = $tiposPermitidos[$tipo];
+    $extension =
+        $tiposPermitidos[$tipo];
+
 
     $nombreImagen =
         uniqid('producto_', true)
         . '.'
         . $extension;
+
 
     $rutaDestino =
         $carpeta . $nombreImagen;
@@ -293,13 +344,17 @@ if ($accion === 'editar') {
 
 
     if (!$producto) {
+
         http_response_code(404);
+
         $codigoError = 404;
         $tituloError = 'Producto no encontrado';
         $descripcionError = 'El producto que buscás ya no está disponible.';
         $urlVolver = '/DonDiego-Panaderia-Pruebas/controllers/CatalogoController.php';
         $textoVolver = 'Volver al catálogo';
+
         require __DIR__ . '/../views/errors/error.php';
+
         exit;
     }
 
@@ -308,7 +363,7 @@ if ($accion === 'editar') {
         $productoModel->obtenerCategorias();
 
 
-    require '../views/admin/productos-form.php';
+    require __DIR__ . '/../views/admin/productos-form.php';
 
     exit;
 }
@@ -328,6 +383,7 @@ if ($accion === 'actualizar') {
 
         exit;
     }
+
 
     verificar_csrf();
 
@@ -350,8 +406,16 @@ if ($accion === 'actualizar') {
     $activo =
         (int) ($_POST['activo'] ?? 1);
 
-    $stock = filter_var($_POST['stock'] ?? null, FILTER_VALIDATE_INT);
+    $stock =
+        filter_var(
+            $_POST['stock'] ?? null,
+            FILTER_VALIDATE_INT
+        );
 
+
+    // -----------------------------------------------------
+    // VALIDAR DATOS
+    // -----------------------------------------------------
 
     if (
         $id <= 0 ||
@@ -368,18 +432,26 @@ if ($accion === 'actualizar') {
     }
 
 
+    // -----------------------------------------------------
+    // OBTENER PRODUCTO ACTUAL
+    // -----------------------------------------------------
+
     $productoActual =
         $productoModel->obtenerPorId($id);
 
 
     if (!$productoActual) {
+
         http_response_code(404);
+
         $codigoError = 404;
         $tituloError = 'Producto no encontrado';
         $descripcionError = 'El producto que buscás ya no está disponible.';
         $urlVolver = '/DonDiego-Panaderia-Pruebas/controllers/ProductoController.php?accion=listar';
         $textoVolver = 'Volver a productos';
+
         require __DIR__ . '/../views/errors/error.php';
+
         exit;
     }
 
@@ -390,6 +462,7 @@ if ($accion === 'actualizar') {
 
     $imagen =
         $productoActual['imagen'];
+
 
     $carpeta =
         __DIR__ . '/../public/img/';
@@ -413,13 +486,30 @@ if ($accion === 'actualizar') {
                 $archivo['tmp_name']
             );
 
+
         if ((int) $archivo['size'] > 5 * 1024 * 1024) {
-            exit('La imagen no puede superar los 5 MB.');
+
+            exit(
+                'La imagen no puede superar los 5 MB.'
+            );
         }
 
-        $dimensiones = @getimagesize($archivo['tmp_name']);
-        if (!$dimensiones || $dimensiones[0] > 5000 || $dimensiones[1] > 5000) {
-            exit('Las dimensiones de la imagen no son válidas.');
+
+        $dimensiones =
+            @getimagesize(
+                $archivo['tmp_name']
+            );
+
+
+        if (
+            !$dimensiones ||
+            $dimensiones[0] > 5000 ||
+            $dimensiones[1] > 5000
+        ) {
+
+            exit(
+                'Las dimensiones de la imagen no son válidas.'
+            );
         }
 
 
@@ -492,7 +582,7 @@ if ($accion === 'actualizar') {
 
 
     // -----------------------------------------------------
-    // ACTUALIZAR BD
+    // ACTUALIZAR BASE DE DATOS
     // -----------------------------------------------------
 
     $resultado =
@@ -510,7 +600,11 @@ if ($accion === 'actualizar') {
 
     if (!$resultado) {
 
-        if (isset($rutaDestino) && file_exists($rutaDestino)) {
+        if (
+            isset($rutaDestino) &&
+            file_exists($rutaDestino)
+        ) {
+
             unlink($rutaDestino);
         }
 
@@ -519,9 +613,22 @@ if ($accion === 'actualizar') {
         );
     }
 
-    if (!empty($nuevaImagen) && !empty($productoActual['imagen'])) {
-        $rutaAnterior = $carpeta . $productoActual['imagen'];
+
+    // -----------------------------------------------------
+    // ELIMINAR IMAGEN ANTERIOR
+    // -----------------------------------------------------
+
+    if (
+        !empty($nuevaImagen) &&
+        !empty($productoActual['imagen'])
+    ) {
+
+        $rutaAnterior =
+            $carpeta . $productoActual['imagen'];
+
+
         if (file_exists($rutaAnterior)) {
+
             unlink($rutaAnterior);
         }
     }
@@ -542,11 +649,17 @@ if ($accion === 'actualizar') {
 if ($accion === 'desactivar') {
 
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+
         http_response_code(405);
-        exit('Método no permitido.');
+
+        exit(
+            'Método no permitido.'
+        );
     }
 
+
     verificar_csrf();
+
 
     $id =
         (int) ($_POST['id'] ?? 0);
@@ -585,11 +698,17 @@ if ($accion === 'desactivar') {
 if ($accion === 'activar') {
 
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+
         http_response_code(405);
-        exit('Método no permitido.');
+
+        exit(
+            'Método no permitido.'
+        );
     }
 
+
     verificar_csrf();
+
 
     $id =
         (int) ($_POST['id'] ?? 0);
@@ -628,13 +747,18 @@ if ($accion === 'activar') {
 if ($accion === 'eliminar') {
 
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+
         http_response_code(405);
-        exit('Método no permitido.');
+
+        exit(
+            'Método no permitido.'
+        );
     }
+
 
     verificar_csrf();
 
-    // -----------------------------------------------------
+
     $id =
         (int) ($_POST['id'] ?? 0);
 
@@ -656,13 +780,17 @@ if ($accion === 'eliminar') {
 
 
     if (!$producto) {
+
         http_response_code(404);
+
         $codigoError = 404;
         $tituloError = 'Producto no encontrado';
         $descripcionError = 'El producto que buscás ya no está disponible.';
         $urlVolver = '/DonDiego-Panaderia-Pruebas/controllers/ProductoController.php?accion=listar';
         $textoVolver = 'Volver a productos';
+
         require __DIR__ . '/../views/errors/error.php';
+
         exit;
     }
 
