@@ -883,3 +883,95 @@
 .tabla-productos td:nth-child(4) .estado {
     white-space: nowrap;
 }
+
+```css
+/* =========================================================
+   GESTIÓN DE ROLES
+========================================================= */
+
+.roles-busqueda {
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.roles-busqueda .resumen-card {
+    width: 100%;
+}
+
+.roles-busqueda form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.roles-busqueda label {
+    display: block;
+    margin-bottom: 7px;
+    color: #444;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.roles-busqueda input,
+.roles-busqueda select {
+    width: 100%;
+    padding: 12px 14px;
+    background: #fff;
+    color: #222;
+    border: 1px solid #d8d8d8;
+    border-radius: 8px;
+    outline: none;
+}
+
+.roles-busqueda input:focus,
+.roles-busqueda select:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(179, 27, 33, 0.1);
+}
+
+.roles-busqueda .btn-agregar {
+    width: fit-content;
+    margin-top: 4px;
+}
+
+.roles-usuario {
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.roles-usuario .resumen-card {
+    width: 100%;
+}
+
+.roles-usuario p {
+    margin-bottom: 8px;
+    color: #555;
+}
+
+.roles-usuario form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 20px;
+}
+
+
+/* =========================================================
+   RESPONSIVE ROLES
+========================================================= */
+
+@media (max-width: 700px) {
+
+    .roles-busqueda,
+    .roles-usuario {
+        max-width: 100%;
+    }
+
+    .roles-busqueda .btn-agregar,
+    .roles-usuario .btn-agregar {
+        width: 100%;
+    }
+}
+```

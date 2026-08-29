@@ -8,6 +8,38 @@ require_once __DIR__ . '/../config/Session.php';
 
 iniciar_sesion_segura();
 
+// =========================================================
+// CSRF PARA GESTIÓN DE ROLES
+// =========================================================
+
+function csrf_token()
+{
+    iniciar_sesion_segura();
+
+    if (empty($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+
+    return $_SESSION['csrf_token'];
+}
+
+
+function verificar_csrf()
+{
+    iniciar_sesion_segura();
+
+    $token = $_POST['csrf_token'] ?? '';
+
+    if (
+        empty($token) ||
+        empty($_SESSION['csrf_token']) ||
+        !hash_equals($_SESSION['csrf_token'], $token)
+    ) {
+        http_response_code(403);
+
+        exit('Token CSRF inválido.');
+    }
+}
 
 // =========================================================
 // COMPROBAR SESIÓN
@@ -52,6 +84,7 @@ if (
 
 require_once __DIR__ . '/../config/Database.php';
 require_once __DIR__ . '/../models/Producto.php';
+require_once __DIR__ . '/../models/Usuario.php';
 
 
 $productoModel = new Producto($conn);
@@ -68,6 +101,173 @@ if ($accion === 'listar') {
     $productos = $productoModel->obtenerTodos();
 
     require __DIR__ . '/../views/admin/productos.php';
+
+    exit;
+}
+
+
+// =========================================================
+// GESTIONAR ROLES
+// =========================================================
+
+if ($accion === 'roles') {
+
+    require __DIR__ . '/../views/admin/roles.php';
+
+    exit;
+}
+
+
+// =========================================================
+// BUSCAR USUARIO PARA GESTIÓN DE ROLES
+// =========================================================
+
+if ($accion === 'buscar_usuario_rol') {
+
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+
+        http_response_code(405);
+
+        exit('Método no permitido.');
+    }
+
+
+    // -----------------------------------------------------
+    // VERIFICAR CSRF
+    // -----------------------------------------------------
+
+    verificar_csrf();
+
+
+    // -----------------------------------------------------
+    // OBTENER CORREO
+    // -----------------------------------------------------
+
+    $correo =
+        trim($_POST['correo'] ?? '');
+
+
+    if ($correo === '') {
+
+        exit('El correo electrónico es obligatorio.');
+    }
+
+
+    if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+
+        exit('El correo electrónico no es válido.');
+    }
+
+
+    // -----------------------------------------------------
+    // BUSCAR USUARIO
+    // -----------------------------------------------------
+
+    $usuarioModel = new Usuario($conn);
+
+    $usuario = $usuarioModel->obtenerPorEmail($correo);
+
+    if (!$usuario) {
+
+        exit('No se encontró ningún usuario con ese correo electrónico.');
+    }
+
+
+    // -----------------------------------------------------
+    // MOSTRAR VISTA DE ROLES
+    // -----------------------------------------------------
+
+    require __DIR__ . '/../views/admin/roles.php';
+
+    exit;
+}
+
+// =========================================================
+// ACTUALIZAR ROL DE USUARIO
+// =========================================================
+
+if ($accion === 'actualizar_rol') {
+
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+
+        http_response_code(405);
+
+        exit('Método no permitido.');
+    }
+
+    verificar_csrf();
+
+    $usuarioId =
+        (int) ($_POST['usuario_id'] ?? 0);
+
+    $rol =
+        trim($_POST['rol'] ?? '');
+
+    // -----------------------------------------------------
+    // VALIDAR USUARIO
+    // -----------------------------------------------------
+
+    if ($usuarioId <= 0) {
+
+        exit('Usuario no válido.');
+    }
+
+    // -----------------------------------------------------
+    // VALIDAR ROL
+    // -----------------------------------------------------
+
+    $rolesPermitidos = [
+        'cliente',
+        'empleado',
+        'admin'
+    ];
+
+    if (!in_array($rol, $rolesPermitidos, true)) {
+
+        exit('El rol seleccionado no es válido.');
+    }
+
+    // -----------------------------------------------------
+    // COMPROBAR QUE EL USUARIO EXISTA
+    // -----------------------------------------------------
+
+    $usuarioModel = new Usuario($conn);
+
+    $usuario =
+        $usuarioModel->obtenerPorId($usuarioId);
+
+    if (!$usuario) {
+
+        http_response_code(404);
+
+        exit('El usuario no existe.');
+    }
+
+    // -----------------------------------------------------
+    // EVITAR CAMBIARSE EL PROPIO ROL
+    // -----------------------------------------------------
+
+    if ($usuarioId === (int) $_SESSION['usuario_id']) {
+
+        exit('No podés modificar tu propio rol.');
+    }
+
+    // -----------------------------------------------------
+    // ACTUALIZAR ROL
+    // -----------------------------------------------------
+
+    if (!$usuarioModel->actualizarRol($usuarioId, $rol)) {
+
+        exit('No se pudo actualizar el rol del usuario.');
+    }
+
+    // -----------------------------------------------------
+    // VOLVER A LA GESTIÓN DE ROLES
+    // -----------------------------------------------------
+
+    header(
+        'Location: ProductoController.php?accion=roles'
+    );
 
     exit;
 }
@@ -137,9 +337,7 @@ if ($accion === 'guardar') {
         $stock < 0
     ) {
 
-        exit(
-            'Faltan datos obligatorios.'
-        );
+        exit('Faltan datos obligatorios.');
     }
 
 
@@ -149,18 +347,14 @@ if ($accion === 'guardar') {
 
     if (!isset($_FILES['imagen'])) {
 
-        exit(
-            'No se recibió ninguna imagen.'
-        );
+        exit('No se recibió ninguna imagen.');
     }
 
 
     if ($_FILES['imagen']['error'] !== UPLOAD_ERR_OK) {
 
-        exit(
-            'Error al subir imagen. Código: '
-            . $_FILES['imagen']['error']
-        );
+        exit('Error al subir imagen. Código: '
+            . $_FILES['imagen']['error']);
     }
 
 
@@ -179,18 +373,14 @@ if ($accion === 'guardar') {
 
         if (!mkdir($carpeta, 0755, true)) {
 
-            exit(
-                'No se pudo crear la carpeta public/img.'
-            );
+            exit('No se pudo crear la carpeta public/img.');
         }
     }
 
 
     if (!is_writable($carpeta)) {
 
-        exit(
-            'La carpeta public/img no tiene permisos de escritura.'
-        );
+        exit('La carpeta public/img no tiene permisos de escritura.');
     }
 
 
@@ -206,9 +396,7 @@ if ($accion === 'guardar') {
 
     if ((int) $archivo['size'] > 5 * 1024 * 1024) {
 
-        exit(
-            'La imagen no puede superar los 5 MB.'
-        );
+        exit('La imagen no puede superar los 5 MB.');
     }
 
 
@@ -224,9 +412,7 @@ if ($accion === 'guardar') {
         $dimensiones[1] > 5000
     ) {
 
-        exit(
-            'Las dimensiones de la imagen no son válidas.'
-        );
+        exit('Las dimensiones de la imagen no son válidas.');
     }
 
 
@@ -241,10 +427,8 @@ if ($accion === 'guardar') {
 
     if (!isset($tiposPermitidos[$tipo])) {
 
-        exit(
-            'Formato de imagen no permitido. Tipo detectado: '
-            . htmlspecialchars($tipo)
-        );
+        exit('Formato de imagen no permitido. Tipo detectado: '
+            . htmlspecialchars($tipo));
     }
 
 
@@ -277,11 +461,9 @@ if ($accion === 'guardar') {
         )
     ) {
 
-        exit(
-            'No se pudo guardar la imagen.<br><br>'
+        exit('No se pudo guardar la imagen.<br><br>'
             . 'Ruta: '
-            . htmlspecialchars($rutaDestino)
-        );
+            . htmlspecialchars($rutaDestino));
     }
 
 
@@ -307,9 +489,7 @@ if ($accion === 'guardar') {
             unlink($rutaDestino);
         }
 
-        exit(
-            'No se pudo guardar el producto en la base de datos.'
-        );
+        exit('No se pudo guardar el producto en la base de datos.');
     }
 
 
@@ -333,9 +513,7 @@ if ($accion === 'editar') {
 
     if ($id <= 0) {
 
-        exit(
-            'Producto no válido.'
-        );
+        exit('Producto no válido.');
     }
 
 
@@ -426,9 +604,7 @@ if ($accion === 'actualizar') {
         $stock < 0
     ) {
 
-        exit(
-            'Datos inválidos.'
-        );
+        exit('Datos inválidos.');
     }
 
 
@@ -489,9 +665,7 @@ if ($accion === 'actualizar') {
 
         if ((int) $archivo['size'] > 5 * 1024 * 1024) {
 
-            exit(
-                'La imagen no puede superar los 5 MB.'
-            );
+            exit('La imagen no puede superar los 5 MB.');
         }
 
 
@@ -507,9 +681,7 @@ if ($accion === 'actualizar') {
             $dimensiones[1] > 5000
         ) {
 
-            exit(
-                'Las dimensiones de la imagen no son válidas.'
-            );
+            exit('Las dimensiones de la imagen no son válidas.');
         }
 
 
@@ -524,9 +696,7 @@ if ($accion === 'actualizar') {
 
         if (!isset($tiposPermitidos[$tipo])) {
 
-            exit(
-                'Formato de imagen no permitido.'
-            );
+            exit('Formato de imagen no permitido.');
         }
 
 
@@ -534,18 +704,14 @@ if ($accion === 'actualizar') {
 
             if (!mkdir($carpeta, 0755, true)) {
 
-                exit(
-                    'No se pudo crear la carpeta public/img.'
-                );
+                exit('No se pudo crear la carpeta public/img.');
             }
         }
 
 
         if (!is_writable($carpeta)) {
 
-            exit(
-                'La carpeta public/img no tiene permisos de escritura.'
-            );
+            exit('La carpeta public/img no tiene permisos de escritura.');
         }
 
 
@@ -570,9 +736,7 @@ if ($accion === 'actualizar') {
             )
         ) {
 
-            exit(
-                'No se pudo guardar la nueva imagen.'
-            );
+            exit('No se pudo guardar la nueva imagen.');
         }
 
 
@@ -608,9 +772,7 @@ if ($accion === 'actualizar') {
             unlink($rutaDestino);
         }
 
-        exit(
-            'No se pudo actualizar el producto.'
-        );
+        exit('No se pudo actualizar el producto.');
     }
 
 
@@ -652,9 +814,7 @@ if ($accion === 'desactivar') {
 
         http_response_code(405);
 
-        exit(
-            'Método no permitido.'
-        );
+        exit('Método no permitido.');
     }
 
 
@@ -667,9 +827,7 @@ if ($accion === 'desactivar') {
 
     if ($id <= 0) {
 
-        exit(
-            'Producto no válido.'
-        );
+        exit('Producto no válido.');
     }
 
 
@@ -677,9 +835,7 @@ if ($accion === 'desactivar') {
         !$productoModel->desactivar($id)
     ) {
 
-        exit(
-            'No se pudo desactivar el producto.'
-        );
+        exit('No se pudo desactivar el producto.');
     }
 
 
@@ -701,9 +857,7 @@ if ($accion === 'activar') {
 
         http_response_code(405);
 
-        exit(
-            'Método no permitido.'
-        );
+        exit('Método no permitido.');
     }
 
 
@@ -716,9 +870,7 @@ if ($accion === 'activar') {
 
     if ($id <= 0) {
 
-        exit(
-            'Producto no válido.'
-        );
+        exit('Producto no válido.');
     }
 
 
@@ -726,9 +878,7 @@ if ($accion === 'activar') {
         !$productoModel->activar($id)
     ) {
 
-        exit(
-            'No se pudo activar el producto.'
-        );
+        exit('No se pudo activar el producto.');
     }
 
 
@@ -750,9 +900,7 @@ if ($accion === 'eliminar') {
 
         http_response_code(405);
 
-        exit(
-            'Método no permitido.'
-        );
+        exit('Método no permitido.');
     }
 
 
@@ -765,9 +913,7 @@ if ($accion === 'eliminar') {
 
     if ($id <= 0) {
 
-        exit(
-            'Producto no válido.'
-        );
+        exit('Producto no válido.');
     }
 
 
@@ -803,9 +949,7 @@ if ($accion === 'eliminar') {
         !$productoModel->eliminar($id)
     ) {
 
-        exit(
-            'No se pudo eliminar el producto.'
-        );
+        exit('No se pudo eliminar el producto.');
     }
 
 

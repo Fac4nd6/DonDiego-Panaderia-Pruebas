@@ -392,7 +392,7 @@ class UsuarioController
 
 
         header(
-            'Location: ../views/home/index.php'
+            'Location: ../controllers/HomeController.php'
         );
 
         exit;
