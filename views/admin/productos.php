@@ -1,3 +1,4 @@
+
 <?php
 
 $pageCss = "admin-productos.css";
@@ -42,6 +43,12 @@ require __DIR__ . '/../layouts/head.php';
                     href="/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=admin"
                     class="btn-agregar">
                     + Ver pedidos
+                </a>
+
+                <a
+                    href="/DonDiego-Panaderia-Pruebas/controllers/ProductoController.php?accion=roles"
+                    class="btn-agregar">
+                    + Asignar roles
                 </a>
 
             </div>

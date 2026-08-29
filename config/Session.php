@@ -17,3 +17,4 @@ function iniciar_sesion_segura()
 
     session_start();
 }
+
