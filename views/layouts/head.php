@@ -11,6 +11,8 @@
 
     <title>Don Diego</title>
 
+    <link rel="icon" href="/DonDiego-Panaderia-Pruebas/public/img/logo-don2.png" type="image/x-icon">
+
 
     <!-- =====================================================
          CSRF TOKEN
