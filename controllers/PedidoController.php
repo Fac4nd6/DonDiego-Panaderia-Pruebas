@@ -349,7 +349,7 @@ if ($accion === 'repetir') {
     $_SESSION['mensaje_repetir'] = empty($noAgregados)
         ? 'Los productos del pedido fueron agregados al carrito.'
         : 'Algunos productos no se agregaron por disponibilidad o stock: '
-            . implode(', ', $noAgregados) . '.';
+        . implode(', ', $noAgregados) . '.';
 
     header('Location: /DonDiego-Panaderia-Pruebas/controllers/CarritoController.php?accion=ver');
     exit;
@@ -406,7 +406,8 @@ if ($accion === 'crear') {
 
     if (empty($carrito)) {
 
-        exit('El carrito está vacío.');
+        require __DIR__ . '/../controllers/CarritoController.php';
+        exit;
     }
 
 
@@ -427,10 +428,11 @@ if ($accion === 'crear') {
             $usuarioId
         );
 
-    if ($pedidosPendientes >= 3) {
 
-        exit('Ya tenés 3 pedidos pendientes. '
-            . 'Esperá a que sean confirmados o cancelá uno antes de realizar otro pedido.');
+
+    if ($pedidosPendientes >= 3) {
+        require __DIR__ . '/../views/pedidos/limite.php';
+        exit;
     }
 
 
