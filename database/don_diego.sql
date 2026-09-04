@@ -147,6 +147,7 @@ CREATE TABLE `productos` (
   `descripcion` text DEFAULT NULL,
   `precio` decimal(10,2) NOT NULL,
   `stock` int(11) NOT NULL DEFAULT 100,
+  `unidad_venta` varchar(30) NOT NULL DEFAULT 'unidad',
   `categoria_id` int(11) NOT NULL,
   `imagen` varchar(255) DEFAULT NULL,
   `activo` tinyint(1) NOT NULL DEFAULT 1,

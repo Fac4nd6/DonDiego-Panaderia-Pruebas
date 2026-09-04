@@ -94,7 +94,7 @@ require __DIR__ . '/../layouts/header.php';
                             <div>
 
                                 <span class="pedido-label">
-                                    Pedido
+                                    ID del pedido
                                 </span>
 
                                 <h2>

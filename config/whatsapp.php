@@ -19,10 +19,11 @@ function crearMensajeWhatsApp(array $pedido, array $detalles): string
 
     foreach ($detalles as $detalle) {
         $cantidad = (int) ($detalle['cantidad'] ?? 0);
+        $unidadVenta = trim((string) ($detalle['unidad_venta'] ?? 'unidad'));
         $nombre = trim((string) ($detalle['nombre'] ?? 'Producto'));
         $precio = number_format((float) ($detalle['precio_unitario'] ?? 0), 2, ',', '.');
         $subtotal = number_format((float) ($detalle['subtotal'] ?? 0), 2, ',', '.');
-        $lineas[] = '- ' . $cantidad . 'x ' . $nombre . ' - $' . $precio . ' c/u - subtotal: $' . $subtotal;
+        $lineas[] = '- ' . $cantidad . ' ' . $unidadVenta . '(s) de ' . $nombre . ' - $' . $precio . ' por ' . $unidadVenta . ' - subtotal: $' . $subtotal;
     }
 
     $fecha = date('d/m/Y', strtotime((string) ($pedido['fecha_recepcion'] ?? '')));

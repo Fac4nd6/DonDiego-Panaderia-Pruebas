@@ -129,6 +129,7 @@ El catálogo permite:
 * Visualizar información de cada producto.
 * Organizar productos mediante categorías.
 * Seleccionar cantidades.
+* Ver la presentación de venta de cada producto.
 * Agregar productos al carrito.
 * Visualizar productos destacados.
 * Visualizar productos recomendados.
@@ -152,6 +153,17 @@ Permite:
 * Calcular el total.
 * Revisar los productos antes de confirmar el pedido.
 
+Cada producto tiene una presentación de venta configurable desde el área
+administrativa. Las opciones disponibles son:
+
+* Unidad.
+* Docena.
+* Media docena.
+* Kilogramo.
+
+El stock indica la cantidad disponible de esa presentación. Por ejemplo, un
+stock de `10` con presentación `docena` representa 10 docenas disponibles.
+
 El carrito se mantiene mediante la sesión del usuario.
 
 ---
@@ -172,6 +184,13 @@ El proceso permite:
 * Revisar un resumen.
 * Confirmar el pedido.
 * Consultar posteriormente el pedido.
+
+Al confirmar un pedido, se abre WhatsApp con el detalle para contactar al
+comercio y la pestaña original se dirige automáticamente a **Mis pedidos**.
+
+Cada pedido tiene un **ID global**, por ejemplo `ID del pedido #40`. Este
+identificador permite localizar el pedido en el sistema y no representa la
+cantidad de pedidos realizados por el cliente.
 
 Los estados actualmente contemplados son:
 
@@ -220,6 +239,8 @@ El administrador puede:
 * Eliminar productos.
 * Asignar categorías.
 * Gestionar imágenes.
+* Elegir la presentación de venta.
+* Definir el stock disponible de cada presentación.
 
 ## Pedidos
 
@@ -332,6 +353,16 @@ Los pedidos contienen información relacionada con:
 * Método de pago.
 
 La estructura SQL debe mantenerse sincronizada con el código actual del proyecto.
+
+La tabla `productos` incluye la columna `unidad_venta`, con valor por defecto
+`unidad`. Si se actualiza una base de datos existente sin volver a importar el
+archivo SQL, agregarla manualmente:
+
+```sql
+ALTER TABLE productos
+ADD COLUMN unidad_venta VARCHAR(30) NOT NULL DEFAULT 'unidad'
+AFTER stock;
+```
 
 ---
 
@@ -580,11 +611,11 @@ Si una credencial real fue expuesta, debe revocarse y reemplazarse.
 
 ## Configuración de pedidos y WhatsApp
 
-Los pedidos se guardan en MySQL y luego se prepara un mensaje para contactar al comercio por WhatsApp.
+Los pedidos se guardan en MySQL y luego se prepara un mensaje para contactar al comercio por WhatsApp. El mensaje incluye el ID global del pedido y la presentación de cada producto.
 
 No requiere dependencias externas.
 
-El número se configura en `config/whatsapp.php` usando el placeholder `WHATSAPP_NUMERO_AQUI`. Debe reemplazarse por un número internacional sin símbolos.
+El número se configura en `config/whatsapp.php` mediante la constante `WHATSAPP_NUMERO`. Debe utilizarse un número internacional sin `+`, espacios ni símbolos.
 
 ---
 

@@ -5,11 +5,34 @@ $pageCss = "admin-pedidos.css";
 require __DIR__ . '/../layouts/head.php';
 require __DIR__ . '/../layouts/header.php';
 
+$mensajeEstado = match ($_GET['error'] ?? '') {
+    'estado_igual' => 'El pedido ya se encuentra en ese estado.',
+    'estado_invalido', 'transicion_invalida' => 'No se pudo cambiar el estado del pedido.',
+    default => null,
+};
+
 ?>
 
 <body class="pagina-admin-pedidos">
 
     <main class="admin-pedidos-container">
+
+        <?php if ($mensajeEstado !== null): ?>
+
+            <div
+                class="notificacion-estado"
+                role="alert"
+                data-notificacion-estado>
+                <span><?= htmlspecialchars($mensajeEstado, ENT_QUOTES, 'UTF-8') ?></span>
+                <button
+                    type="button"
+                    aria-label="Cerrar notificación"
+                    data-cerrar-notificacion>
+                    &times;
+                </button>
+            </div>
+
+        <?php endif; ?>
 
         <header class="admin-pedidos-header">
 
@@ -138,7 +161,7 @@ require __DIR__ . '/../layouts/header.php';
                             <tr>
 
                                 <th>
-                                    Pedido
+                                    ID del pedido
                                 </th>
 
                                 <th>
@@ -497,6 +520,19 @@ require __DIR__ . '/../layouts/header.php';
 
 
     <?php require __DIR__ . '/../layouts/footer.php'; ?>
+
+    <?php if ($mensajeEstado !== null): ?>
+        <script>
+            const notificacionEstado = document.querySelector('[data-notificacion-estado]');
+            const cerrarNotificacion = document.querySelector('[data-cerrar-notificacion]');
+
+            const ocultarNotificacion = () => {
+                notificacionEstado?.remove();
+            };
+
+            cerrarNotificacion?.addEventListener('click', ocultarNotificacion);
+        </script>
+    <?php endif; ?>
 
 </body>
 

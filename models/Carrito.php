@@ -88,6 +88,8 @@ class Carrito
 
             'categoria' => $producto['categoria'] ?? '',
 
+            'unidad_venta' => $producto['unidad_venta'] ?? 'unidad',
+
             'cantidad' => $cantidad
         ];
     }

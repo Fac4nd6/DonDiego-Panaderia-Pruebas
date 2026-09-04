@@ -334,6 +334,11 @@ require __DIR__ . '/../layouts/header.php';
 
                                         data-stock="<?= (int) $producto['stock'] ?>"
 
+                                        data-unidad-venta="<?= htmlspecialchars(
+                                                                $producto['unidad_venta'] ?? 'unidad',
+                                                                ENT_QUOTES
+                                                            ) ?>"
+
                                         data-categoria="<?= htmlspecialchars(
                                                             $producto['categoria'],
                                                             ENT_QUOTES
