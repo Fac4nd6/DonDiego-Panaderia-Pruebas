@@ -51,6 +51,42 @@
         120px auto 70px;
 }
 
+.notificacion-estado {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    width: min(100%, 460px);
+    margin: 0 auto 22px;
+    padding: 12px 14px 12px 16px;
+    background: #fff7e6;
+    color: #765313;
+    border: 1px solid #f0d28f;
+    border-radius: 9px;
+    box-shadow: 0 5px 16px rgba(95, 67, 18, 0.1);
+    font-size: 0.9rem;
+}
+
+.notificacion-estado button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    background: transparent;
+    color: #765313;
+    border: 0;
+    border-radius: 50%;
+    font-size: 1.25rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.notificacion-estado button:hover {
+    background: rgba(118, 83, 19, 0.1);
+}
+
 
 /* =========================================================
    ENCABEZADO
@@ -122,6 +158,172 @@
 
     font-size:
         1rem;
+}
+
+.admin-pedidos-container .btn-agregar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 13px 22px;
+    background: var(--color-primary);
+    color: white !important;
+    border: 1px solid var(--color-primary);
+    border-radius: 10px;
+    text-decoration: none !important;
+    font-size: 0.95rem;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(179, 27, 33, 0.15);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.admin-pedidos-container .btn-agregar:hover {
+    background: var(--color-secondary);
+    border-color: var(--color-secondary);
+    color: white !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(179, 27, 33, 0.22);
+}
+
+.btn-volver-admin {
+    flex-shrink: 0;
+    min-width: 118px;
+    min-height: 46px;
+}
+
+
+/* =========================================================
+   FILTROS
+========================================================= */
+
+.admin-pedidos-filtros {
+    margin-bottom: 30px;
+    padding: 22px;
+    background: white;
+    border: 1px solid #e5e5e5;
+    border-radius: 14px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
+}
+
+.admin-pedidos-filtros form {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr 1.1fr auto;
+    align-items: end;
+    gap: 16px;
+}
+
+.filtro-campo {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.filtro-campo label,
+.clientes-busqueda label {
+    color: #444;
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+.filtro-campo input,
+.filtro-campo select,
+.clientes-busqueda input {
+    min-width: 0;
+    padding: 11px 12px;
+    background: #fff;
+    color: var(--color-dark);
+    border: 1px solid #d8d8d8;
+    border-radius: 8px;
+    font: inherit;
+}
+
+.filtro-campo input:focus,
+.filtro-campo select:focus,
+.clientes-busqueda input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(179, 27, 33, 0.1);
+}
+
+.filtros-acciones {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.filtros-acciones .btn-agregar,
+.clientes-busqueda .btn-agregar {
+    min-height: 46px;
+    padding: 11px 16px;
+}
+
+.filtros-acciones .btn-agregar {
+    min-width: 142px;
+}
+
+.btn-filtro-limpiar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 46px;
+    padding: 0 16px;
+    background: white;
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.btn-filtro-limpiar:hover {
+    background: var(--color-primary);
+    color: white;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 950px) {
+    .admin-pedidos-filtros form {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .filtros-acciones {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 520px) {
+    .admin-pedidos-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 18px;
+        margin-bottom: 25px;
+    }
+
+    .btn-volver-admin {
+        width: 100%;
+    }
+
+    .admin-pedidos-filtros {
+        padding: 16px;
+    }
+
+    .admin-pedidos-filtros form {
+        grid-template-columns: 1fr;
+    }
+
+    .filtros-acciones {
+        grid-column: auto;
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .filtros-acciones .btn-agregar {
+        width: 100%;
+    }
 }
 
 

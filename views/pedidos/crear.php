@@ -40,7 +40,8 @@ require __DIR__ . '/../layouts/header.php';
 
                 <form
                     method="POST"
-                    action="/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php">
+                    target="_blank"
+                    action="<?= url('/pedidos/crear') ?>">
 
 
                     <!-- =================================================
@@ -300,31 +301,6 @@ require __DIR__ . '/../layouts/header.php';
                             </label>
 
 
-                            <!-- MERCADO PAGO -->
-
-                            <label class="metodo-pago">
-
-                                <input
-                                    type="radio"
-                                    name="metodo_pago"
-                                    value="mercado_pago">
-
-
-                                <div>
-
-                                    <strong>
-                                        Mercado Pago
-                                    </strong>
-
-                                    <span>
-                                        Pago online.
-                                    </span>
-
-                                </div>
-
-                            </label>
-
-
                         </div>
 
                     </section>
@@ -338,7 +314,7 @@ require __DIR__ . '/../layouts/header.php';
 
 
                         <a
-                            href="/DonDiego-Panaderia-Pruebas/controllers/CarritoController.php?accion=ver"
+                            href="<?= url('/carrito') ?>"
                             class="btn-volver-carrito">
 
                             ← Volver al carrito
@@ -404,6 +380,12 @@ require __DIR__ . '/../layouts/header.php';
                                     <span>
 
                                         <?= (int) $item['cantidad'] ?>
+
+                                        <?= htmlspecialchars(
+                                            $item['unidad_venta'] ?? 'unidad',
+                                            ENT_QUOTES,
+                                            'UTF-8'
+                                        ) ?>
 
                                         ×
 
@@ -487,6 +469,14 @@ require __DIR__ . '/../layouts/header.php';
 
 
     <?php require __DIR__ . '/../layouts/footer.php'; ?>
+
+    <script>
+        window.addEventListener('storage', (evento) => {
+            if (evento.key === 'dondiego_pedido_confirmado') {
+                window.location.replace('<?= url('/pedidos') ?>');
+            }
+        });
+    </script>
 
 
 </body>

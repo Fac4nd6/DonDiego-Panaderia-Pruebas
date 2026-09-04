@@ -30,7 +30,7 @@ require __DIR__ . '/../layouts/header.php';
             </div>
 
             <a
-                href="/DonDiego-Panaderia-Pruebas/controllers/CatalogoController.php"
+                href="<?= url('/productos') ?>"
                 class="btn-volver-catalogo"
             >
                 ← Seguir comprando
@@ -61,7 +61,7 @@ require __DIR__ . '/../layouts/header.php';
                 </p>
 
                 <a
-                    href="/DonDiego-Panaderia-Pruebas/controllers/CatalogoController.php"
+                    href="<?= url('/productos') ?>"
                     class="btn-ver-catalogo"
                 >
                     Ver catálogo
@@ -94,7 +94,7 @@ require __DIR__ . '/../layouts/header.php';
                             <div>
 
                                 <span class="pedido-label">
-                                    Pedido
+                                    ID del pedido
                                 </span>
 
                                 <h2>
@@ -255,8 +255,15 @@ require __DIR__ . '/../layouts/header.php';
 
                         <div class="pedido-card-footer">
 
+                            <form method="POST" action="<?= url('/pedidos') ?>">
+                                <input type="hidden" name="accion" value="repetir">
+                                <input type="hidden" name="pedido_id" value="<?= (int) $pedido['id'] ?>">
+                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
+                                <button type="submit" class="btn-ver-pedido">Repetir pedido</button>
+                            </form>
+
                             <a
-                                href="/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=ver&id=<?= (int) $pedido['id'] ?>"
+                                href="<?= url('/pedidos/detalle?id=' . (int) $pedido['id']) ?>"
                                 class="btn-ver-pedido"
                             >
 
@@ -284,6 +291,8 @@ require __DIR__ . '/../layouts/header.php';
 
 
     <?php require __DIR__ . '/../layouts/footer.php'; ?>
+
+    
 
 </body>
 

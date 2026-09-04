@@ -1,0 +1,173 @@
+.pagina-contacto {
+    background: var(--color-background);
+}
+
+/* Mantiene el header de Contacto igual que el resto de las páginas internas. */
+.pagina-contacto .header {
+    background-color: var(--color-primary);
+    border-radius: 0 0 18px 18px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    width: 90%;
+    max-width: 100%;
+}
+
+.contacto-container {
+    min-height: 70vh;
+    padding: 130px 8% 90px;
+    box-sizing: border-box;
+}
+
+.contacto-header {
+    max-width: 850px;
+    margin: 0 auto 45px;
+    text-align: center;
+}
+
+.contacto-header h1 {
+    margin: 0 0 12px;
+    font-family: var(--font-main);
+    font-size: clamp(42px, 6vw, 68px);
+    color: var(--color-dark);
+}
+
+.contacto-header p {
+    margin: 0;
+    color: #666;
+    font-size: 17px;
+}
+
+.contacto-contenido {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 30px;
+}
+
+.contacto-informacion,
+.contacto-formulario {
+    padding: 28px;
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+.contacto-informacion h2,
+.contacto-formulario h2 {
+    margin-top: 0;
+    color: var(--color-dark);
+}
+
+.contacto-informacion p {
+    margin: 14px 0;
+    color: #555;
+}
+
+.contacto-whatsapp {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    margin-top: 12px;
+    padding: 12px 18px;
+    border-radius: 5px;
+    background: #218838;
+    color: #ffffff;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.contacto-whatsapp:hover {
+    background: #176b2b;
+    transform: translateY(-2px);
+    box-shadow: 0 7px 16px rgba(33, 136, 56, 0.2);
+}
+
+.contacto-formulario form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.contacto-formulario label {
+    margin-top: 8px;
+    font-weight: 700;
+    color: var(--color-dark);
+}
+
+.contacto-formulario input,
+.contacto-formulario textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
+    border: 1px solid #d8d8d8;
+    border-radius: 5px;
+    font: inherit;
+    color: var(--color-dark);
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.contacto-formulario input:focus,
+.contacto-formulario textarea:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(179, 27, 33, 0.08);
+}
+
+.contacto-formulario button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    margin-top: 14px;
+    padding: 12px 20px;
+    border: 0;
+    border-radius: 5px;
+    background: var(--color-primary);
+    color: #ffffff;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.contacto-formulario button:hover {
+    background: var(--color-secondary);
+    transform: translateY(-2px);
+    box-shadow: 0 7px 16px rgba(179, 27, 33, 0.18);
+}
+
+.contacto-mensaje {
+    padding: 12px;
+    border-radius: 5px;
+}
+
+.contacto-mensaje.error {
+    background: #fde2e2;
+    color: #8a1c1c;
+}
+
+.contacto-mensaje.success {
+    background: #e2f5e8;
+    color: #216b39;
+}
+
+@media (max-width: 768px) {
+    .contacto-container {
+        padding: 110px 5% 70px;
+    }
+
+    .contacto-contenido {
+        grid-template-columns: 1fr;
+    }
+
+    .contacto-informacion,
+    .contacto-formulario {
+        padding: 22px;
+    }
+
+    .contacto-formulario button {
+        width: 100%;
+    }
+}

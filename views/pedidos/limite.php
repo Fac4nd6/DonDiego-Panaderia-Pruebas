@@ -32,7 +32,7 @@ require __DIR__ . '/../layouts/head.php';
             <div class="limite-acciones">
 
                 <a
-                    href="/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=listar"
+                    href="<?= url('/pedidos') ?>"
                     class="btn-pedidos">
 
                     Ver mis pedidos
@@ -42,7 +42,7 @@ require __DIR__ . '/../layouts/head.php';
                 </a>
 
                 <a
-                    href="/DonDiego-Panaderia-Pruebas/controllers/CarritoController.php?accion=ver"
+                    href="<?= url('/carrito') ?>"
                     class="btn-carrito">
 
                     Volver al carrito

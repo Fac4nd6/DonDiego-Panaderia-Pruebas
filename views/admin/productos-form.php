@@ -43,7 +43,7 @@ $editando = !empty($producto);
 
 
             <a
-                href="ProductoController.php?accion=listar"
+                href="<?= url('/admin/productos') ?>"
                 class="btn-volver">
 
                 <i class="fa-solid fa-arrow-left"></i>
@@ -63,7 +63,7 @@ $editando = !empty($producto);
         <section class="admin-form-card">
 
             <form
-                action="ProductoController.php"
+                action="<?= url('/admin/productos') ?>"
                 method="POST"
                 enctype="multipart/form-data"
                 class="producto-form">
@@ -77,6 +77,11 @@ $editando = !empty($producto);
                     type="hidden"
                     name="accion"
                     value="<?= $editando ? 'actualizar' : 'guardar' ?>">
+
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="<?= htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
 
 
                 <?php if ($editando): ?>
@@ -228,6 +233,39 @@ $editando = !empty($producto);
                 </div>
 
 
+                <div class="form-seccion">
+
+                    <div class="form-seccion-header">
+                        <h2>Stock</h2>
+                        <p>Indicá la cantidad disponible del producto.</p>
+                    </div>
+
+                    <div class="form-grupo">
+                        <label for="stock">Cantidad disponible</label>
+                        <input
+                            type="number"
+                            id="stock"
+                            name="stock"
+                            min="0"
+                            step="1"
+                            value="<?= htmlspecialchars($producto['stock'] ?? '100') ?>"
+                            required>
+                    </div>
+
+                    <div class="form-grupo">
+                        <label for="unidad_venta">Se vende por</label>
+                        <select id="unidad_venta" name="unidad_venta" required>
+                            <?php $unidadSeleccionada = $producto['unidad_venta'] ?? 'unidad'; ?>
+                            <option value="unidad" <?= $unidadSeleccionada === 'unidad' ? 'selected' : '' ?>>Unidad</option>
+                            <option value="docena" <?= $unidadSeleccionada === 'docena' ? 'selected' : '' ?>>Docena</option>
+                            <option value="media docena" <?= $unidadSeleccionada === 'media docena' ? 'selected' : '' ?>>Media docena</option>
+                            <option value="kilogramo" <?= $unidadSeleccionada === 'kilogramo' ? 'selected' : '' ?>>Kilogramo</option>
+                        </select>
+                    </div>
+
+                </div>
+
+
 
                 <!-- =================================================
                      IMAGEN
@@ -254,7 +292,7 @@ $editando = !empty($producto);
                         <div class="imagen-actual">
 
                             <img
-                                src="/DonDiego-Panaderia-Pruebas/public/img/<?= htmlspecialchars($producto['imagen']) ?>"
+                                src="<?= url('/public/img/' . htmlspecialchars($producto['imagen'])) ?>"
                                 alt="<?= htmlspecialchars($producto['nombre']) ?>">
 
 
@@ -375,7 +413,7 @@ $editando = !empty($producto);
 
 
                     <a
-                        href="ProductoController.php?accion=listar"
+                        href="<?= url('/admin/productos') ?>"
                         class="btn-cancelar">
 
                         Cancelar
@@ -424,7 +462,7 @@ $editando = !empty($producto);
 
 
                     <form
-                        action="ProductoController.php"
+                        action="<?= url('/admin/productos') ?>"
                         method="POST"
                         onsubmit="return confirm(
                             '¿Seguro que querés eliminar este producto? Esta acción no se puede deshacer.'
@@ -442,6 +480,12 @@ $editando = !empty($producto);
                             type="hidden"
                             name="id"
                             value="<?= htmlspecialchars($producto['id']) ?>"
+                        >
+
+                        <input
+                            type="hidden"
+                            name="csrf_token"
+                            value="<?= htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8') ?>"
                         >
 
 

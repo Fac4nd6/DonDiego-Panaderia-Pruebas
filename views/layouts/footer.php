@@ -1,5 +1,8 @@
 <?php
 
+require_once __DIR__ . '/../../config/whatsapp.php';
+$footerWhatsAppUrl = crearUrlWhatsApp('Hola Don Diego, quisiera realizar una consulta.');
+
 // =========================================================
 // CONEXIÓN A LA BASE DE DATOS
 // =========================================================
@@ -70,7 +73,7 @@ try {
         <div class="footer-logo">
 
             <img
-                src="/DonDiego-Panaderia-Pruebas/public/img/logo-don2.png"
+                src="<?= url('/public/img/logo-don2.png') ?>"
                 alt="Don Diego Panadería y Confitería"
             >
 
@@ -109,20 +112,24 @@ try {
 
                 <!-- WHATSAPP -->
 
-                <a
-                    href="https://wa.me/095005706"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="WhatsApp"
-                >
+                <?php if ($footerWhatsAppUrl !== null): ?>
 
-                    <i class="fa-brands fa-whatsapp"></i>
+                    <a
+                        href="<?= htmlspecialchars($footerWhatsAppUrl, ENT_QUOTES, 'UTF-8') ?>"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="WhatsApp"
+                    >
 
-                    <span>
-                        WhatsApp
-                    </span>
+                        <i class="fa-brands fa-whatsapp"></i>
 
-                </a>
+                        <span>
+                            WhatsApp
+                        </span>
+
+                    </a>
+
+                <?php endif; ?>
 
 
                 <!-- INSTAGRAM -->
@@ -196,27 +203,21 @@ try {
             </h3>
 
             <a
-                href="/DonDiego-Panaderia-Pruebas/controllers/HomeController.php"
+                href="<?= url('/') ?>"
             >
                 Hogar
             </a>
 
             <a
-                href="/DonDiego-Panaderia-Pruebas/views/blog.php"
+                href="<?= url('/productos') ?>"
             >
-                Blog
+                Productos
             </a>
 
             <a
-                href="/DonDiego-Panaderia-Pruebas/views/contacto.php"
+                href="<?= url('/contacto') ?>"
             >
                 Contacto
-            </a>
-
-            <a
-                href="/DonDiego-Panaderia-Pruebas/views/servicios.php"
-            >
-                Servicios
             </a>
 
         </div>
@@ -250,11 +251,11 @@ try {
                             <?php if (!empty($producto['imagen'])): ?>
 
                                 <img
-                                    src="/DonDiego-Panaderia-Pruebas/public/img/<?= htmlspecialchars(
+                                    src="<?= url('/public/img/' . htmlspecialchars(
                                         $producto['imagen'],
                                         ENT_QUOTES,
                                         'UTF-8'
-                                    ) ?>"
+                                    )) ?>"
                                     alt="<?= htmlspecialchars(
                                         $producto['nombre'],
                                         ENT_QUOTES,

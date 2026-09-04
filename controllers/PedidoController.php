@@ -1,10 +1,11 @@
 <?php
 
 error_reporting(E_ALL);
-ini_set('display_errors', '1');
-ini_set('display_startup_errors', '1');
+ini_set('display_errors', '0');
+ini_set('display_startup_errors', '0');
 
-session_start();
+require_once __DIR__ . '/../config/Session.php';
+iniciar_sesion_segura();
 
 
 // =========================================================
@@ -14,7 +15,7 @@ session_start();
 if (!isset($_SESSION['usuario_id'])) {
 
     header(
-        'Location: /DonDiego-Panaderia-Pruebas/views/usuarios/login.php'
+        'Location: ' . url('/login')
     );
 
     exit;
@@ -35,6 +36,11 @@ require_once __DIR__ . '/../config/Csrf.php';
 require_once __DIR__ . '/../config/Database.php';
 require_once __DIR__ . '/../models/Pedido.php';
 require_once __DIR__ . '/../models/Carrito.php';
+require_once __DIR__ . '/../models/Producto.php';
+
+
+require_once __DIR__ . '/../config/whatsapp.php';
+require_once __DIR__ . '/../models/Usuario.php';
 
 
 // =========================================================
@@ -44,6 +50,7 @@ require_once __DIR__ . '/../models/Carrito.php';
 $pedidoModel = new Pedido($conn);
 
 $carritoModel = new Carrito();
+$productoModel = new Producto($conn);
 
 $carritoModel->inicializar();
 
@@ -63,8 +70,10 @@ $accion =
 // =========================================================
 
 if (
+    $accion === 'gestionar_pedidos' ||
     $accion === 'admin' ||
     $accion === 'actualizar_estado' ||
+    $accion === 'detalle_admin' ||
     $accion === 'ver_admin'
 ) {
 
@@ -78,10 +87,13 @@ if (
     ) {
 
         http_response_code(403);
-
-        exit(
-            'No tenés permisos para acceder a esta sección.'
-        );
+        $codigoError = 404;
+        $tituloError = 'Página no encontrada';
+        $descripcionError = 'No pudimos encontrar lo que estabas buscando.';
+        $urlVolver = url('/');
+        $textoVolver = 'Volver al inicio';
+        require __DIR__ . '/../views/errors/error.php';
+        exit;
     }
 }
 
@@ -90,18 +102,48 @@ if (
 // PANEL DE PEDIDOS - ADMIN / EMPLEADO
 // =========================================================
 
-if ($accion === 'admin') {
+if ($accion === 'gestionar_pedidos' || $accion === 'admin') {
+
+    $nombreCliente = trim($_GET['nombre_cliente'] ?? '');
+    $fechaDesde = trim($_GET['fecha_desde'] ?? '');
+    $fechaHasta = trim($_GET['fecha_hasta'] ?? '');
+    $estado = trim($_GET['estado'] ?? '');
+
+    $estadosPermitidos = [
+        '',
+        'pendiente',
+        'confirmado',
+        'en_preparacion',
+        'listo',
+        'entregado',
+        'cancelado'
+    ];
+
+    if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $fechaDesde)) {
+        $fechaDesde = '';
+    }
+
+    if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $fechaHasta)) {
+        $fechaHasta = '';
+    }
+
+    if (!in_array($estado, $estadosPermitidos, true)) {
+        $estado = '';
+    }
 
     $pedidos =
-        $pedidoModel->obtenerTodos();
-
+        $pedidoModel->obtenerTodos(
+            $nombreCliente,
+            $fechaDesde,
+            $fechaHasta,
+            $estado
+        );
 
     $esAdmin =
         $_SESSION['usuario_rol'] === 'admin';
 
     $esEmpleado =
         $_SESSION['usuario_rol'] === 'empleado';
-
 
     require __DIR__ . '/../views/admin/pedidos.php';
 
@@ -113,48 +155,42 @@ if ($accion === 'admin') {
 // VER PEDIDO - ADMIN / EMPLEADO
 // =========================================================
 
-if ($accion === 'ver_admin') {
+if ($accion === 'detalle_admin' || $accion === 'ver_admin') {
 
     $pedidoId =
         (int) ($_GET['id'] ?? 0);
 
-
     if ($pedidoId <= 0) {
 
-        exit(
-            'Pedido no válido.'
-        );
+        exit('Pedido no válido.');
     }
-
 
     $pedido =
         $pedidoModel->obtenerPorIdAdmin(
             $pedidoId
         );
 
-
     if (!$pedido) {
-
         http_response_code(404);
-
-        exit(
-            'Pedido no encontrado.'
-        );
+        $codigoError = 404;
+        $tituloError = 'Pedido no encontrado';
+        $descripcionError = 'No pudimos encontrar el pedido solicitado.';
+        $urlVolver = url('/pedidos');
+        $textoVolver = 'Volver a mis pedidos';
+        require __DIR__ . '/../views/errors/error.php';
+        exit;
     }
-
 
     $detalles =
         $pedidoModel->obtenerDetalles(
             $pedidoId
         );
 
-
     $esAdmin =
         $_SESSION['usuario_rol'] === 'admin';
 
     $esEmpleado =
         $_SESSION['usuario_rol'] === 'empleado';
-
 
     require __DIR__ . '/../views/pedidos/detalle.php';
 
@@ -169,31 +205,14 @@ if ($accion === 'ver_admin') {
 
 if ($accion === 'actualizar_estado') {
 
-
-    // -----------------------------------------------------
-    // SOLO POST
-    // -----------------------------------------------------
-
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
         http_response_code(405);
 
-        exit(
-            'Método no permitido.'
-        );
+        exit('Método no permitido.');
     }
 
-
-    // -----------------------------------------------------
-    // VERIFICAR CSRF
-    // -----------------------------------------------------
-
     verificar_csrf();
-
-
-    // -----------------------------------------------------
-    // OBTENER DATOS
-    // -----------------------------------------------------
 
     $pedidoId =
         (int) ($_POST['pedido_id'] ?? 0);
@@ -201,22 +220,27 @@ if ($accion === 'actualizar_estado') {
     $estado =
         trim($_POST['estado'] ?? '');
 
-
-    // -----------------------------------------------------
-    // VALIDAR ID
-    // -----------------------------------------------------
-
     if ($pedidoId <= 0) {
 
-        exit(
-            'Pedido no válido.'
-        );
+        exit('Pedido no válido.');
     }
 
+    $pedidoActual = $pedidoModel->obtenerPorIdAdmin($pedidoId);
+    if (!$pedidoActual) {
+        http_response_code(404);
+        $codigoError = 404;
+        $tituloError = 'Pedido no encontrado';
+        $descripcionError = 'No pudimos encontrar el pedido solicitado.';
+        $urlVolver = url('/admin/pedidos');
+        $textoVolver = 'Volver a pedidos';
+        require __DIR__ . '/../views/errors/error.php';
+        exit;
+    }
 
-    // -----------------------------------------------------
-    // ESTADOS PERMITIDOS
-    // -----------------------------------------------------
+    if ($pedidoActual['estado'] === $estado) {
+        header('Location: ' . url('/admin/pedidos?error=estado_igual'));
+        exit;
+    }
 
     $estadosPermitidos = [
 
@@ -229,7 +253,6 @@ if ($accion === 'actualizar_estado') {
 
     ];
 
-
     if (
         !in_array(
             $estado,
@@ -237,16 +260,9 @@ if ($accion === 'actualizar_estado') {
             true
         )
     ) {
-
-        exit(
-            'El estado seleccionado no es válido.'
-        );
+        header('Location: ' . url('/admin/pedidos?error=estado_invalido'));
+        exit;
     }
-
-
-    // -----------------------------------------------------
-    // ACTUALIZAR
-    // -----------------------------------------------------
 
     $resultado =
         $pedidoModel->actualizarEstado(
@@ -254,21 +270,13 @@ if ($accion === 'actualizar_estado') {
             $estado
         );
 
-
     if (!$resultado) {
-
-        exit(
-            'No se pudo actualizar el estado del pedido.'
-        );
+        header('Location: ' . url('/admin/pedidos?error=transicion_invalida'));
+        exit;
     }
 
-
-    // -----------------------------------------------------
-    // VOLVER AL PANEL
-    // -----------------------------------------------------
-
     header(
-        'Location: /DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=admin'
+        'Location: ' . url('/admin/pedidos')
     );
 
     exit;
@@ -281,59 +289,25 @@ if ($accion === 'actualizar_estado') {
 
 if ($accion === 'cancelar') {
 
-
-    // -----------------------------------------------------
-    // SOLO POST
-    // -----------------------------------------------------
-
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
         http_response_code(405);
 
-        exit(
-            'Método no permitido.'
-        );
+        exit('Método no permitido.');
     }
 
-
-    // -----------------------------------------------------
-    // VERIFICAR CSRF
-    // -----------------------------------------------------
-
     verificar_csrf();
-
-
-    // -----------------------------------------------------
-    // OBTENER ID
-    // -----------------------------------------------------
 
     $pedidoId =
         (int) ($_POST['pedido_id'] ?? 0);
 
-
-    // -----------------------------------------------------
-    // VALIDAR ID
-    // -----------------------------------------------------
-
     if ($pedidoId <= 0) {
 
-        exit(
-            'Pedido no válido.'
-        );
+        exit('Pedido no válido.');
     }
-
-
-    // -----------------------------------------------------
-    // USUARIO
-    // -----------------------------------------------------
 
     $usuarioId =
         (int) $_SESSION['usuario_id'];
-
-
-    // -----------------------------------------------------
-    // CANCELAR
-    // -----------------------------------------------------
 
     $resultado =
         $pedidoModel->cancelarPedido(
@@ -341,25 +315,77 @@ if ($accion === 'cancelar') {
             $usuarioId
         );
 
-
     if (!$resultado) {
 
-        exit(
-            'No se pudo cancelar el pedido. '
-            . 'Es posible que ya haya sido confirmado o procesado.'
-        );
+        exit('No se pudo cancelar el pedido. '
+            . 'Es posible que ya haya sido confirmado o procesado.');
     }
 
-
-    // -----------------------------------------------------
-    // VOLVER AL DETALLE
-    // -----------------------------------------------------
-
     header(
-        'Location: /DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=ver&id='
-        . $pedidoId
+        'Location: ' . url('/pedidos/detalle?id=' . $pedidoId)
     );
 
+    exit;
+}
+
+
+if ($accion === 'repetir') {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        http_response_code(405);
+        exit('Método no permitido.');
+    }
+
+    verificar_csrf();
+
+    $pedidoId = filter_var($_POST['pedido_id'] ?? null, FILTER_VALIDATE_INT);
+    $usuarioId = (int) $_SESSION['usuario_id'];
+
+    if ($pedidoId === false || $pedidoId <= 0) {
+        exit('Pedido no válido.');
+    }
+
+    $detalles = $pedidoModel->obtenerDetallesDeUsuario($pedidoId, $usuarioId);
+    if (empty($detalles)) {
+        http_response_code(404);
+        exit('El pedido no existe o no pertenece a tu cuenta.');
+    }
+
+    $agregados = [];
+    $noAgregados = [];
+
+    foreach ($detalles as $detalle) {
+        $productoId = (int) $detalle['producto_id'];
+        $cantidadOriginal = filter_var($detalle['cantidad'], FILTER_VALIDATE_INT);
+        $producto = $productoModel->obtenerPorId($productoId);
+
+        if (!$producto || (int) $producto['activo'] !== 1 || (int) $producto['stock'] <= 0) {
+            $noAgregados[] = $producto
+                ? $producto['nombre']
+                : ('Producto #' . $productoId);
+            continue;
+        }
+
+        $cantidadOriginal = max(0, (int) $cantidadOriginal);
+        $cantidadActual = (int) ($carritoModel->obtener()[$productoId]['cantidad'] ?? 0);
+        $cantidadDisponible = max(0, (int) $producto['stock'] - $cantidadActual);
+        $cantidadAgregar = min($cantidadOriginal, $cantidadDisponible);
+
+        if ($cantidadAgregar > 0) {
+            $carritoModel->agregar($producto, $cantidadAgregar);
+            $agregados[] = $producto['nombre'];
+        }
+
+        if ($cantidadAgregar < $cantidadOriginal) {
+            $noAgregados[] = $producto['nombre'];
+        }
+    }
+
+    $_SESSION['mensaje_repetir'] = empty($noAgregados)
+        ? 'Los productos del pedido fueron agregados al carrito.'
+        : 'Algunos productos no se agregaron por disponibilidad o stock: '
+        . implode(', ', $noAgregados) . '.';
+
+    header('Location: ' . url('/carrito'));
     exit;
 }
 
@@ -383,16 +409,14 @@ if ($accion === 'crear') {
         $total =
             $carritoModel->calcularTotal();
 
-
         if (empty($carrito)) {
 
             header(
-                'Location: /DonDiego-Panaderia-Pruebas/controllers/CarritoController.php?accion=ver'
+                'Location: ' . url('/carrito')
             );
 
             exit;
         }
-
 
         require __DIR__ . '/../views/pedidos/crear.php';
 
@@ -414,12 +438,10 @@ if ($accion === 'crear') {
     $carrito =
         $carritoModel->obtener();
 
-
     if (empty($carrito)) {
 
-        exit(
-            'El carrito está vacío.'
-        );
+        require __DIR__ . '/../controllers/CarritoController.php';
+        exit;
     }
 
 
@@ -441,12 +463,10 @@ if ($accion === 'crear') {
         );
 
 
-    if ($pedidosPendientes >= 3) {
 
-        exit(
-            'Ya tenés 3 pedidos pendientes. '
-            . 'Esperá a que sean confirmados o cancelá uno antes de realizar otro pedido.'
-        );
+    if ($pedidosPendientes >= 3) {
+        require __DIR__ . '/../views/pedidos/limite.php';
+        exit;
     }
 
 
@@ -482,9 +502,7 @@ if ($accion === 'crear') {
 
     if ($departamento !== 'Salto') {
 
-        exit(
-            'Don Diego solamente realiza entregas dentro del departamento de Salto.'
-        );
+        exit('Don Diego solamente realiza entregas dentro del departamento de Salto.');
     }
 
 
@@ -494,17 +512,12 @@ if ($accion === 'crear') {
 
     if ($calle === '') {
 
-        exit(
-            'La calle es obligatoria.'
-        );
+        exit('La calle es obligatoria.');
     }
-
 
     if (strlen($calle) < 2) {
 
-        exit(
-            'La calle ingresada no es válida.'
-        );
+        exit('La calle ingresada no es válida.');
     }
 
 
@@ -514,11 +527,8 @@ if ($accion === 'crear') {
 
     if ($numeroPuerta === '') {
 
-        exit(
-            'El número de puerta es obligatorio.'
-        );
+        exit('El número de puerta es obligatorio.');
     }
-
 
     if (
         !preg_match(
@@ -527,9 +537,7 @@ if ($accion === 'crear') {
         )
     ) {
 
-        exit(
-            'El número de puerta no es válido.'
-        );
+        exit('El número de puerta no es válido.');
     }
 
 
@@ -539,15 +547,11 @@ if ($accion === 'crear') {
 
     if ($fechaRecepcion === '') {
 
-        exit(
-            'La fecha de recepción es obligatoria.'
-        );
+        exit('La fecha de recepción es obligatoria.');
     }
-
 
     $hoy =
         date('Y-m-d');
-
 
     $fechaMaxima =
         date(
@@ -555,20 +559,14 @@ if ($accion === 'crear') {
             strtotime('+30 days')
         );
 
-
     if ($fechaRecepcion < $hoy) {
 
-        exit(
-            'La fecha de recepción no puede ser anterior a hoy.'
-        );
+        exit('La fecha de recepción no puede ser anterior a hoy.');
     }
-
 
     if ($fechaRecepcion > $fechaMaxima) {
 
-        exit(
-            'La fecha de recepción no puede superar los 30 días de anticipación.'
-        );
+        exit('La fecha de recepción no puede superar los 30 días de anticipación.');
     }
 
 
@@ -582,15 +580,12 @@ if ($accion === 'crear') {
             $fechaRecepcion
         );
 
-
     if (
         !$fechaValida ||
         $fechaValida->format('Y-m-d') !== $fechaRecepcion
     ) {
 
-        exit(
-            'La fecha de recepción no es válida.'
-        );
+        exit('La fecha de recepción no es válida.');
     }
 
 
@@ -609,7 +604,6 @@ if ($accion === 'crear') {
 
     ];
 
-
     if (
         !in_array(
             $franjaHoraria,
@@ -618,9 +612,7 @@ if ($accion === 'crear') {
         )
     ) {
 
-        exit(
-            'La franja horaria seleccionada no es válida.'
-        );
+        exit('La franja horaria seleccionada no es válida.');
     }
 
 
@@ -628,13 +620,7 @@ if ($accion === 'crear') {
     // VALIDAR MÉTODO DE PAGO
     // =====================================================
 
-    $metodosPermitidos = [
-
-        'efectivo',
-        'mercado_pago'
-
-    ];
-
+    $metodosPermitidos = ['efectivo'];
 
     if (
         !in_array(
@@ -644,11 +630,8 @@ if ($accion === 'crear') {
         )
     ) {
 
-        exit(
-            'El método de pago seleccionado no es válido.'
-        );
+        exit('El método de pago seleccionado no es válido.');
     }
-
 
     // =====================================================
     // CONSTRUIR DIRECCIÓN
@@ -660,7 +643,6 @@ if ($accion === 'crear') {
         . $calle
         . ' '
         . $numeroPuerta;
-
 
     if ($referencia !== '') {
 
@@ -676,105 +658,83 @@ if ($accion === 'crear') {
 
     if (strlen($direccionEntrega) > 255) {
 
-        exit(
-            'La dirección de entrega es demasiado larga.'
-        );
+        exit('La dirección de entrega es demasiado larga.');
     }
 
 
-    // =====================================================
-    // CALCULAR TOTAL
-    // =====================================================
+    $ids = [];
+    $cantidades = [];
+    foreach ($carrito as $item) {
+        $productoId = filter_var($item['id'] ?? null, FILTER_VALIDATE_INT);
+        $cantidad = filter_var($item['cantidad'] ?? null, FILTER_VALIDATE_INT);
 
-    $total =
-        $carritoModel->calcularTotal();
+        if ($productoId === false || $productoId <= 0 || $cantidad === false || $cantidad <= 0 || $cantidad > 99) {
+            exit('La cantidad o el producto del carrito no son válidos.');
+        }
 
-
-    if ($total <= 0) {
-
-        exit(
-            'El total del pedido no es válido.'
-        );
+        $ids[] = $productoId;
+        $cantidades[$productoId] = $cantidad;
     }
 
+    $productos = $pedidoModel->obtenerProductosActivos($ids);
 
-    // =====================================================
-    // CREAR PEDIDO
-    // =====================================================
+    if (count($productos) !== count(array_unique($ids))) {
+        exit('Uno de los productos ya no existe o dejó de estar disponible.');
+    }
 
-    $pedidoId =
-        $pedidoModel->crearPedido(
-            $usuarioId,
-            $fechaRecepcion,
-            $franjaHoraria,
-            $direccionEntrega,
-            $metodoPago,
-            $total
-        );
+    $detalles = [];
+    foreach ($ids as $productoId) {
+        $detalles[$productoId] = [
+            'producto_id' => $productoId,
+            'cantidad' => $cantidades[$productoId],
+            'precio_unitario' => (float) $productos[$productoId]['precio']
+        ];
+    }
 
+    $pedidoId = $pedidoModel->crearPedidoConDetalles(
+        $usuarioId,
+        $fechaRecepcion,
+        $franjaHoraria,
+        $direccionEntrega,
+        $metodoPago,
+        array_values($detalles)
+    );
 
     if (!$pedidoId) {
-
-        exit(
-            'No se pudo crear el pedido en la base de datos.'
-        );
+        $errorPedido = $pedidoModel->obtenerUltimoError();
+        exit($errorPedido !== ''
+            ? $errorPedido
+            : 'No se pudo crear el pedido en la base de datos.');
     }
 
-
-    // =====================================================
-    // GUARDAR DETALLES
-    // =====================================================
-
-    foreach ($carrito as $item) {
-
-        $productoId =
-            (int) $item['id'];
-
-        $cantidad =
-            (int) $item['cantidad'];
-
-        $precio =
-            (float) $item['precio'];
-
-        $subtotal =
-            $precio * $cantidad;
-
-
-        $resultado =
-            $pedidoModel->agregarDetalle(
-                $pedidoId,
-                $productoId,
-                $cantidad,
-                $precio,
-                $subtotal
-            );
-
-
-        if (!$resultado) {
-
-            exit(
-                'El pedido fue creado, pero ocurrió un error al guardar uno de los productos.'
-            );
-        }
+    $pedido = $pedidoModel->obtenerPorId($pedidoId, $usuarioId);
+    $usuario = (new Usuario($conn))->obtenerPorId($usuarioId);
+    if ($pedido && $usuario) {
+        // El aviso usa datos del cliente consultados desde MySQL, no del formulario.
+        $pedido['nombre_completo'] = $usuario['nombre_completo'];
     }
-
-
-    // =====================================================
-    // VACIAR CARRITO
-    // =====================================================
+    $detallesGuardados = $pedidoModel->obtenerDetalles($pedidoId);
+    $mensaje = crearMensajeWhatsApp($pedido ?: [], $detallesGuardados);
+    $whatsappUrl = crearUrlWhatsApp($mensaje);
 
     $carritoModel->vaciar();
 
+    if ($whatsappUrl === null) {
+        exit('El pedido #' . $pedidoId . ' fue creado correctamente. Configurá el número de WhatsApp para contactar al comercio.');
+    }
 
-    // =====================================================
-    // REDIRIGIR AL DETALLE
-    // =====================================================
+    $pedidosUrl = url('/pedidos');
 
-    header(
-        'Location: /DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=ver&id='
-        . $pedidoId
-    );
-
+    header('Content-Type: text/html; charset=UTF-8');
+    echo '<!doctype html><html lang="es"><head><meta charset="UTF-8"><title>Pedido confirmado</title></head><body>';
+    echo '<script>';
+    echo 'const pedidosUrl = ' . json_encode($pedidosUrl, JSON_UNESCAPED_SLASHES) . ';';
+    echo 'const whatsappUrl = ' . json_encode($whatsappUrl, JSON_UNESCAPED_SLASHES) . ';';
+    echo 'localStorage.setItem("dondiego_pedido_confirmado", Date.now().toString());';
+    echo 'if (window.opener && !window.opener.closed) { window.opener.location.href = pedidosUrl; }';
+    echo 'window.location.replace(whatsappUrl);';
+    echo '</script>';
+    echo '<p>Pedido confirmado. Abriendo WhatsApp...</p></body></html>';
     exit;
 }
 
@@ -788,12 +748,10 @@ if ($accion === 'listar') {
     $usuarioId =
         (int) $_SESSION['usuario_id'];
 
-
     $pedidos =
         $pedidoModel->obtenerPorUsuario(
             $usuarioId
         );
-
 
     require __DIR__ . '/../views/pedidos/index.php';
 
@@ -812,18 +770,13 @@ if ($accion === 'ver') {
             $_GET['id'] ?? 0
         );
 
-
     if ($pedidoId <= 0) {
 
-        exit(
-            'Pedido no válido.'
-        );
+        exit('Pedido no válido.');
     }
-
 
     $usuarioId =
         (int) $_SESSION['usuario_id'];
-
 
     $pedido =
         $pedidoModel->obtenerPorId(
@@ -831,27 +784,25 @@ if ($accion === 'ver') {
             $usuarioId
         );
 
-
     if (!$pedido) {
-
         http_response_code(404);
-
-        exit(
-            'Pedido no encontrado.'
-        );
+        $codigoError = 404;
+        $tituloError = 'Pedido no encontrado';
+        $descripcionError = 'No pudimos encontrar el pedido solicitado.';
+        $urlVolver = url('/pedidos');
+        $textoVolver = 'Volver a mis pedidos';
+        require __DIR__ . '/../views/errors/error.php';
+        exit;
     }
-
 
     $detalles =
         $pedidoModel->obtenerDetalles(
             $pedidoId
         );
 
-
     $esAdmin = false;
 
     $esEmpleado = false;
-
 
     require __DIR__ . '/../views/pedidos/detalle.php';
 

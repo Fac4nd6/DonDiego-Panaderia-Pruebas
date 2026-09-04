@@ -24,6 +24,9 @@ const detalleDescripcion =
 const detallePrecio =
     document.getElementById('detallePrecio');
 
+const detalleStock =
+    document.getElementById('detalleStock');
+
 const detalleCategoria =
     document.getElementById('detalleCategoria');
 
@@ -56,6 +59,10 @@ function abrirProducto(boton) {
 
         precio: parseFloat(boton.dataset.precio),
 
+        stock: parseInt(boton.dataset.stock, 10) || 0,
+
+        unidadVenta: boton.dataset.unidadVenta || 'unidad',
+
         categoria: boton.dataset.categoria,
 
         imagen: boton.dataset.imagen
@@ -80,6 +87,17 @@ function mostrarProducto(producto) {
     productoActual = producto;
 
     cantidadActual = 1;
+
+    if (cantidadMas) {
+        cantidadMas.disabled = productoActual.stock <= 1;
+    }
+
+    if (agregarCarrito) {
+        agregarCarrito.disabled = productoActual.stock <= 0;
+        agregarCarrito.textContent = productoActual.stock > 0
+            ? 'Agregar al carrito'
+            : 'Producto agotado';
+    }
 
 
     /* =====================================================
@@ -113,6 +131,12 @@ function mostrarProducto(producto) {
                 maximumFractionDigits: 0
             }
         );
+
+    if (detalleStock) {
+        detalleStock.textContent = productoActual.stock > 0
+            ? 'Stock disponible: ' + productoActual.stock + ' ' + productoActual.unidadVenta
+            : 'Producto agotado';
+    }
 
 
     cantidadProducto.textContent =
@@ -160,13 +184,17 @@ function abrirProductoDesdeDatos(producto) {
 
         precio: parseFloat(producto.precio),
 
+        stock: parseInt(producto.stock, 10) || 0,
+
+        unidadVenta: producto.unidad_venta || 'unidad',
+
         categoria: producto.categoria,
 
         imagen:
             producto.imagen
-                ? '/DonDiego-Panaderia-Pruebas/public/img/' +
+                ? window.APP_BASE_URL + '/public/img/' +
                   producto.imagen
-                : '/DonDiego-Panaderia-Pruebas/public/img/logo.avif'
+                : window.APP_BASE_URL + '/public/img/logo.avif'
 
     };
 
@@ -289,7 +317,11 @@ if (cantidadMas) {
         'click',
         function () {
 
-            if (cantidadActual < 99) {
+            if (
+                productoActual &&
+                cantidadActual < 99 &&
+                cantidadActual < productoActual.stock
+            ) {
 
                 cantidadActual++;
 
@@ -323,6 +355,12 @@ if (agregarCarrito) {
                     'No hay ningún producto seleccionado.'
                 );
 
+                return;
+            }
+
+            if (agregarCarrito.dataset.autenticado !== '1') {
+                window.location.href =
+                    window.APP_BASE_URL + '/login';
                 return;
             }
 
@@ -407,7 +445,7 @@ if (agregarCarrito) {
 
                 const respuesta =
                     await fetch(
-                        '/DonDiego-Panaderia-Pruebas/controllers/CarritoController.php',
+                        window.APP_BASE_URL + '/carrito',
                         {
                             method: 'POST',
 
@@ -526,7 +564,7 @@ async function actualizarContadorCarrito() {
 
         const respuesta =
             await fetch(
-                '/DonDiego-Panaderia-Pruebas/controllers/CarritoController.php?accion=ver'
+                window.APP_BASE_URL + '/carrito'
             );
 
 

@@ -1,5 +1,6 @@
 <?php
 
+require_once __DIR__ . '/../config/Url.php';
 require_once __DIR__ . '/../config/Database.php';
 require_once __DIR__ . '/../models/Producto.php';
 
@@ -42,6 +43,17 @@ if (isset($_GET['producto'])) {
 
                 break;
             }
+        }
+
+        if ($productoAbrir === null) {
+            http_response_code(404);
+            $codigoError = 404;
+            $tituloError = 'Producto no encontrado';
+            $descripcionError = 'El producto que buscás ya no está disponible.';
+            $urlVolver = url('/productos');
+            $textoVolver = 'Volver al catálogo';
+            require __DIR__ . '/../views/errors/error.php';
+            exit;
         }
     }
 }

@@ -619,9 +619,14 @@
         8px;
 }
 
+.form-accion-producto {
+    margin: 0;
+}
+
 
 .btn-editar,
-.btn-eliminar {
+.btn-eliminar,
+.btn-activar {
     display:
         flex;
 
@@ -643,6 +648,15 @@
     text-decoration:
         none !important;
 
+    border:
+        none;
+
+    cursor:
+        pointer;
+
+    font:
+        inherit;
+
     transition:
         transform 0.2s ease,
         background-color 0.2s ease;
@@ -661,6 +675,12 @@
 }
 
 
+.btn-activar {
+    background:
+        #e5f7ea;
+}
+
+
 .btn-editar:hover {
     background:
         #e2e2e2;
@@ -673,6 +693,15 @@
 .btn-eliminar:hover {
     background:
         #ffd5d5;
+
+    transform:
+        translateY(-2px);
+}
+
+
+.btn-activar:hover {
+    background:
+        #cfeeda;
 
     transform:
         translateY(-2px);
@@ -875,3 +904,171 @@
             none;
     }
 }
+
+.tabla-productos td:nth-child(4) {
+    min-width: 105px;
+}
+
+.tabla-productos td:nth-child(4) .estado {
+    white-space: nowrap;
+}
+
+```css
+/* =========================================================
+   GESTIÓN DE ROLES
+========================================================= */
+
+.roles-busqueda {
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.roles-busqueda .resumen-card {
+    width: 100%;
+}
+
+.roles-busqueda form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.roles-busqueda label {
+    display: block;
+    margin-bottom: 7px;
+    color: #444;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.roles-busqueda input,
+.roles-busqueda select {
+    width: 100%;
+    padding: 12px 14px;
+    background: #fff;
+    color: #222;
+    border: 1px solid #d8d8d8;
+    border-radius: 8px;
+    outline: none;
+}
+
+.roles-busqueda input:focus,
+.roles-busqueda select:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(179, 27, 33, 0.1);
+}
+
+.roles-busqueda .btn-agregar {
+    width: fit-content;
+    margin-top: 4px;
+}
+
+.roles-usuario {
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.roles-usuario .resumen-card {
+    width: 100%;
+}
+
+.roles-usuario p {
+    margin-bottom: 8px;
+    color: #555;
+}
+
+.roles-usuario form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.clientes-busqueda .resumen-card {
+    width: 100%;
+}
+
+.clientes-busqueda form {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.clientes-busqueda-controles {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.clientes-busqueda-controles input {
+    flex: 1;
+    min-width: 0;
+    padding: 12px 14px;
+    border: 1px solid #d8d8d8;
+    border-radius: 8px;
+    font: inherit;
+}
+
+.clientes-busqueda-controles select {
+    min-height: 46px;
+    padding: 0 12px;
+    background: #fff;
+    color: var(--color-dark);
+    border: 1px solid #d8d8d8;
+    border-radius: 8px;
+    font: inherit;
+}
+
+.clientes-busqueda-controles select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(179, 27, 33, 0.1);
+}
+
+.cliente-comercio {
+    display: block;
+    margin-top: 4px;
+    color: #777;
+    font-size: 0.82rem;
+}
+
+.tabla-clientes {
+    min-width: 650px;
+}
+
+.tabla-clientes td:nth-child(2),
+.tabla-clientes td:nth-child(3) {
+    white-space: nowrap;
+}
+
+@media (max-width: 700px) {
+    .clientes-busqueda-controles {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .clientes-busqueda-controles .btn-agregar {
+        width: 100%;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE ROLES
+========================================================= */
+
+@media (max-width: 700px) {
+
+    .roles-busqueda,
+    .roles-usuario {
+        max-width: 100%;
+    }
+
+    .roles-busqueda .btn-agregar,
+    .roles-usuario .btn-agregar {
+        width: 100%;
+    }
+}
+```

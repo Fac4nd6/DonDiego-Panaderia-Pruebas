@@ -197,7 +197,7 @@ require __DIR__ . '/../layouts/header.php';
                     </p>
 
                     <a
-                        href="/DonDiego-Panaderia-Pruebas/controllers/CatalogoController.php">
+                        href="<?= url('/productos') ?>">
                         Ver todos los productos
                     </a>
 
@@ -224,14 +224,11 @@ require __DIR__ . '/../layouts/header.php';
                      */
 
                         if (!empty($producto['imagen'])) {
-
-                            $imagenProducto =
-                                "/DonDiego-Panaderia-Pruebas/public/img/"
-                                . $producto['imagen'];
+                            $imagenProducto = url(
+                                '/public/img/' . $producto['imagen']
+                            );
                         } else {
-
-                            $imagenProducto =
-                                "/DonDiego-Panaderia-Pruebas/public/img/logo.avif";
+                            $imagenProducto = url('/public/img/logo.avif');
                         }
 
                         ?>
@@ -303,6 +300,10 @@ require __DIR__ . '/../layouts/header.php';
 
                                     </strong>
 
+                                    <span>
+                                        <?= (int) $producto['stock'] > 0 ? 'Disponible' : 'Agotado' ?>
+                                    </span>
+
 
                                     <!--
                                 BOTÓN DETALLE
@@ -331,6 +332,13 @@ require __DIR__ . '/../layouts/header.php';
 
                                         data-precio="<?= (float) $producto['precio'] ?>"
 
+                                        data-stock="<?= (int) $producto['stock'] ?>"
+
+                                        data-unidad-venta="<?= htmlspecialchars(
+                                                                $producto['unidad_venta'] ?? 'unidad',
+                                                                ENT_QUOTES
+                                                            ) ?>"
+
                                         data-categoria="<?= htmlspecialchars(
                                                             $producto['categoria'],
                                                             ENT_QUOTES
@@ -341,7 +349,7 @@ require __DIR__ . '/../layouts/header.php';
                                                             ENT_QUOTES
                                                         ) ?>">
 
-                                        Ver producto
+                                        <?= (int) $producto['stock'] > 0 ? 'Ver producto' : 'Agotado' ?>
 
                                     </button>
 
@@ -519,6 +527,11 @@ require __DIR__ . '/../layouts/header.php';
                         id="detallePrecio">
                     </strong>
 
+                    <span
+                        class="detalle-stock"
+                        id="detalleStock">
+                    </span>
+
 
                     <!-- =================================================
                      CANTIDAD
@@ -569,7 +582,8 @@ require __DIR__ . '/../layouts/header.php';
                     <button
                         type="button"
                         class="detalle-carrito"
-                        id="agregarCarrito">
+                        id="agregarCarrito"
+                        data-autenticado="<?= isset($_SESSION['usuario_id']) ? '1' : '0' ?>">
                         Agregar al carrito
                     </button>
 
@@ -593,7 +607,7 @@ require __DIR__ . '/../layouts/header.php';
      JAVASCRIPT DEL DETALLE
 ========================================================= -->
 
-    <script src="/DonDiego-Panaderia-Pruebas/public/js/catalogo.js"></script>
+    <script src="<?= url('/public/js/catalogo.js') ?>"></script>
 
     <?php if ($productoAbrir): ?>
 

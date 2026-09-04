@@ -3,11 +3,12 @@
 $pageCss = "detalle-pedido.css";
 
 require __DIR__ . '/../layouts/head.php';
-require __DIR__ . '/../layouts/header.php';
 
 ?>
 
 <body class="pagina-pedido-detalle">
+
+    <?php require __DIR__ . '/../layouts/header.php'; ?>
 
     <main class="detalle-pedido-container">
 
@@ -30,7 +31,7 @@ require __DIR__ . '/../layouts/header.php';
 
                 <?php else: ?>
 
-                    PEDIDO CONFIRMADO
+                    PEDIDO REGISTRADO
 
                 <?php endif; ?>
 
@@ -39,7 +40,7 @@ require __DIR__ . '/../layouts/header.php';
 
             <h1>
 
-                Pedido #<?= (int) $pedido['id'] ?>
+                ID del pedido #<?= (int) $pedido['id'] ?>
 
             </h1>
 
@@ -343,11 +344,11 @@ require __DIR__ . '/../layouts/header.php';
                                     <?php if (!empty($item['imagen'])): ?>
 
                                         <img
-                                            src="/DonDiego-Panaderia-Pruebas/public/img/productos/<?= htmlspecialchars(
+                                            src="<?= url('/public/img/' . htmlspecialchars(
                                                                                                         $item['imagen'],
                                                                                                         ENT_QUOTES,
                                                                                                         'UTF-8'
-                                                                                                    ) ?>"
+                                                                                                    )) ?>"
                                             alt="<?= htmlspecialchars(
                                                         $item['nombre'],
                                                         ENT_QUOTES,
@@ -372,6 +373,12 @@ require __DIR__ . '/../layouts/header.php';
                                         <span>
 
                                             <?= (int) $item['cantidad'] ?>
+
+                                            <?= htmlspecialchars(
+                                                $item['unidad_venta'] ?? 'unidad',
+                                                ENT_QUOTES,
+                                                'UTF-8'
+                                            ) ?>
 
                                             ×
 
@@ -454,7 +461,7 @@ require __DIR__ . '/../layouts/header.php';
                 <?php if (!empty($esAdmin) || !empty($esEmpleado)): ?>
 
                     <a
-                        href="/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=admin"
+                        href="<?= url('/admin/pedidos') ?>"
                         class="btn-volver-pedidos">
 
                         ← Volver a pedidos
@@ -465,7 +472,7 @@ require __DIR__ . '/../layouts/header.php';
                     <div class="detalle-acciones-derecha">
 
                         <a
-                            href="/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=admin"
+                            href="<?= url('/admin/pedidos') ?>"
                             class="btn-seguir-comprando">
 
                             Gestión de pedidos
@@ -479,7 +486,7 @@ require __DIR__ . '/../layouts/header.php';
 
 
                     <a
-                        href="/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=listar"
+                        href="<?= url('/pedidos') ?>"
                         class="btn-volver-pedidos">
 
                         ← Mis pedidos
@@ -489,12 +496,19 @@ require __DIR__ . '/../layouts/header.php';
 
                     <div class="detalle-acciones-derecha">
 
+                        <form method="POST" action="<?= url('/pedidos') ?>">
+                            <input type="hidden" name="accion" value="repetir">
+                            <input type="hidden" name="pedido_id" value="<?= (int) $pedido['id'] ?>">
+                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
+                            <button type="submit" class="btn-seguir-comprando">Repetir pedido</button>
+                        </form>
+
 
                         <?php if ($pedido['estado'] === 'pendiente'): ?>
 
                             <form
                                 method="POST"
-                                action="/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php"
+                                action="<?= url('/pedidos') ?>"
                                 class="form-cancelar-pedido"
                                 onsubmit="return confirm('¿Estás seguro de que querés cancelar este pedido?');">
 
@@ -533,7 +547,7 @@ require __DIR__ . '/../layouts/header.php';
 
 
                         <a
-                            href="/DonDiego-Panaderia-Pruebas/controllers/CatalogoController.php"
+                            href="<?= url('/productos') ?>"
                             class="btn-seguir-comprando">
 
                             Seguir comprando

@@ -22,6 +22,8 @@ class Producto
                 p.nombre,
                 p.descripcion,
                 p.precio,
+                p.stock,
+                p.unidad_venta,
                 p.imagen,
                 p.activo,
                 p.categoria_id,
@@ -54,6 +56,8 @@ class Producto
                 p.nombre,
                 p.descripcion,
                 p.precio,
+                p.stock,
+                p.unidad_venta,
                 p.imagen,
                 p.activo,
                 p.categoria_id,
@@ -92,6 +96,8 @@ class Producto
                 p.nombre,
                 p.descripcion,
                 p.precio,
+                p.stock,
+                p.unidad_venta,
                 p.imagen,
                 p.activo,
                 c.nombre AS categoria
@@ -164,6 +170,8 @@ class Producto
                 p.nombre,
                 p.descripcion,
                 p.precio,
+                p.stock,
+                p.unidad_venta,
                 p.imagen,
                 p.activo,
                 c.nombre AS categoria
@@ -200,8 +208,14 @@ class Producto
         $descripcion,
         $precio,
         $categoriaId,
-        $imagen
+        $imagen,
+        $unidadVenta,
+        $stock
     ) {
+        if (!is_int($stock) || $stock < 0) {
+            return false;
+        }
+
         $sql = "
             INSERT INTO productos
             (
@@ -210,9 +224,11 @@ class Producto
                 precio,
                 categoria_id,
                 imagen,
+                unidad_venta,
+                stock,
                 activo
             )
-            VALUES (?, ?, ?, ?, ?, 1)
+            VALUES (?, ?, ?, ?, ?, ?, ?, 1)
         ";
 
         $stmt = $this->db->prepare($sql);
@@ -222,12 +238,14 @@ class Producto
         }
 
         $stmt->bind_param(
-            "ssdis",
+            "ssdissi",
             $nombre,
             $descripcion,
             $precio,
             $categoriaId,
-            $imagen
+            $imagen,
+            $unidadVenta,
+            $stock
         );
 
         return $stmt->execute();
@@ -245,8 +263,14 @@ class Producto
         $precio,
         $categoriaId,
         $imagen,
-        $activo
+        $unidadVenta,
+        $activo,
+        $stock
     ) {
+        if (!is_int($stock) || $stock < 0) {
+            return false;
+        }
+
         $sql = "
             UPDATE productos
             SET
@@ -255,7 +279,9 @@ class Producto
                 precio = ?,
                 categoria_id = ?,
                 imagen = ?,
-                activo = ?
+                unidad_venta = ?,
+                activo = ?,
+                stock = ?
             WHERE id = ?
         ";
 
@@ -266,13 +292,15 @@ class Producto
         }
 
         $stmt->bind_param(
-            "ssdisii",
+            "ssdissiii",
             $nombre,
             $descripcion,
             $precio,
             $categoriaId,
             $imagen,
+            $unidadVenta,
             $activo,
+            $stock,
             $id
         );
 
@@ -362,6 +390,8 @@ class Producto
             p.nombre,
             p.descripcion,
             p.precio,
+            p.stock,
+            p.unidad_venta,
             p.imagen,
             p.categoria_id,
             c.nombre AS categoria
@@ -398,6 +428,7 @@ class Producto
             id,
             nombre,
             imagen,
+            stock,
             created_at
         FROM productos
         WHERE activo = 1

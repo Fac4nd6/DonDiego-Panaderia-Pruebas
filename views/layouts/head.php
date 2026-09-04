@@ -1,3 +1,4 @@
+<?php require_once __DIR__ . '/../../config/Url.php'; ?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -11,6 +12,8 @@
 
     <title>Don Diego</title>
 
+    <link rel="icon" href="<?= url('/public/img/logo-don2.png') ?>" type="image/x-icon">
+
 
     <!-- =====================================================
          CSRF TOKEN
@@ -18,9 +21,8 @@
 
     <?php
 
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
-    }
+    require_once __DIR__ . '/../../config/Session.php';
+    iniciar_sesion_segura();
 
     if (empty($_SESSION['csrf_token'])) {
 
@@ -57,11 +59,11 @@
 
     <link
         rel="stylesheet"
-        href="/DonDiego-Panaderia-Pruebas/public/css/variable.css">
+        href="<?= url('/public/css/variable.css') ?>">
 
     <link
         rel="stylesheet"
-        href="/DonDiego-Panaderia-Pruebas/public/css/style.css">
+        href="<?= url('/public/css/style.css') ?>">
 
 
     <!-- =====================================================
@@ -70,7 +72,7 @@
 
     <link
         rel="stylesheet"
-        href="/DonDiego-Panaderia-Pruebas/public/css/header.css">
+        href="<?= url('/public/css/header.css') ?>">
 
 
     <!-- =====================================================
@@ -91,7 +93,7 @@
 
             <link
                 rel="stylesheet"
-                href="/DonDiego-Panaderia-Pruebas/public/css/<?= htmlspecialchars($css) ?>">
+                href="<?= url('/public/css/' . htmlspecialchars($css)) ?>">
 
         <?php endforeach; ?>
 
@@ -104,7 +106,11 @@
 
     <link
         rel="stylesheet"
-        href="/DonDiego-Panaderia-Pruebas/public/css/footer.css">
+        href="<?= url('/public/css/footer.css') ?>">
+
+    <link
+        rel="stylesheet"
+        href="<?= url('/public/css/responsive.css') ?>">
 
 
     <!-- =====================================================
@@ -114,5 +120,11 @@
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <script
+        src="<?= url('/public/js/mobile.js') ?>"
+        defer></script>
+
+    <script>window.APP_BASE_URL = <?= json_encode(url('')) ?>;</script>
 
 </head>

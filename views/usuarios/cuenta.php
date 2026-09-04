@@ -8,8 +8,11 @@ $pageCss = "cuenta.css";
 ========================================================= */
 
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+    require_once '../../config/Session.php';
+    iniciar_sesion_segura();
 }
+
+require_once '../../config/Csrf.php';
 
 
 /* =========================================================
@@ -18,7 +21,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 if (!isset($_SESSION['usuario_id'])) {
 
-    header('Location: login.php');
+    header('Location: ' . url('/login'));
 
     exit;
 }
@@ -50,7 +53,7 @@ if (!$usuario) {
 
     session_destroy();
 
-    header('Location: login.php');
+    header('Location: ' . url('/login'));
 
     exit;
 }
@@ -94,6 +97,8 @@ $mensaje = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
+    verificar_csrf();
+
     $nombre =
         trim($_POST['nombre'] ?? '');
 
@@ -115,21 +120,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $error =
             'El nombre completo es obligatorio.';
-
-    } elseif (empty($nombreComercio)) {
-
-        $error =
-            'El nombre del comercio es obligatorio.';
-
-    } elseif (empty($telefono)) {
-
-        $error =
-            'El teléfono es obligatorio.';
-
-    } elseif (empty($direccion)) {
-
-        $error =
-            'La dirección es obligatoria.';
 
     } else {
 
@@ -289,8 +279,10 @@ require '../layouts/head.php';
                     class="account-form"
                 >
 
-
-                    <!-- NOMBRE -->
+                    <input
+                        type="hidden"
+                        name="csrf_token"
+                        value="<?= htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
 
                     <div class="account-input">
 
@@ -349,7 +341,7 @@ require '../layouts/head.php';
 
                         <label for="nombre_comercio">
 
-                            Nombre del comercio
+                            Datos de comercio (opcional)
 
                         </label>
 
@@ -363,7 +355,6 @@ require '../layouts/head.php';
                                 ENT_QUOTES,
                                 'UTF-8'
                             ) ?>"
-                            required
                         >
 
                     </div>
@@ -375,7 +366,7 @@ require '../layouts/head.php';
 
                         <label for="telefono">
 
-                            Teléfono
+                            Teléfono (opcional)
 
                         </label>
 
@@ -389,7 +380,6 @@ require '../layouts/head.php';
                                 ENT_QUOTES,
                                 'UTF-8'
                             ) ?>"
-                            required
                         >
 
                     </div>
@@ -401,7 +391,7 @@ require '../layouts/head.php';
 
                         <label for="direccion">
 
-                            Dirección del comercio
+                            Dirección del comercio (opcional)
 
                         </label>
 
@@ -415,7 +405,6 @@ require '../layouts/head.php';
                                 ENT_QUOTES,
                                 'UTF-8'
                             ) ?>"
-                            required
                         >
 
                     </div>
@@ -474,7 +463,7 @@ require '../layouts/head.php';
                 <!-- CARRITO -->
 
                 <a
-                    href="/DonDiego-Panaderia-Pruebas/views/carrito/index.php"
+                    href="<?= url('/carrito') ?>"
                     class="account-option"
                 >
 
@@ -504,7 +493,7 @@ require '../layouts/head.php';
                 <!-- PEDIDOS -->
 
                 <a
-                    href="/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=listar"
+                    href="<?= url('/pedidos') ?>"
                     class="account-option"
                 >
 
@@ -531,6 +520,30 @@ require '../layouts/head.php';
                 </a>
 
 
+                <!-- VOLVER -->
+
+                <a
+                    href="<?= url('/') ?>"
+                    class="account-option"
+                >
+
+                    <i class="fa-solid fa-arrow-left"></i>
+
+                    <div>
+
+                        <strong>
+                            Volver al inicio
+                        </strong>
+
+                    </div>
+
+                    <i
+                        class="fa-solid fa-chevron-right arrow"
+                    ></i>
+
+                </a>
+
+
             </section>
 
 
@@ -541,18 +554,21 @@ require '../layouts/head.php';
             <footer class="account-footer">
 
 
-                <a
-                    href="/DonDiego-Panaderia-Pruebas/controllers/logout.php"
-                    class="logout-button"
-                >
+                <form method="POST" action="<?= url('/logout') ?>">
+
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
+
+                    <button type="submit" class="logout-button">
 
                     <i
                         class="fa-solid fa-right-from-bracket"
                     ></i>
 
-                    Cerrar sesión
+                        Cerrar sesión
 
-                </a>
+                    </button>
+
+                </form>
 
 
             </footer>

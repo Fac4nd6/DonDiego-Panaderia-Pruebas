@@ -7,7 +7,8 @@ require '../../config/Csrf.php';
 require '../../config/Brevo.php';
 
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+    require_once '../../config/Session.php';
+    iniciar_sesion_segura();
 }
 
 $mensaje = '';
@@ -278,8 +279,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                 ================================== */
 
                                 $enlaceVerificacion =
-                                    'http://localhost/DonDiego-Panaderia-Pruebas/views/usuarios/verificar_email.php?token='
-                                    . urlencode($token);
+                                    url_absoluta('/verificar-email?token=' . urlencode($token));
 
 
                                 /* =================================
@@ -481,7 +481,7 @@ require '../layouts/head.php';
                 <div class="logo-badge">
 
                     <img
-                        src="../../public/img/logo.avif"
+                        src="<?= url('/public/img/logo.avif') ?>"
                         alt="Logo de Don Diego"
                     >
 
@@ -561,7 +561,7 @@ require '../layouts/head.php';
                 ================================================== -->
 
                 <form
-                    action="reenviar_verificacion.php"
+                                    action="<?= url('/reenviar-verificacion') ?>"
                     method="POST"
                     class="login-form"
                 >
@@ -632,7 +632,7 @@ require '../layouts/head.php';
 
                         ¿Todavía no tenés una cuenta?
 
-                        <a href="register.php">
+                        <a href="<?= url('/registro') ?>">
                             Crear cuenta
                         </a>
 
@@ -640,7 +640,7 @@ require '../layouts/head.php';
 
                     <p>
 
-                        <a href="login.php">
+                        <a href="<?= url('/login') ?>">
                             Volver al inicio de sesión
                         </a>
 

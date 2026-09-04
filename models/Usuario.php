@@ -41,10 +41,8 @@ class Usuario
         $stmt = $this->db->prepare($sql);
 
         if (!$stmt) {
-            die(
-                "Error en obtenerPorId: "
-                . $this->db->error
-            );
+            die("Error en obtenerPorId: "
+                . $this->db->error);
         }
 
         $stmt->bind_param("i", $id);
@@ -87,10 +85,8 @@ class Usuario
         $stmt = $this->db->prepare($sql);
 
         if (!$stmt) {
-            die(
-                "Error en obtenerPorEmail: "
-                . $this->db->error
-            );
+            die("Error en obtenerPorEmail: "
+                . $this->db->error);
         }
 
         $stmt->bind_param("s", $email);
@@ -132,10 +128,8 @@ class Usuario
         $stmt = $this->db->prepare($sql);
 
         if (!$stmt) {
-            die(
-                "Error en actualizarDatos: "
-                . $this->db->error
-            );
+            die("Error en actualizarDatos: "
+                . $this->db->error);
         }
 
         $stmt->bind_param(
@@ -176,10 +170,8 @@ class Usuario
         $stmt = $this->db->prepare($sql);
 
         if (!$stmt) {
-            die(
-                "Error en actualizarContacto: "
-                . $this->db->error
-            );
+            die("Error en actualizarContacto: "
+                . $this->db->error);
         }
 
         $stmt->bind_param(
@@ -213,10 +205,8 @@ class Usuario
         $stmt = $this->db->prepare($sql);
 
         if (!$stmt) {
-            die(
-                "Error en existeEmail: "
-                . $this->db->error
-            );
+            die("Error en existeEmail: "
+                . $this->db->error);
         }
 
         $stmt->bind_param("s", $email);
@@ -257,12 +247,106 @@ class Usuario
         $resultado = $this->db->query($sql);
 
         if (!$resultado) {
-            die(
-                "Error en obtenerTodos: "
-                . $this->db->error
-            );
+            die("Error en obtenerTodos: "
+                . $this->db->error);
         }
 
         return $resultado->fetch_all(MYSQLI_ASSOC);
     }
+
+    public function obtenerClientes($busqueda = '', $rol = 'cliente')
+    {
+        $sql = "
+            SELECT
+                id,
+                nombre_completo,
+                nombre_comercio,
+                email,
+                telefono,
+                rol,
+                fecha_registro
+            FROM usuarios
+            WHERE rol IN ('cliente', 'empleado', 'admin')
+        ";
+
+        $parametroBusqueda = '%' . $busqueda . '%';
+        $parametros = [];
+        $tipos = '';
+
+        if ($rol !== 'todos') {
+            $sql .= ' AND rol = ?';
+            $parametros[] = $rol;
+            $tipos .= 's';
+        }
+
+        if ($busqueda !== '') {
+            $sql .= "
+                AND (
+                    nombre_completo LIKE ?
+                    OR email LIKE ?
+                    OR telefono LIKE ?
+                )
+            ";
+            $parametros[] = $parametroBusqueda;
+            $parametros[] = $parametroBusqueda;
+            $parametros[] = $parametroBusqueda;
+            $tipos .= 'sss';
+        }
+
+        $sql .= ' ORDER BY nombre_completo ASC';
+
+        $stmt = $this->db->prepare($sql);
+
+        if (!$stmt) {
+            return [];
+        }
+
+        if (!empty($parametros)) {
+            $stmt->bind_param($tipos, ...$parametros);
+        }
+
+        if (!$stmt->execute()) {
+            $stmt->close();
+            return [];
+        }
+
+        $clientes = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+
+        return $clientes;
+    }
+
+    // =========================================================
+    // ACTUALIZAR ROL
+    // =========================================================
+
+    public function actualizarRol($id, $rol)
+    {
+        $sql = "
+            UPDATE usuarios
+            SET rol = ?
+            WHERE id = ?
+        ";
+
+        $stmt = $this->db->prepare($sql);
+
+        if (!$stmt) {
+            die("Error en actualizarRol: "
+                . $this->db->error);
+        }
+
+        $stmt->bind_param(
+            "si",
+            $rol,
+            $id
+        );
+
+        $resultado = $stmt->execute();
+
+        $stmt->close();
+
+        return $resultado;
+    }
+
+    
 }
