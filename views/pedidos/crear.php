@@ -41,7 +41,7 @@ require __DIR__ . '/../layouts/header.php';
                 <form
                     method="POST"
                     target="_blank"
-                    action="/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php">
+                    action="<?= url('/pedidos/crear') ?>">
 
 
                     <!-- =================================================
@@ -314,7 +314,7 @@ require __DIR__ . '/../layouts/header.php';
 
 
                         <a
-                            href="/DonDiego-Panaderia-Pruebas/controllers/CarritoController.php?accion=ver"
+                            href="<?= url('/carrito') ?>"
                             class="btn-volver-carrito">
 
                             ← Volver al carrito

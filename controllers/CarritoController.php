@@ -11,7 +11,7 @@ iniciar_sesion_segura();
 if (!isset($_SESSION['usuario_id'])) {
 
     header(
-        'Location: /DonDiego-Panaderia-Pruebas/views/usuarios/login.php'
+        'Location: ' . url('/login')
     );
 
     exit;
@@ -174,7 +174,7 @@ if ($accion === 'agregar') {
 
 
     header(
-        'Location: /DonDiego-Panaderia-Pruebas/controllers/CarritoController.php?accion=ver'
+        'Location: ' . url('/carrito')
     );
 
     exit;
@@ -240,7 +240,7 @@ if ($accion === 'actualizar') {
 
 
     header(
-        'Location: /DonDiego-Panaderia-Pruebas/controllers/CarritoController.php?accion=ver'
+        'Location: ' . url('/carrito')
     );
 
     exit;
@@ -285,7 +285,7 @@ if ($accion === 'eliminar') {
 
 
     header(
-        'Location: /DonDiego-Panaderia-Pruebas/controllers/CarritoController.php?accion=ver'
+        'Location: ' . url('/carrito')
     );
 
     exit;
@@ -316,7 +316,7 @@ if ($accion === 'vaciar') {
 
 
     header(
-        'Location: /DonDiego-Panaderia-Pruebas/controllers/CarritoController.php?accion=ver'
+        'Location: ' . url('/carrito')
     );
 
     exit;

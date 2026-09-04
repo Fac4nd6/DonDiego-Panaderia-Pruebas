@@ -1,0 +1,34 @@
+RewriteEngine On
+Options -MultiViews
+
+# Los archivos internos solo se ejecutan mediante las rutas publicas.
+RewriteCond %{THE_REQUEST} \s/+[^?\ ]*/(?:controllers|views|config|models)/ [NC]
+RewriteRule ^ - [R=404,L]
+
+# Paginas publicas.
+RewriteRule ^$ controllers/HomeController.php [END]
+RewriteRule ^productos/?$ controllers/CatalogoController.php [END,QSA]
+RewriteRule ^contacto/?$ views/contacto.php [END]
+
+# Cuenta y autenticacion.
+RewriteRule ^login/?$ views/usuarios/login.php [END,QSA]
+RewriteRule ^registro/?$ views/usuarios/register.php [END,QSA]
+RewriteRule ^verificar-email/?$ views/usuarios/verificar_email.php [END,QSA]
+RewriteRule ^verificacion/?$ views/usuarios/verificar_aviso.php [END,QSA]
+RewriteRule ^reenviar-verificacion/?$ views/usuarios/reenviar_verificacion.php [END,QSA]
+RewriteRule ^cuenta/?$ views/usuarios/cuenta.php [END,QSA]
+RewriteRule ^logout/?$ controllers/logout.php [END,QSA]
+
+# Carrito y pedidos del cliente.
+RewriteRule ^carrito/?$ controllers/CarritoController.php [END,QSA]
+RewriteRule ^pedidos/?$ controllers/PedidoController.php [END,QSA]
+RewriteRule ^pedidos/crear/?$ controllers/PedidoController.php?accion=crear [END,QSA]
+RewriteRule ^pedidos/detalle/?$ controllers/PedidoController.php?accion=ver [END,QSA]
+
+# Administracion.
+RewriteRule ^admin/productos/?$ controllers/ProductoController.php [END,QSA]
+RewriteRule ^admin/productos/(crear|editar)/?$ controllers/ProductoController.php?accion=$1 [END,QSA]
+RewriteRule ^admin/clientes/?$ controllers/ProductoController.php?accion=clientes [END,QSA]
+RewriteRule ^admin/roles/?$ controllers/ProductoController.php?accion=roles [END,QSA]
+RewriteRule ^admin/pedidos/?$ controllers/PedidoController.php?accion=gestionar_pedidos [END,QSA]
+RewriteRule ^admin/pedidos/detalle/?$ controllers/PedidoController.php?accion=detalle_admin [END,QSA]

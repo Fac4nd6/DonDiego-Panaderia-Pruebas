@@ -21,12 +21,12 @@ if (isset($_SESSION['carrito'])) {
         <!-- LOGO -->
 
         <a
-            href="/DonDiego-Panaderia-Pruebas/controllers/HomeController.php"
+            href="<?= url('/') ?>"
             class="logo"
         >
 
             <img
-                src="/DonDiego-Panaderia-Pruebas/public/img/logo.avif"
+                src="<?= url('/public/img/logo.avif') ?>"
                 alt="Don Diego"
             >
 
@@ -51,21 +51,21 @@ if (isset($_SESSION['carrito'])) {
             <div class="nav-links">
 
             <a
-                href="/DonDiego-Panaderia-Pruebas/controllers/HomeController.php"
+                href="<?= url('/') ?>"
             >
                 Hogar
             </a>
 
 
             <a
-                href="/DonDiego-Panaderia-Pruebas/controllers/CatalogoController.php"
+                href="<?= url('/productos') ?>"
             >
                 Productos
             </a>
 
 
             <a
-                href="/DonDiego-Panaderia-Pruebas/views/contacto.php"
+                href="<?= url('/contacto') ?>"
             >
                 Contacto
             </a>
@@ -83,7 +83,7 @@ if (isset($_SESSION['carrito'])) {
             <?php if (isset($_SESSION['usuario_id'])): ?>
 
                 <a
-                    href="/DonDiego-Panaderia-Pruebas/views/usuarios/cuenta.php"
+                    href="<?= url('/cuenta') ?>"
                     class="login-button"
                 >
 
@@ -96,7 +96,7 @@ if (isset($_SESSION['carrito'])) {
             <?php else: ?>
 
                 <a
-                    href="/DonDiego-Panaderia-Pruebas/views/usuarios/login.php"
+                    href="<?= url('/login') ?>"
                     class="login-button"
                 >
 
@@ -110,7 +110,7 @@ if (isset($_SESSION['carrito'])) {
             <!-- CARRITO -->
 
             <a
-                href="/DonDiego-Panaderia-Pruebas/controllers/CarritoController.php?accion=ver"
+                href="<?= url('/carrito') ?>"
                 class="cart-button"
                 aria-label="Carrito"
             >
@@ -129,7 +129,7 @@ if (isset($_SESSION['carrito'])) {
             <?php if (isset($_SESSION['usuario_id'])): ?>
 
                 <a
-                    href="/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=listar"
+                    href="<?= url('/pedidos') ?>"
                     class="nav-button"
                 >
                     Mis pedidos
@@ -150,7 +150,7 @@ if (isset($_SESSION['carrito'])) {
             ): ?>
 
                 <a
-                    href="/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=admin"
+                    href="<?= url('/admin/pedidos') ?>"
                     class="nav-button"
                 >
 
@@ -171,7 +171,7 @@ if (isset($_SESSION['carrito'])) {
             ): ?>
 
                 <a
-                    href="/DonDiego-Panaderia-Pruebas/controllers/ProductoController.php?accion=listar"
+                    href="<?= url('/admin/productos') ?>"
                     class="nav-button"
                 >
 

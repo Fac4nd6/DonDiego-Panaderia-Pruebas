@@ -233,7 +233,7 @@ require '../layouts/head.php';
                 <div class="logo-badge">
 
                     <img
-                        src="../../public/img/logo.avif"
+                        src="<?= url('/public/img/logo.avif') ?>"
                         alt="Logo de Don Diego"
                     >
 
@@ -288,7 +288,7 @@ require '../layouts/head.php';
 
 
                     <a
-                        href="login.php"
+                        href="<?= url('/login') ?>"
                         class="btn-submit"
                         style="
                             display:block;
@@ -347,7 +347,7 @@ require '../layouts/head.php';
 
 
                         <a
-                            href="reenviar_verificacion.php"
+                            href="<?= url('/reenviar-verificacion') ?>"
                             class="btn-submit"
                             style="
                                 display:block;
@@ -376,7 +376,7 @@ require '../layouts/head.php';
 
 
                         <a
-                            href="reenviar_verificacion.php"
+                            href="<?= url('/reenviar-verificacion') ?>"
                             class="btn-submit"
                             style="
                                 display:block;
@@ -395,7 +395,7 @@ require '../layouts/head.php';
 
                         <p>
 
-                            <a href="login.php">
+                            <a href="<?= url('/login') ?>">
                                 Volver al inicio de sesión
                             </a>
 

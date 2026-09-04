@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/Url.php';
+
 function iniciar_sesion_segura()
 {
     if (session_status() !== PHP_SESSION_NONE) {

@@ -34,19 +34,25 @@ require __DIR__ . '/../layouts/head.php';
             <div class="admin-header-botones">
 
                 <a
-                    href="/DonDiego-Panaderia-Pruebas/controllers/ProductoController.php?accion=crear"
+                    href="<?= url('/admin/productos/crear') ?>"
                     class="btn-agregar">
                     + Agregar producto
                 </a>
 
                 <a
-                    href="/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=admin"
+                    href="<?= url('/admin/pedidos') ?>"
                     class="btn-agregar">
                     + Ver pedidos
                 </a>
 
                 <a
-                    href="/DonDiego-Panaderia-Pruebas/controllers/ProductoController.php?accion=roles"
+                    href="<?= url('/admin/clientes') ?>"
+                    class="btn-agregar">
+                    Clientes
+                </a>
+
+                <a
+                    href="<?= url('/admin/roles') ?>"
                     class="btn-agregar">
                     + Asignar roles
                 </a>
@@ -92,7 +98,7 @@ require __DIR__ . '/../layouts/head.php';
                     </p>
 
                     <a
-                        href="/DonDiego-Panaderia-Pruebas/controllers/ProductoController.php?accion=crear"
+                        href="<?= url('/admin/productos/crear') ?>"
                         class="btn-agregar">
                         + Agregar primer producto
                     </a>
@@ -128,7 +134,7 @@ require __DIR__ . '/../layouts/head.php';
                                             <?php if (!empty($producto['imagen'])): ?>
 
                                                 <img
-                                                    src="/DonDiego-Panaderia-Pruebas/public/img/<?= htmlspecialchars($producto['imagen']) ?>"
+                                                    src="<?= url('/public/img/' . htmlspecialchars($producto['imagen'])) ?>"
                                                     alt="<?= htmlspecialchars($producto['nombre']) ?>"
                                                     class="producto-admin-imagen">
 
@@ -209,7 +215,7 @@ require __DIR__ . '/../layouts/head.php';
                                         <div class="acciones-producto">
 
                                             <a
-                                                href="/DonDiego-Panaderia-Pruebas/controllers/ProductoController.php?accion=editar&id=<?= $producto['id'] ?>"
+                                                href="<?= url('/admin/productos/editar?id=' . (int) $producto['id']) ?>"
                                                 class="btn-editar"
                                                 title="Editar producto">
                                                 ✏️
@@ -218,23 +224,39 @@ require __DIR__ . '/../layouts/head.php';
 
                                             <?php if ($producto['activo'] == 1): ?>
 
-                                                <a
-                                                    href="/DonDiego-Panaderia-Pruebas/controllers/ProductoController.php?accion=desactivar&id=<?= $producto['id'] ?>"
-                                                    class="btn-eliminar"
-                                                    title="Desactivar producto"
-                                                    onclick="return confirm('¿Seguro que querés desactivar este producto?');">
+                                                <form
+                                                    method="POST"
+                                                    action="<?= url('/admin/productos') ?>"
+                                                    class="form-accion-producto"
+                                                    onsubmit="return confirm('¿Seguro que querés desactivar este producto?');">
+                                                    <input type="hidden" name="accion" value="desactivar">
+                                                    <input type="hidden" name="id" value="<?= (int) $producto['id'] ?>">
+                                                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
+                                                    <button
+                                                        type="submit"
+                                                        class="btn-eliminar"
+                                                        title="Desactivar producto">
                                                     🗑️
-                                                </a>
+                                                    </button>
+                                                </form>
 
                                             <?php else: ?>
 
-                                                <a
-                                                    href="/DonDiego-Panaderia-Pruebas/controllers/ProductoController.php?accion=activar&id=<?= $producto['id'] ?>"
-                                                    class="btn-activar"
-                                                    title="Activar producto"
-                                                    onclick="return confirm('¿Querés volver a activar este producto?');">
+                                                <form
+                                                    method="POST"
+                                                    action="<?= url('/admin/productos') ?>"
+                                                    class="form-accion-producto"
+                                                    onsubmit="return confirm('¿Querés volver a activar este producto?');">
+                                                    <input type="hidden" name="accion" value="activar">
+                                                    <input type="hidden" name="id" value="<?= (int) $producto['id'] ?>">
+                                                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
+                                                    <button
+                                                        type="submit"
+                                                        class="btn-activar"
+                                                        title="Activar producto">
                                                     🔄
-                                                </a>
+                                                    </button>
+                                                </form>
 
                                             <?php endif; ?>
                                         </div>

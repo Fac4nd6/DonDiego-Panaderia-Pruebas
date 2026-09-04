@@ -4,7 +4,7 @@ $pageCss = 'error.css';
 $codigoError = (int) ($codigoError ?? 404);
 $tituloError = $tituloError ?? 'Página no encontrada';
 $descripcionError = $descripcionError ?? 'No pudimos encontrar lo que estabas buscando.';
-$urlVolver = $urlVolver ?? '/DonDiego-Panaderia-Pruebas/controllers/HomeController.php';
+$urlVolver = $urlVolver ?? url('/');
 $textoVolver = $textoVolver ?? 'Volver al inicio';
 
 require __DIR__ . '/../layouts/head.php';

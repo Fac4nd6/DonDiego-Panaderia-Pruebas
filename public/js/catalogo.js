@@ -188,9 +188,9 @@ function abrirProductoDesdeDatos(producto) {
 
         imagen:
             producto.imagen
-                ? '/DonDiego-Panaderia-Pruebas/public/img/' +
+                ? window.APP_BASE_URL + '/public/img/' +
                   producto.imagen
-                : '/DonDiego-Panaderia-Pruebas/public/img/logo.avif'
+                : window.APP_BASE_URL + '/public/img/logo.avif'
 
     };
 
@@ -354,6 +354,12 @@ if (agregarCarrito) {
                 return;
             }
 
+            if (agregarCarrito.dataset.autenticado !== '1') {
+                window.location.href =
+                    window.APP_BASE_URL + '/login';
+                return;
+            }
+
 
             /* -------------------------------------------------
                DESACTIVAR BOTÓN
@@ -435,7 +441,7 @@ if (agregarCarrito) {
 
                 const respuesta =
                     await fetch(
-                        '/DonDiego-Panaderia-Pruebas/controllers/CarritoController.php',
+                        window.APP_BASE_URL + '/carrito',
                         {
                             method: 'POST',
 
@@ -554,7 +560,7 @@ async function actualizarContadorCarrito() {
 
         const respuesta =
             await fetch(
-                '/DonDiego-Panaderia-Pruebas/controllers/CarritoController.php?accion=ver'
+                window.APP_BASE_URL + '/carrito'
             );
 
 

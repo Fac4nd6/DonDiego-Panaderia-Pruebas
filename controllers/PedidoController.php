@@ -15,7 +15,7 @@ iniciar_sesion_segura();
 if (!isset($_SESSION['usuario_id'])) {
 
     header(
-        'Location: /DonDiego-Panaderia-Pruebas/views/usuarios/login.php'
+        'Location: ' . url('/login')
     );
 
     exit;
@@ -70,8 +70,10 @@ $accion =
 // =========================================================
 
 if (
+    $accion === 'gestionar_pedidos' ||
     $accion === 'admin' ||
     $accion === 'actualizar_estado' ||
+    $accion === 'detalle_admin' ||
     $accion === 'ver_admin'
 ) {
 
@@ -88,7 +90,7 @@ if (
         $codigoError = 404;
         $tituloError = 'Página no encontrada';
         $descripcionError = 'No pudimos encontrar lo que estabas buscando.';
-        $urlVolver = '/DonDiego-Panaderia-Pruebas/controllers/HomeController.php';
+        $urlVolver = url('/');
         $textoVolver = 'Volver al inicio';
         require __DIR__ . '/../views/errors/error.php';
         exit;
@@ -100,10 +102,42 @@ if (
 // PANEL DE PEDIDOS - ADMIN / EMPLEADO
 // =========================================================
 
-if ($accion === 'admin') {
+if ($accion === 'gestionar_pedidos' || $accion === 'admin') {
+
+    $nombreCliente = trim($_GET['nombre_cliente'] ?? '');
+    $fechaDesde = trim($_GET['fecha_desde'] ?? '');
+    $fechaHasta = trim($_GET['fecha_hasta'] ?? '');
+    $estado = trim($_GET['estado'] ?? '');
+
+    $estadosPermitidos = [
+        '',
+        'pendiente',
+        'confirmado',
+        'en_preparacion',
+        'listo',
+        'entregado',
+        'cancelado'
+    ];
+
+    if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $fechaDesde)) {
+        $fechaDesde = '';
+    }
+
+    if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $fechaHasta)) {
+        $fechaHasta = '';
+    }
+
+    if (!in_array($estado, $estadosPermitidos, true)) {
+        $estado = '';
+    }
 
     $pedidos =
-        $pedidoModel->obtenerTodos();
+        $pedidoModel->obtenerTodos(
+            $nombreCliente,
+            $fechaDesde,
+            $fechaHasta,
+            $estado
+        );
 
     $esAdmin =
         $_SESSION['usuario_rol'] === 'admin';
@@ -121,7 +155,7 @@ if ($accion === 'admin') {
 // VER PEDIDO - ADMIN / EMPLEADO
 // =========================================================
 
-if ($accion === 'ver_admin') {
+if ($accion === 'detalle_admin' || $accion === 'ver_admin') {
 
     $pedidoId =
         (int) ($_GET['id'] ?? 0);
@@ -141,7 +175,7 @@ if ($accion === 'ver_admin') {
         $codigoError = 404;
         $tituloError = 'Pedido no encontrado';
         $descripcionError = 'No pudimos encontrar el pedido solicitado.';
-        $urlVolver = '/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=listar';
+        $urlVolver = url('/pedidos');
         $textoVolver = 'Volver a mis pedidos';
         require __DIR__ . '/../views/errors/error.php';
         exit;
@@ -197,7 +231,7 @@ if ($accion === 'actualizar_estado') {
         $codigoError = 404;
         $tituloError = 'Pedido no encontrado';
         $descripcionError = 'No pudimos encontrar el pedido solicitado.';
-        $urlVolver = '/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=admin';
+        $urlVolver = url('/admin/pedidos');
         $textoVolver = 'Volver a pedidos';
         require __DIR__ . '/../views/errors/error.php';
         exit;
@@ -241,7 +275,7 @@ if ($accion === 'actualizar_estado') {
     }
 
     header(
-        'Location: /DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=admin'
+        'Location: ' . url('/admin/pedidos')
     );
 
     exit;
@@ -287,8 +321,7 @@ if ($accion === 'cancelar') {
     }
 
     header(
-        'Location: /DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=ver&id='
-            . $pedidoId
+        'Location: ' . url('/pedidos/detalle?id=' . $pedidoId)
     );
 
     exit;
@@ -351,7 +384,7 @@ if ($accion === 'repetir') {
         : 'Algunos productos no se agregaron por disponibilidad o stock: '
         . implode(', ', $noAgregados) . '.';
 
-    header('Location: /DonDiego-Panaderia-Pruebas/controllers/CarritoController.php?accion=ver');
+    header('Location: ' . url('/carrito'));
     exit;
 }
 
@@ -378,7 +411,7 @@ if ($accion === 'crear') {
         if (empty($carrito)) {
 
             header(
-                'Location: /DonDiego-Panaderia-Pruebas/controllers/CarritoController.php?accion=ver'
+                'Location: ' . url('/carrito')
             );
 
             exit;
@@ -744,7 +777,7 @@ if ($accion === 'ver') {
         $codigoError = 404;
         $tituloError = 'Pedido no encontrado';
         $descripcionError = 'No pudimos encontrar el pedido solicitado.';
-        $urlVolver = '/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=listar';
+        $urlVolver = url('/pedidos');
         $textoVolver = 'Volver a mis pedidos';
         require __DIR__ . '/../views/errors/error.php';
         exit;

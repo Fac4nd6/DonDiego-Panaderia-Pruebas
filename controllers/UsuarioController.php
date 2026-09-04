@@ -392,7 +392,7 @@ class UsuarioController
 
 
         header(
-            'Location: ../controllers/HomeController.php'
+            'Location: ' . url('/')
         );
 
         exit;

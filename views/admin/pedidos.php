@@ -48,7 +48,61 @@ require __DIR__ . '/../layouts/header.php';
 
             </div>
 
+            <a
+                href="<?= url('/admin/productos') ?>"
+                class="btn-agregar btn-volver-admin">
+                Volver
+            </a>
+
         </header>
+
+        <section class="admin-pedidos-filtros">
+
+            <form method="GET" action="<?= url('/admin/pedidos') ?>">
+
+                <input type="hidden" name="accion" value="gestionar_pedidos">
+
+                <div class="filtro-campo">
+                    <label for="nombre_cliente">Cliente</label>
+                    <input
+                        type="search"
+                        id="nombre_cliente"
+                        name="nombre_cliente"
+                        value="<?= htmlspecialchars($nombreCliente, ENT_QUOTES, 'UTF-8') ?>"
+                        placeholder="Nombre del cliente">
+                </div>
+
+                <div class="filtro-campo">
+                    <label for="fecha_desde">Fecha desde</label>
+                    <input type="date" id="fecha_desde" name="fecha_desde" value="<?= htmlspecialchars($fechaDesde, ENT_QUOTES, 'UTF-8') ?>">
+                </div>
+
+                <div class="filtro-campo">
+                    <label for="fecha_hasta">Fecha hasta</label>
+                    <input type="date" id="fecha_hasta" name="fecha_hasta" value="<?= htmlspecialchars($fechaHasta, ENT_QUOTES, 'UTF-8') ?>">
+                </div>
+
+                <div class="filtro-campo">
+                    <label for="estado">Estado</label>
+                    <select id="estado" name="estado">
+                        <option value="">Todos</option>
+                        <option value="pendiente" <?= $estado === 'pendiente' ? 'selected' : '' ?>>Pendiente</option>
+                        <option value="confirmado" <?= $estado === 'confirmado' ? 'selected' : '' ?>>Confirmado</option>
+                        <option value="en_preparacion" <?= $estado === 'en_preparacion' ? 'selected' : '' ?>>En preparación</option>
+                        <option value="listo" <?= $estado === 'listo' ? 'selected' : '' ?>>Listo</option>
+                        <option value="entregado" <?= $estado === 'entregado' ? 'selected' : '' ?>>Entregado</option>
+                        <option value="cancelado" <?= $estado === 'cancelado' ? 'selected' : '' ?>>Cancelado</option>
+                    </select>
+                </div>
+
+                <div class="filtros-acciones">
+                    <button type="submit" class="btn-agregar">Aplicar filtros</button>
+                    <a href="<?= url('/admin/pedidos') ?>" class="btn-filtro-limpiar">Limpiar</a>
+                </div>
+
+            </form>
+
+        </section>
 
 
         <?php if (empty($pedidos)): ?>
@@ -326,7 +380,7 @@ require __DIR__ . '/../layouts/header.php';
 
                                         <form
                                             method="POST"
-                                            action="/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php"
+                                            action="<?= url('/admin/pedidos') ?>"
                                             class="form-estado">
 
                                             <input
@@ -417,7 +471,7 @@ require __DIR__ . '/../layouts/header.php';
                                     <td>
 
                                         <a
-                                            href="/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=ver_admin&id=<?= (int) $pedido['id'] ?>"
+                                            href="<?= url('/admin/pedidos/detalle?id=' . (int) $pedido['id']) ?>"
                                             class="btn-ver-pedido">
                                             Ver
                                         </a>

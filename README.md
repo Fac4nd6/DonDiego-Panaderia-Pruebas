@@ -293,10 +293,10 @@ Ejemplo de configuración:
 ```text
 config/
 ├── Brevo.php
-└── Brevo.ejemplo.php
+└── Brevo.example.php
 ```
 
-`Brevo.ejemplo.php` sirve como referencia para configurar el servicio.
+`Brevo.example.php` sirve como referencia para configurar el servicio.
 
 `Brevo.php` debe mantenerse fuera del repositorio cuando contiene credenciales reales.
 
@@ -356,12 +356,12 @@ La estructura SQL debe mantenerse sincronizada con el código actual del proyect
 # 📁 Estructura del proyecto
 
 ```text
-DonDiego-Panaderia-Pruebas/
+DonDiego-Panaderia/
 │
 ├── README.md
 │
 ├── config/
-│   ├── Brevo.ejemplo.php
+│   ├── Brevo.example.php
 │   ├── Brevo.php
 │   ├── Csrf.php
 │   ├── Database.php
@@ -468,7 +468,7 @@ git clone URL_DEL_REPOSITORIO
 Entrar al proyecto:
 
 ```bash
-cd DonDiego-Panaderia-Pruebas
+cd DonDiego-Panaderia
 ```
 
 ---
@@ -540,7 +540,7 @@ Para producción se debe utilizar un usuario específico para la aplicación, co
 Crear una copia de:
 
 ```text
-config/Brevo.ejemplo.php
+config/Brevo.example.php
 ```
 
 y utilizarla como:
@@ -593,7 +593,7 @@ El número se configura en `config/whatsapp.php` usando el placeholder `WHATSAPP
 Con Apache y MySQL funcionando, acceder desde:
 
 ```text
-http://localhost/DonDiego-Panaderia-Pruebas/
+http://localhost/<carpeta-del-proyecto>/
 ```
 
 ---
@@ -605,7 +605,7 @@ Durante el desarrollo local se utiliza `localhost`.
 Por ejemplo:
 
 ```text
-http://localhost/DonDiego-Panaderia-Pruebas/
+http://localhost/<carpeta-del-proyecto>/
 ```
 
 `localhost` hace referencia al propio dispositivo.
