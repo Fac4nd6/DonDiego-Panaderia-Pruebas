@@ -11,10 +11,7 @@ require __DIR__ . '/../layouts/head.php';
 require __DIR__ . '/../layouts/header.php';
 
 
-// =========================================================
 // CSRF
-// =========================================================
-
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
@@ -29,10 +26,7 @@ $csrfToken = $_SESSION['csrf_token'];
 <main class="admin-productos-container">
 
 
-    <!-- =====================================================
-         ENCABEZADO
-    ====================================================== -->
-
+    <!-- ENCABEZADO -->
     <section class="admin-header">
 
         <div>
@@ -67,10 +61,7 @@ $csrfToken = $_SESSION['csrf_token'];
     </section>
 
 
-    <!-- =====================================================
-         BUSCAR USUARIO
-    ====================================================== -->
-
+    <!-- BUSCAR USUARIO -->
     <section class="admin-resumen roles-busqueda">
 
         <div class="resumen-card">
@@ -131,10 +122,7 @@ $csrfToken = $_SESSION['csrf_token'];
     </section>
 
 
-    <!-- =====================================================
-         USUARIO ENCONTRADO
-    ====================================================== -->
-
+    <!-- USUARIO ENCONTRADO -->
     <?php if (isset($usuario) && is_array($usuario)): ?>
 
         <section class="admin-resumen roles-usuario">

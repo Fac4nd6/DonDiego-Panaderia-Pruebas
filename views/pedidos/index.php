@@ -11,10 +11,7 @@ require __DIR__ . '/../layouts/header.php';
 
     <main class="pedidos-container">
 
-        <!-- =====================================================
-             ENCABEZADO
-        ====================================================== -->
-
+        <!-- ENCABEZADO -->
         <header class="pedidos-header">
 
             <div>
@@ -39,10 +36,7 @@ require __DIR__ . '/../layouts/header.php';
         </header>
 
 
-        <!-- =====================================================
-             SIN PEDIDOS
-        ====================================================== -->
-
+        <!-- SIN PEDIDOS -->
         <?php if (empty($pedidos)): ?>
 
             <section class="pedidos-vacio">
@@ -73,10 +67,7 @@ require __DIR__ . '/../layouts/header.php';
         <?php else: ?>
 
 
-            <!-- =================================================
-                 LISTA DE PEDIDOS
-            ================================================== -->
-
+            <!-- LISTA DE PEDIDOS -->
             <section class="pedidos-lista">
 
 
@@ -85,10 +76,7 @@ require __DIR__ . '/../layouts/header.php';
                     <article class="pedido-card">
 
 
-                        <!-- =================================================
-                             CABECERA DEL PEDIDO
-                        ================================================== -->
-
+                        <!-- CABECERA DEL PEDIDO -->
                         <div class="pedido-card-header">
 
                             <div>
@@ -131,10 +119,7 @@ require __DIR__ . '/../layouts/header.php';
                         </div>
 
 
-                        <!-- =================================================
-                             INFORMACIÓN
-                        ================================================== -->
-
+                        <!-- INFORMACIÓN -->
                         <div class="pedido-info">
 
 
@@ -228,10 +213,7 @@ require __DIR__ . '/../layouts/header.php';
                         </div>
 
 
-                        <!-- =================================================
-                             DIRECCIÓN
-                        ================================================== -->
-
+                        <!-- DIRECCIÓN -->
                         <div class="pedido-direccion">
 
                             <i class="fa-solid fa-location-dot"></i>
@@ -249,10 +231,7 @@ require __DIR__ . '/../layouts/header.php';
                         </div>
 
 
-                        <!-- =================================================
-                             VER DETALLE
-                        ================================================== -->
-
+                        <!-- VER DETALLE -->
                         <div class="pedido-card-footer">
 
                             <form method="POST" action="<?= url('/pedidos') ?>">

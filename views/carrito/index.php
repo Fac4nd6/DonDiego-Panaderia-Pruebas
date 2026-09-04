@@ -32,10 +32,7 @@ require __DIR__ . '/../layouts/header.php';
 
         <?php if (empty($carrito)): ?>
 
-            <!-- =====================================================
-                 CARRITO VACÍO
-            ====================================================== -->
-
+            <!-- CARRITO VACÍO -->
             <section class="carrito-vacio">
 
                 <div class="carrito-vacio-icono">
@@ -62,17 +59,11 @@ require __DIR__ . '/../layouts/header.php';
         <?php else: ?>
 
 
-            <!-- =================================================
-                 CONTENIDO DEL CARRITO
-            ================================================== -->
-
+            <!-- CONTENIDO DEL CARRITO -->
             <section class="carrito-contenido">
 
 
-                <!-- =================================================
-                     PRODUCTOS
-                ================================================== -->
-
+                <!-- PRODUCTOS -->
                 <div class="carrito-productos">
 
 
@@ -110,10 +101,7 @@ require __DIR__ . '/../layouts/header.php';
                             </div>
 
 
-                            <!-- =================================================
-                                 INFORMACIÓN
-                            ================================================== -->
-
+                            <!-- INFORMACIÓN -->
                             <div class="carrito-item-info">
 
                                 <h2>
@@ -143,10 +131,7 @@ require __DIR__ . '/../layouts/header.php';
                                 </p>
 
 
-                                <!-- =================================================
-                                     ACTUALIZAR CANTIDAD
-                                ================================================== -->
-
+                                <!-- ACTUALIZAR CANTIDAD -->
                                 <form
                                     method="POST"
                                     action="<?= url('/carrito') ?>"
@@ -193,10 +178,7 @@ require __DIR__ . '/../layouts/header.php';
                                 </form>
 
 
-                                <!-- =================================================
-                                     ELIMINAR
-                                ================================================== -->
-
+                                <!-- ELIMINAR -->
                                 <form
                                     method="POST"
                                     action="<?= url('/carrito') ?>">
@@ -233,10 +215,7 @@ require __DIR__ . '/../layouts/header.php';
                             </div>
 
 
-                            <!-- =================================================
-                                 SUBTOTAL
-                            ================================================== -->
-
+                            <!-- SUBTOTAL -->
                             <div class="carrito-item-subtotal">
 
                                 <span>
@@ -265,10 +244,7 @@ require __DIR__ . '/../layouts/header.php';
                 </div>
 
 
-                <!-- =================================================
-                     RESUMEN
-                ================================================== -->
-
+                <!-- RESUMEN -->
                 <aside class="carrito-resumen">
 
                     <h2>

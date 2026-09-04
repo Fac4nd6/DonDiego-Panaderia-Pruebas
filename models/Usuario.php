@@ -5,20 +5,14 @@ class Usuario
     private $db;
 
 
-    // =========================================================
     // CONSTRUCTOR
-    // =========================================================
-
     public function __construct($db)
     {
         $this->db = $db;
     }
 
 
-    // =========================================================
     // OBTENER USUARIO POR ID
-    // =========================================================
-
     public function obtenerPorId($id)
     {
         $sql = "
@@ -59,10 +53,7 @@ class Usuario
     }
 
 
-    // =========================================================
     // OBTENER USUARIO POR EMAIL
-    // =========================================================
-
     public function obtenerPorEmail($email)
     {
         $sql = "
@@ -103,10 +94,7 @@ class Usuario
     }
 
 
-    // =========================================================
     // ACTUALIZAR DATOS DEL USUARIO
-    // =========================================================
-
     public function actualizarDatos(
         $id,
         $nombreCompleto,
@@ -149,10 +137,7 @@ class Usuario
     }
 
 
-    // =========================================================
     // ACTUALIZAR DATOS DE CONTACTO
-    // =========================================================
-
     public function actualizarContacto(
         $id,
         $telefono,
@@ -189,10 +174,7 @@ class Usuario
     }
 
 
-    // =========================================================
     // COMPROBAR SI EXISTE EMAIL
-    // =========================================================
-
     public function existeEmail($email)
     {
         $sql = "
@@ -223,10 +205,7 @@ class Usuario
     }
 
 
-    // =========================================================
     // OBTENER TODOS LOS USUARIOS
-    // =========================================================
-
     public function obtenerTodos()
     {
         $sql = "
@@ -316,10 +295,7 @@ class Usuario
         return $clientes;
     }
 
-    // =========================================================
     // ACTUALIZAR ROL
-    // =========================================================
-
     public function actualizarRol($id, $rol)
     {
         $sql = "

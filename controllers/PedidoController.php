@@ -8,10 +8,7 @@ require_once __DIR__ . '/../config/Session.php';
 iniciar_sesion_segura();
 
 
-// =========================================================
 // COMPROBAR SESIÓN
-// =========================================================
-
 if (!isset($_SESSION['usuario_id'])) {
 
     header(
@@ -22,17 +19,11 @@ if (!isset($_SESSION['usuario_id'])) {
 }
 
 
-// =========================================================
 // CONFIGURACIÓN CSRF
-// =========================================================
-
 require_once __DIR__ . '/../config/Csrf.php';
 
 
-// =========================================================
 // MODELOS
-// =========================================================
-
 require_once __DIR__ . '/../config/Database.php';
 require_once __DIR__ . '/../models/Pedido.php';
 require_once __DIR__ . '/../models/Carrito.php';
@@ -43,10 +34,7 @@ require_once __DIR__ . '/../config/whatsapp.php';
 require_once __DIR__ . '/../models/Usuario.php';
 
 
-// =========================================================
 // INSTANCIAR MODELOS
-// =========================================================
-
 $pedidoModel = new Pedido($conn);
 
 $carritoModel = new Carrito();
@@ -55,20 +43,14 @@ $productoModel = new Producto($conn);
 $carritoModel->inicializar();
 
 
-// =========================================================
 // OBTENER ACCIÓN
-// =========================================================
-
 $accion =
     $_POST['accion']
     ?? $_GET['accion']
     ?? 'listar';
 
 
-// =========================================================
 // COMPROBAR ROL DE ADMIN / EMPLEADO
-// =========================================================
-
 if (
     $accion === 'gestionar_pedidos' ||
     $accion === 'admin' ||
@@ -98,10 +80,7 @@ if (
 }
 
 
-// =========================================================
 // PANEL DE PEDIDOS - ADMIN / EMPLEADO
-// =========================================================
-
 if ($accion === 'gestionar_pedidos' || $accion === 'admin') {
 
     $nombreCliente = trim($_GET['nombre_cliente'] ?? '');
@@ -151,10 +130,7 @@ if ($accion === 'gestionar_pedidos' || $accion === 'admin') {
 }
 
 
-// =========================================================
 // VER PEDIDO - ADMIN / EMPLEADO
-// =========================================================
-
 if ($accion === 'detalle_admin' || $accion === 'ver_admin') {
 
     $pedidoId =
@@ -198,11 +174,8 @@ if ($accion === 'detalle_admin' || $accion === 'ver_admin') {
 }
 
 
-// =========================================================
 // ACTUALIZAR ESTADO DEL PEDIDO
 // ADMIN / EMPLEADO
-// =========================================================
-
 if ($accion === 'actualizar_estado') {
 
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -283,10 +256,7 @@ if ($accion === 'actualizar_estado') {
 }
 
 
-// =========================================================
 // CANCELAR PEDIDO
-// =========================================================
-
 if ($accion === 'cancelar') {
 
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -390,17 +360,11 @@ if ($accion === 'repetir') {
 }
 
 
-// =========================================================
 // CREAR PEDIDO
-// =========================================================
-
 if ($accion === 'crear') {
 
 
-    // -----------------------------------------------------
     // MOSTRAR FORMULARIO
-    // -----------------------------------------------------
-
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
         $carrito =
@@ -424,17 +388,11 @@ if ($accion === 'crear') {
     }
 
 
-    // -----------------------------------------------------
     // VERIFICAR CSRF
-    // -----------------------------------------------------
-
     verificar_csrf();
 
 
-    // -----------------------------------------------------
     // OBTENER CARRITO
-    // -----------------------------------------------------
-
     $carrito =
         $carritoModel->obtener();
 
@@ -445,18 +403,12 @@ if ($accion === 'crear') {
     }
 
 
-    // -----------------------------------------------------
     // USUARIO
-    // -----------------------------------------------------
-
     $usuarioId =
         (int) $_SESSION['usuario_id'];
 
 
-    // -----------------------------------------------------
     // COMPROBAR PEDIDOS PENDIENTES
-    // -----------------------------------------------------
-
     $pedidosPendientes =
         $pedidoModel->cantidadPendientes(
             $usuarioId
@@ -470,10 +422,7 @@ if ($accion === 'crear') {
     }
 
 
-    // -----------------------------------------------------
     // DATOS DEL FORMULARIO
-    // -----------------------------------------------------
-
     $departamento =
         trim($_POST['departamento'] ?? '');
 
@@ -496,20 +445,14 @@ if ($accion === 'crear') {
         trim($_POST['metodo_pago'] ?? '');
 
 
-    // =====================================================
     // VALIDAR DEPARTAMENTO
-    // =====================================================
-
     if ($departamento !== 'Salto') {
 
         exit('Don Diego solamente realiza entregas dentro del departamento de Salto.');
     }
 
 
-    // =====================================================
     // VALIDAR CALLE
-    // =====================================================
-
     if ($calle === '') {
 
         exit('La calle es obligatoria.');
@@ -521,10 +464,7 @@ if ($accion === 'crear') {
     }
 
 
-    // =====================================================
     // VALIDAR NÚMERO DE PUERTA
-    // =====================================================
-
     if ($numeroPuerta === '') {
 
         exit('El número de puerta es obligatorio.');
@@ -541,10 +481,7 @@ if ($accion === 'crear') {
     }
 
 
-    // =====================================================
     // VALIDAR FECHA
-    // =====================================================
-
     if ($fechaRecepcion === '') {
 
         exit('La fecha de recepción es obligatoria.');
@@ -570,10 +507,7 @@ if ($accion === 'crear') {
     }
 
 
-    // =====================================================
     // COMPROBAR FECHA REAL
-    // =====================================================
-
     $fechaValida =
         DateTime::createFromFormat(
             'Y-m-d',
@@ -589,10 +523,7 @@ if ($accion === 'crear') {
     }
 
 
-    // =====================================================
     // VALIDAR FRANJA HORARIA
-    // =====================================================
-
     $franjasPermitidas = [
 
         '08:00 - 10:00',
@@ -616,10 +547,7 @@ if ($accion === 'crear') {
     }
 
 
-    // =====================================================
     // VALIDAR MÉTODO DE PAGO
-    // =====================================================
-
     $metodosPermitidos = ['efectivo'];
 
     if (
@@ -633,10 +561,7 @@ if ($accion === 'crear') {
         exit('El método de pago seleccionado no es válido.');
     }
 
-    // =====================================================
     // CONSTRUIR DIRECCIÓN
-    // =====================================================
-
     $direccionEntrega =
         $departamento
         . ', '
@@ -652,10 +577,7 @@ if ($accion === 'crear') {
     }
 
 
-    // =====================================================
     // VALIDAR LONGITUD
-    // =====================================================
-
     if (strlen($direccionEntrega) > 255) {
 
         exit('La dirección de entrega es demasiado larga.');
@@ -739,10 +661,7 @@ if ($accion === 'crear') {
 }
 
 
-// =========================================================
 // LISTAR PEDIDOS DEL USUARIO
-// =========================================================
-
 if ($accion === 'listar') {
 
     $usuarioId =
@@ -759,10 +678,7 @@ if ($accion === 'listar') {
 }
 
 
-// =========================================================
 // VER PEDIDO - CLIENTE
-// =========================================================
-
 if ($accion === 'ver') {
 
     $pedidoId =
@@ -810,10 +726,7 @@ if ($accion === 'ver') {
 }
 
 
-// =========================================================
 // ACCIÓN NO EXISTENTE
-// =========================================================
-
 http_response_code(404);
 
 echo 'Acción de pedido no encontrada.';

@@ -1,5 +1,6 @@
 <?php
 
+// Valida la solicitud y cierra la sesión actual.
 require_once __DIR__ . '/../config/Session.php';
 iniciar_sesion_segura();
 require_once __DIR__ . '/../config/Csrf.php';

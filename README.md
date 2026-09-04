@@ -277,7 +277,8 @@ Actualmente se utilizan:
 * Regeneración del ID de sesión después del inicio de sesión.
 * Tokens de verificación generados mediante `random_bytes()`.
 * Expiración de tokens.
-* Protección CSRF en diferentes partes del sistema.
+* Códigos de recuperación de un solo uso almacenados como hash.
+* Protección CSRF en todas las operaciones que modifican datos.
 * Control de acceso mediante roles.
 * Validación de información recibida desde formularios.
 * Escape de información mostrada en HTML.
@@ -287,9 +288,7 @@ Durante la auditoría de seguridad también se detectaron aspectos que deben cor
 
 Entre ellos:
 
-* Protección CSRF todavía no aplicada de forma uniforme.
-* Algunas acciones administrativas utilizan GET.
-* Configuración de sesión pendiente de endurecimiento.
+* Los filtros administrativos utilizan GET únicamente para consultar datos.
 * Configuración de MySQL de desarrollo que no debe utilizarse en producción.
 * Errores PHP visibles durante el desarrollo.
 * Revisión de credenciales y secretos.
@@ -303,7 +302,7 @@ Tampoco se encontró una vulnerabilidad IDOR evidente en el acceso de clientes a
 
 # 📧 Brevo
 
-El sistema utiliza la API de **Brevo** para el envío de correos relacionados con la verificación de cuentas.
+El sistema utiliza la API de **Brevo** para el envío de correos de verificación y recuperación de cuentas.
 
 Las credenciales reales no deben incluirse en el repositorio.
 
@@ -684,6 +683,7 @@ Actualmente el proyecto se encuentra en una **etapa avanzada de desarrollo**.
 * Registro.
 * Inicio de sesión.
 * Cierre de sesión.
+* Recuperación de contraseña mediante código enviado por correo.
 * Gestión de cuenta.
 * Verificación de correo.
 * Reenvío de verificación.
@@ -705,9 +705,6 @@ Actualmente el proyecto se encuentra en una **etapa avanzada de desarrollo**.
 
 * Transacciones para la creación de pedidos.
 * Validación final de productos y precios.
-* Protección CSRF uniforme.
-* Endurecimiento de sesiones.
-* Correcciones de rutas y navegación.
 * Pruebas completas responsive.
 * Pruebas automatizadas.
 
@@ -724,26 +721,27 @@ Actualmente el proyecto se encuentra en una **etapa avanzada de desarrollo**.
 
 # 🔒 Preparación para producción
 
-El proyecto funciona como aplicación de desarrollo y presentación académica, pero **todavía no debe considerarse listo para producción**.
+El proyecto está avanzado a nivel funcional. La configuración de producción se realizará al contratar el hosting y el dominio.
 
-Antes de una implementación real se deben completar, entre otras, las siguientes tareas:
+Pendientes antes de publicar:
 
 * [ ] Revocar y reemplazar credenciales expuestas.
 * [ ] Utilizar variables de entorno para secretos.
 * [ ] Revisar el historial de Git.
-* [ ] Sincronizar completamente la base de datos.
-* [ ] Implementar CSRF en todas las operaciones necesarias.
-* [ ] Convertir acciones administrativas que modifican datos a POST.
-* [ ] Endurecer la configuración de sesiones.
-* [ ] Desactivar `display_errors` en producción.
+* [ ] Sincronizar completamente la base de datos de producción.
 * [ ] Utilizar un usuario MySQL específico.
+* [x] Implementar CSRF en todas las operaciones necesarias.
+* [x] Convertir acciones administrativas que modifican datos a `POST`.
+* [ ] Endurecer la configuración de sesiones en producción.
+* [ ] Desactivar `display_errors` y configurar logs.
 * [ ] Implementar transacciones en la creación de pedidos.
-* [ ] Validar productos y precios nuevamente al confirmar.
-* [ ] Corregir rutas de imágenes.
-* [ ] Completar pruebas responsive.
+* [ ] Validar productos, precios y stock nuevamente al confirmar.
+* [ ] Corregir y comprobar todas las rutas de imágenes.
+* [ ] Completar pruebas responsive en todas las páginas.
 * [ ] Crear pruebas automatizadas.
 * [ ] Configurar HTTPS.
-* [ ] Analizar la integración con el sistema interno de Don Diego.
+* [ ] Configurar copias de seguridad y monitoreo.
+* [ ] Realizar pruebas finales de seguridad.
 
 ---
 
@@ -767,7 +765,7 @@ Entre las funcionalidades responsive implementadas se encuentran:
 * Controles táctiles.
 * Diferentes presentaciones según el tamaño de pantalla.
 
-Durante la revisión se comprobó el catálogo público en una pantalla de aproximadamente 390 px sin detectar overflow horizontal.
+Durante la revisión se probaron Inicio, Catálogo, Login, Contacto y Carrito en una pantalla móvil de aproximadamente 390 px sin detectar overflow horizontal.
 
 Todavía deben realizarse pruebas completas en diferentes resoluciones y en las páginas que requieren autenticación.
 

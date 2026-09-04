@@ -16,10 +16,7 @@ $editando = !empty($producto);
     <main class="admin-form-container">
 
 
-        <!-- =====================================================
-             ENCABEZADO
-        ====================================================== -->
-
+        <!-- ENCABEZADO -->
         <section class="admin-form-header">
 
             <div>
@@ -56,10 +53,7 @@ $editando = !empty($producto);
 
 
 
-        <!-- =====================================================
-             FORMULARIO
-        ====================================================== -->
-
+        <!-- FORMULARIO -->
         <section class="admin-form-card">
 
             <form
@@ -69,10 +63,7 @@ $editando = !empty($producto);
                 class="producto-form">
 
 
-                <!-- =================================================
-                     ACCIÓN
-                ================================================== -->
-
+                <!-- ACCIÓN -->
                 <input
                     type="hidden"
                     name="accion"
@@ -95,10 +86,7 @@ $editando = !empty($producto);
 
 
 
-                <!-- =================================================
-                     INFORMACIÓN PRINCIPAL
-                ================================================== -->
-
+                <!-- INFORMACIÓN PRINCIPAL -->
                 <div class="form-seccion">
 
                     <div class="form-seccion-header">
@@ -115,10 +103,7 @@ $editando = !empty($producto);
 
 
 
-                    <!-- =================================================
-                         NOMBRE
-                    ================================================== -->
-
+                    <!-- NOMBRE -->
                     <div class="form-grupo">
 
                         <label for="nombre">
@@ -137,10 +122,7 @@ $editando = !empty($producto);
 
 
 
-                    <!-- =================================================
-                         DESCRIPCIÓN
-                    ================================================== -->
-
+                    <!-- DESCRIPCIÓN -->
                     <div class="form-grupo">
 
                         <label for="descripcion">
@@ -157,10 +139,7 @@ $editando = !empty($producto);
 
 
 
-                    <!-- =================================================
-                         CATEGORÍA
-                    ================================================== -->
-
+                    <!-- CATEGORÍA -->
                     <div class="form-grupo">
 
                         <label for="categoria">
@@ -198,10 +177,7 @@ $editando = !empty($producto);
 
 
 
-                    <!-- =================================================
-                         PRECIO
-                    ================================================== -->
-
+                    <!-- PRECIO -->
                     <div class="form-grupo">
 
                         <label for="precio">
@@ -267,10 +243,7 @@ $editando = !empty($producto);
 
 
 
-                <!-- =================================================
-                     IMAGEN
-                ================================================== -->
-
+                <!-- IMAGEN -->
                 <div class="form-seccion">
 
                     <div class="form-seccion-header">
@@ -344,10 +317,7 @@ $editando = !empty($producto);
 
 
 
-                <!-- =================================================
-                     ESTADO
-                ================================================== -->
-
+                <!-- ESTADO -->
                 <?php if ($editando): ?>
 
                     <div class="form-seccion">
@@ -405,10 +375,7 @@ $editando = !empty($producto);
 
 
 
-                <!-- =================================================
-                     BOTONES
-                ================================================== -->
-
+                <!-- BOTONES -->
                 <div class="form-acciones">
 
 
@@ -440,10 +407,7 @@ $editando = !empty($producto);
 
 
 
-            <!-- =====================================================
-                 ELIMINAR PRODUCTO
-            ====================================================== -->
-
+            <!-- ELIMINAR PRODUCTO -->
             <?php if ($editando): ?>
 
                 <div class="form-eliminar">

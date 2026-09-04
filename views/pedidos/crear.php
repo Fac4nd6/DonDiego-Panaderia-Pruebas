@@ -12,10 +12,7 @@ require __DIR__ . '/../layouts/header.php';
     <main class="pedido-container">
 
 
-        <!-- =====================================================
-             ENCABEZADO
-        ====================================================== -->
-
+        <!-- ENCABEZADO -->
         <header class="pedido-header">
 
             <h1>
@@ -32,10 +29,7 @@ require __DIR__ . '/../layouts/header.php';
         <section class="pedido-contenido">
 
 
-            <!-- =================================================
-                 FORMULARIO
-            ================================================== -->
-
+            <!-- FORMULARIO -->
             <div class="pedido-formulario">
 
                 <form
@@ -44,10 +38,7 @@ require __DIR__ . '/../layouts/header.php';
                     action="<?= url('/pedidos/crear') ?>">
 
 
-                    <!-- =================================================
-                         CSRF
-                    ================================================== -->
-
+                    <!-- CSRF -->
                     <input
                         type="hidden"
                         name="csrf_token"
@@ -58,20 +49,14 @@ require __DIR__ . '/../layouts/header.php';
                                 ) ?>">
 
 
-                    <!-- =================================================
-                         ACCIÓN
-                    ================================================== -->
-
+                    <!-- ACCIÓN -->
                     <input
                         type="hidden"
                         name="accion"
                         value="crear">
 
 
-                    <!-- =================================================
-                         DATOS DE ENTREGA
-                    ================================================== -->
-
+                    <!-- DATOS DE ENTREGA -->
                     <section class="pedido-seccion">
 
                         <h2>
@@ -261,10 +246,7 @@ require __DIR__ . '/../layouts/header.php';
                     </section>
 
 
-                    <!-- =================================================
-                         MÉTODO DE PAGO
-                    ================================================== -->
-
+                    <!-- MÉTODO DE PAGO -->
                     <section class="pedido-seccion">
 
                         <h2>
@@ -306,10 +288,7 @@ require __DIR__ . '/../layouts/header.php';
                     </section>
 
 
-                    <!-- =================================================
-                         BOTONES
-                    ================================================== -->
-
+                    <!-- BOTONES -->
                     <div class="pedido-acciones">
 
 
@@ -341,10 +320,7 @@ require __DIR__ . '/../layouts/header.php';
             </div>
 
 
-            <!-- =================================================
-                 RESUMEN DEL PEDIDO
-            ================================================== -->
-
+            <!-- RESUMEN DEL PEDIDO -->
             <aside class="pedido-resumen">
 
                 <h2>
@@ -423,10 +399,7 @@ require __DIR__ . '/../layouts/header.php';
                     </div>
 
 
-                    <!-- =================================================
-                         TOTAL
-                    ================================================== -->
-
+                    <!-- TOTAL -->
                     <div class="pedido-total">
 
                         <span>

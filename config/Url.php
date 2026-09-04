@@ -1,5 +1,6 @@
 <?php
 
+// Genera rutas relativas y URLs absolutas del proyecto.
 if (!function_exists('url')) {
     function url($path = '')
     {

@@ -16,11 +16,7 @@ require __DIR__ . '/../layouts/header.php';
     <main class="catalogo-container">
 
 
-        <!-- =====================================================
-         DECORACIÓN DEL CATÁLOGO
-    ====================================================== -->
-
-
+        <!-- DECORACIÓN DEL CATÁLOGO -->
         <!-- MIGAS -->
 
         <div class="miga miga-1" aria-hidden="true"></div>
@@ -58,10 +54,7 @@ require __DIR__ . '/../layouts/header.php';
         </div>
 
 
-        <!-- =====================================================
-         ENCABEZADO
-    ====================================================== -->
-
+        <!-- ENCABEZADO -->
         <section class="catalogo-header">
 
             <span class="catalogo-etiqueta">
@@ -79,10 +72,7 @@ require __DIR__ . '/../layouts/header.php';
         </section>
 
 
-        <!-- =====================================================
-         BUSCADOR
-    ====================================================== -->
-
+        <!-- BUSCADOR -->
         <section class="catalogo-herramientas">
 
             <form
@@ -109,10 +99,7 @@ require __DIR__ . '/../layouts/header.php';
         </section>
 
 
-        <!-- =====================================================
-         CATEGORÍAS
-    ====================================================== -->
-
+        <!-- CATEGORÍAS -->
         <nav class="catalogo-categorias">
 
             <a
@@ -154,10 +141,7 @@ require __DIR__ . '/../layouts/header.php';
         </nav>
 
 
-        <!-- =====================================================
-         RESULTADOS
-    ====================================================== -->
-
+        <!-- RESULTADOS -->
         <section class="catalogo-resultados">
 
 
@@ -176,10 +160,7 @@ require __DIR__ . '/../layouts/header.php';
             </div>
 
 
-            <!-- =================================================
-             SIN RESULTADOS
-        ================================================== -->
-
+            <!-- SIN RESULTADOS -->
             <?php if (empty($productosPagina)): ?>
 
                 <div class="catalogo-vacio">
@@ -207,10 +188,7 @@ require __DIR__ . '/../layouts/header.php';
             <?php else: ?>
 
 
-                <!-- =================================================
-                 GRID DE PRODUCTOS
-            ================================================== -->
-
+                <!-- GRID DE PRODUCTOS -->
                 <div class="productos-grid">
 
 
@@ -221,8 +199,7 @@ require __DIR__ . '/../layouts/header.php';
 
                         /*
                      * Ruta de imagen
-                     */
-
+                */
                         if (!empty($producto['imagen'])) {
                             $imagenProducto = url(
                                 '/public/img/' . $producto['imagen']
@@ -311,8 +288,7 @@ require __DIR__ . '/../layouts/header.php';
                                 Ya no lleva a detalle.php.
 
                                 Ahora abre el panel inferior.
-                                -->
-
+                           -->
                                     <button
                                         type="button"
                                         class="producto-boton"
@@ -375,10 +351,7 @@ require __DIR__ . '/../layouts/header.php';
         </section>
 
 
-        <!-- =====================================================
-         PAGINACIÓN
-    ====================================================== -->
-
+        <!-- PAGINACIÓN -->
         <?php if ($totalPaginas > 1): ?>
 
             <nav class="catalogo-paginacion">
@@ -443,10 +416,7 @@ require __DIR__ . '/../layouts/header.php';
     </main>
 
 
-    <!-- =========================================================
-     PANEL DE DETALLE DEL PRODUCTO
-========================================================= -->
-
+    <!-- PANEL DE DETALLE DEL PRODUCTO -->
     <div
         class="producto-overlay"
         id="productoOverlay"
@@ -461,10 +431,7 @@ require __DIR__ . '/../layouts/header.php';
             aria-labelledby="detalleNombre">
 
 
-            <!-- =================================================
-             BOTÓN CERRAR
-        ================================================== -->
-
+            <!-- BOTÓN CERRAR -->
             <button
                 type="button"
                 class="producto-cerrar"
@@ -474,10 +441,7 @@ require __DIR__ . '/../layouts/header.php';
             </button>
 
 
-            <!-- =================================================
-             CONTENIDO
-        ================================================== -->
-
+            <!-- CONTENIDO -->
             <div class="producto-panel-contenido">
 
 
@@ -533,10 +497,7 @@ require __DIR__ . '/../layouts/header.php';
                     </span>
 
 
-                    <!-- =================================================
-                     CANTIDAD
-                ================================================== -->
-
+                    <!-- CANTIDAD -->
                     <div class="detalle-cantidad">
 
 
@@ -575,10 +536,7 @@ require __DIR__ . '/../layouts/header.php';
                     </div>
 
 
-                    <!-- =================================================
-                     AGREGAR AL CARRITO
-                ================================================== -->
-
+                    <!-- AGREGAR AL CARRITO -->
                     <button
                         type="button"
                         class="detalle-carrito"
@@ -603,10 +561,7 @@ require __DIR__ . '/../layouts/header.php';
     <?php require __DIR__ . '/../layouts/footer.php'; ?>
 
 
-    <!-- =========================================================
-     JAVASCRIPT DEL DETALLE
-========================================================= -->
-
+    <!-- JAVASCRIPT DEL DETALLE -->
     <script src="<?= url('/public/js/catalogo.js') ?>"></script>
 
     <?php if ($productoAbrir): ?>

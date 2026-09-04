@@ -1,5 +1,6 @@
 <?php
 
+// Muestra una página de error reutilizable.
 $pageCss = 'error.css';
 $codigoError = (int) ($codigoError ?? 404);
 $tituloError = $tituloError ?? 'Página no encontrada';

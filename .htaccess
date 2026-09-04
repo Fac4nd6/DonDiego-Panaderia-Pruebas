@@ -16,6 +16,8 @@ RewriteRule ^registro/?$ views/usuarios/register.php [END,QSA]
 RewriteRule ^verificar-email/?$ views/usuarios/verificar_email.php [END,QSA]
 RewriteRule ^verificacion/?$ views/usuarios/verificar_aviso.php [END,QSA]
 RewriteRule ^reenviar-verificacion/?$ views/usuarios/reenviar_verificacion.php [END,QSA]
+RewriteRule ^recuperar-contrasena/?$ views/usuarios/recuperar_contrasena.php [END,QSA]
+RewriteRule ^restablecer-contrasena/?$ views/usuarios/restablecer_contrasena.php [END,QSA]
 RewriteRule ^cuenta/?$ views/usuarios/cuenta.php [END,QSA]
 RewriteRule ^logout/?$ controllers/logout.php [END,QSA]
 

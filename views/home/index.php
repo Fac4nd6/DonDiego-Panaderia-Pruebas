@@ -11,10 +11,7 @@ require __DIR__ . '/../layouts/header.php';
 
     <main>
 
-        <!-- =====================================================
-             HERO
-        ====================================================== -->
-
+        <!-- HERO -->
         <section class="hero">
 
             <div class="hero-content">
@@ -42,10 +39,7 @@ require __DIR__ . '/../layouts/header.php';
         </section>
 
 
-        <!-- =====================================================
-             PRODUCTOS DESTACADOS
-        ====================================================== -->
-
+        <!-- PRODUCTOS DESTACADOS -->
         <section class="productos">
 
             <h2>Productos</h2>
@@ -92,10 +86,7 @@ require __DIR__ . '/../layouts/header.php';
         </section>
 
 
-        <!-- =====================================================
-             BOTÓN CATÁLOGO COMPLETO
-        ====================================================== -->
-
+        <!-- BOTÓN CATÁLOGO COMPLETO -->
         <a
             href="<?= url('/productos') ?>"
             class="catalogo-button">
@@ -103,10 +94,7 @@ require __DIR__ . '/../layouts/header.php';
         </a>
 
 
-        <!-- =====================================================
-             PRODUCTOS RECOMENDADOS
-        ====================================================== -->
-
+        <!-- PRODUCTOS RECOMENDADOS -->
         <section class="recommended">
 
             <h2>Recomendado para vos</h2>
@@ -153,10 +141,7 @@ require __DIR__ . '/../layouts/header.php';
         </section>
 
 
-        <!-- =====================================================
-             INFORMACIÓN DEL LOCAL
-        ====================================================== -->
-
+        <!-- INFORMACIÓN DEL LOCAL -->
         <section class="conocenos">
 
             <div class="conocenos-contenido">

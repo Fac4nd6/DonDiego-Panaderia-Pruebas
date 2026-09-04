@@ -7,26 +7,17 @@ require_once __DIR__ . '/../models/Producto.php';
 $productoModel = new Producto($conn);
 
 
-// =========================================================
 // FILTROS
-// =========================================================
-
 $busqueda = trim($_GET['busqueda'] ?? '');
 
 $categoriaSeleccionada = $_GET['categoria'] ?? 'todos';
 
 
-// =========================================================
 // OBTENER TODOS LOS PRODUCTOS ACTIVOS
-// =========================================================
-
 $productos = $productoModel->obtenerActivos();
 
 
-// =========================================================
 // PRODUCTO A ABRIR AUTOMÁTICAMENTE
-// =========================================================
-
 $productoAbrir = null;
 
 if (isset($_GET['producto'])) {
@@ -59,10 +50,7 @@ if (isset($_GET['producto'])) {
 }
 
 
-// =========================================================
 // BUSCAR
-// =========================================================
-
 if ($busqueda !== '') {
 
     $productos = array_filter(
@@ -83,10 +71,7 @@ if ($busqueda !== '') {
 }
 
 
-// =========================================================
 // FUNCIÓN CATEGORÍA
-// =========================================================
-
 function categoriaSlug($categoria)
 {
     $categoria = strtolower($categoria);
@@ -101,10 +86,7 @@ function categoriaSlug($categoria)
 }
 
 
-// =========================================================
 // FILTRAR CATEGORÍA
-// =========================================================
-
 if ($categoriaSeleccionada !== 'todos') {
 
     $productos = array_filter(
@@ -119,10 +101,7 @@ if ($categoriaSeleccionada !== 'todos') {
 }
 
 
-// =========================================================
 // PAGINACIÓN
-// =========================================================
-
 $productosPorPagina = 8;
 
 $totalProductos = count($productos);
@@ -158,10 +137,7 @@ $productosPagina = array_slice(
 );
 
 
-// =========================================================
 // LINKS DE PAGINACIÓN
-// =========================================================
-
 function linkCatalogo($pagina)
 {
     global $busqueda;
@@ -175,10 +151,7 @@ function linkCatalogo($pagina)
 }
 
 
-// =========================================================
 // NOMBRE BONITO DE CATEGORÍA
-// =========================================================
-
 function nombreCategoria($categoria)
 {
     $categorias = [
@@ -202,8 +175,5 @@ function nombreCategoria($categoria)
 }
 
 
-// =========================================================
 // MOSTRAR VISTA
-// =========================================================
-
 require_once __DIR__ . '/../views/productos/index.php';
