@@ -2,10 +2,7 @@
 
 class Carrito
 {
-    // =========================================================
     // INICIALIZAR CARRITO
-    // =========================================================
-
     public function inicializar()
     {
         if (!isset($_SESSION['carrito'])) {
@@ -14,10 +11,7 @@ class Carrito
     }
 
 
-    // =========================================================
     // OBTENER CARRITO
-    // =========================================================
-
     public function obtener()
     {
         $this->inicializar();
@@ -26,10 +20,7 @@ class Carrito
     }
 
 
-    // =========================================================
     // AGREGAR PRODUCTO
-    // =========================================================
-
     public function agregar($producto, $cantidad = 1)
     {
         $this->inicializar();
@@ -48,10 +39,7 @@ class Carrito
         }
 
 
-        // -----------------------------------------------------
         // SI EL PRODUCTO YA EXISTE
-        // -----------------------------------------------------
-
         if (isset($_SESSION['carrito'][$id])) {
 
             $_SESSION['carrito'][$id]['cantidad'] += $cantidad;
@@ -70,10 +58,7 @@ class Carrito
         }
 
 
-        // -----------------------------------------------------
         // PRODUCTO NUEVO
-        // -----------------------------------------------------
-
         $_SESSION['carrito'][$id] = [
 
             'id' => $id,
@@ -95,10 +80,7 @@ class Carrito
     }
 
 
-    // =========================================================
     // ACTUALIZAR CANTIDAD
-    // =========================================================
-
     public function actualizarCantidad($productoId, $cantidad)
     {
         $this->inicializar();
@@ -135,10 +117,7 @@ class Carrito
     }
 
 
-    // =========================================================
     // ELIMINAR PRODUCTO
-    // =========================================================
-
     public function eliminar($productoId)
     {
         $this->inicializar();
@@ -157,20 +136,14 @@ class Carrito
     }
 
 
-    // =========================================================
     // VACIAR CARRITO
-    // =========================================================
-
     public function vaciar()
     {
         $_SESSION['carrito'] = [];
     }
 
 
-    // =========================================================
     // CANTIDAD TOTAL DE PRODUCTOS
-    // =========================================================
-
     public function cantidadProductos()
     {
         $this->inicializar();
@@ -188,10 +161,7 @@ class Carrito
     }
 
 
-    // =========================================================
     // CALCULAR TOTAL
-    // =========================================================
-
     public function calcularTotal()
     {
         $this->inicializar();
@@ -211,10 +181,7 @@ class Carrito
     }
 
 
-    // =========================================================
     // CALCULAR SUBTOTAL
-    // =========================================================
-
     public function calcularSubtotal($productoId)
     {
         $this->inicializar();
@@ -236,10 +203,7 @@ class Carrito
     }
 
 
-    // =========================================================
     // SABER SI ESTÁ VACÍO
-    // =========================================================
-
     public function estaVacio()
     {
         $this->inicializar();

@@ -1,6 +1,7 @@
 
 <?php
 
+// Muestra el listado administrativo de productos.
 $pageCss = "admin-productos.css";
 
 require __DIR__ . '/../layouts/head.php';

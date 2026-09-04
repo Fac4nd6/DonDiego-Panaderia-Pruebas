@@ -13,10 +13,7 @@ require __DIR__ . '/../layouts/head.php';
     <main class="detalle-pedido-container">
 
 
-        <!-- =====================================================
-             ENCABEZADO
-        ====================================================== -->
-
+        <!-- ENCABEZADO -->
         <header class="detalle-pedido-header">
 
             <span class="detalle-etiqueta">
@@ -70,10 +67,7 @@ require __DIR__ . '/../layouts/head.php';
         <section class="detalle-pedido-contenido">
 
 
-            <!-- =================================================
-                 INFORMACIÓN DEL CLIENTE
-            ================================================== -->
-
+            <!-- INFORMACIÓN DEL CLIENTE -->
             <?php if (!empty($esAdmin) || !empty($esEmpleado)): ?>
 
                 <div class="detalle-pedido-card">
@@ -178,10 +172,7 @@ require __DIR__ . '/../layouts/head.php';
 
 
 
-            <!-- =================================================
-                 INFORMACIÓN DEL PEDIDO
-            ================================================== -->
-
+            <!-- INFORMACIÓN DEL PEDIDO -->
             <div class="detalle-pedido-card">
 
                 <h2>
@@ -293,10 +284,7 @@ require __DIR__ . '/../layouts/head.php';
 
 
 
-                <!-- =================================================
-                     DIRECCIÓN
-                ================================================== -->
-
+                <!-- DIRECCIÓN -->
                 <div class="detalle-direccion">
 
                     <span>
@@ -319,10 +307,7 @@ require __DIR__ . '/../layouts/head.php';
 
 
 
-            <!-- =================================================
-                 PRODUCTOS
-            ================================================== -->
-
+            <!-- PRODUCTOS -->
             <div class="detalle-pedido-card">
 
                 <h2>
@@ -424,10 +409,7 @@ require __DIR__ . '/../layouts/head.php';
 
 
 
-                <!-- =================================================
-                     TOTAL
-                ================================================== -->
-
+                <!-- TOTAL -->
                 <div class="detalle-total">
 
                     <span>
@@ -451,10 +433,7 @@ require __DIR__ . '/../layouts/head.php';
 
 
 
-            <!-- =================================================
-                 BOTONES
-            ================================================== -->
-
+            <!-- BOTONES -->
             <div class="detalle-acciones">
 
 

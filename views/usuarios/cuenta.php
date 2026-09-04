@@ -3,10 +3,7 @@
 $pageCss = "cuenta.css";
 
 
-/* =========================================================
-   SESIÓN
-========================================================= */
-
+/* SESIÓN */
 if (session_status() === PHP_SESSION_NONE) {
     require_once '../../config/Session.php';
     iniciar_sesion_segura();
@@ -15,10 +12,7 @@ if (session_status() === PHP_SESSION_NONE) {
 require_once '../../config/Csrf.php';
 
 
-/* =========================================================
-   PROTEGER PÁGINA
-========================================================= */
-
+/* PROTEGER PÁGINA */
 if (!isset($_SESSION['usuario_id'])) {
 
     header('Location: ' . url('/login'));
@@ -27,10 +21,7 @@ if (!isset($_SESSION['usuario_id'])) {
 }
 
 
-/* =========================================================
-   MODELOS
-========================================================= */
-
+/* MODELOS */
 require '../../config/Database.php';
 require '../../models/Usuario.php';
 
@@ -39,10 +30,7 @@ $usuarioModel =
     new Usuario($conn);
 
 
-/* =========================================================
-   OBTENER USUARIO
-========================================================= */
-
+/* OBTENER USUARIO */
 $usuario =
     $usuarioModel->obtenerPorId(
         $_SESSION['usuario_id']
@@ -59,10 +47,7 @@ if (!$usuario) {
 }
 
 
-/* =========================================================
-   VARIABLES
-========================================================= */
-
+/* VARIABLES */
 $nombre =
     $usuario['nombre_completo'] ?? '';
 
@@ -82,19 +67,13 @@ $rol =
     $usuario['rol'] ?? 'cliente';
 
 
-/* =========================================================
-   MENSAJES
-========================================================= */
-
+/* MENSAJES */
 $error = '';
 
 $mensaje = '';
 
 
-/* =========================================================
-   ACTUALIZAR DATOS
-========================================================= */
-
+/* ACTUALIZAR DATOS */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     verificar_csrf();
@@ -112,10 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         trim($_POST['direccion'] ?? '');
 
 
-    /* =====================================================
-       VALIDAR
-    ===================================================== */
-
+    /* VALIDAR */
     if (empty($nombre)) {
 
         $error =
@@ -124,10 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
 
 
-        /* =================================================
-           ACTUALIZAR BD
-        ================================================= */
-
+        /* ACTUALIZAR BD */
         $resultado =
             $usuarioModel->actualizarDatos(
                 $_SESSION['usuario_id'],
@@ -140,10 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($resultado) {
 
-            /* =============================================
-               ACTUALIZAR SESIÓN
-            ============================================= */
-
+            /* ACTUALIZAR SESIÓN */
             $_SESSION['usuario_nombre'] =
                 $nombre;
 
@@ -160,10 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 
-/* =========================================================
-   HEAD
-========================================================= */
-
+/* HEAD */
 require '../layouts/head.php';
 
 ?>
@@ -178,10 +145,7 @@ require '../layouts/head.php';
         <section class="account-card">
 
 
-            <!-- =================================================
-                 ENCABEZADO
-            ================================================== -->
-
+            <!-- ENCABEZADO -->
             <header class="account-header">
 
 
@@ -218,10 +182,7 @@ require '../layouts/head.php';
             </header>
 
 
-            <!-- =================================================
-                 MENSAJE DE ERROR
-            ================================================== -->
-
+            <!-- MENSAJE DE ERROR -->
             <?php if (!empty($error)): ?>
 
                 <div
@@ -240,10 +201,7 @@ require '../layouts/head.php';
             <?php endif; ?>
 
 
-            <!-- =================================================
-                 MENSAJE DE ÉXITO
-            ================================================== -->
-
+            <!-- MENSAJE DE ÉXITO -->
             <?php if (!empty($mensaje)): ?>
 
                 <div
@@ -262,10 +220,7 @@ require '../layouts/head.php';
             <?php endif; ?>
 
 
-            <!-- =================================================
-                 MIS DATOS
-            ================================================== -->
-
+            <!-- MIS DATOS -->
             <section class="account-section">
 
 
@@ -453,10 +408,7 @@ require '../layouts/head.php';
             </section>
 
 
-            <!-- =================================================
-                 OPCIONES
-            ================================================== -->
-
+            <!-- OPCIONES -->
             <section class="account-options">
 
 
@@ -547,10 +499,7 @@ require '../layouts/head.php';
             </section>
 
 
-            <!-- =================================================
-                 CERRAR SESIÓN
-            ================================================== -->
-
+            <!-- CERRAR SESIÓN -->
             <footer class="account-footer">
 
 

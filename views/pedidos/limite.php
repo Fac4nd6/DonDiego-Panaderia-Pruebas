@@ -1,5 +1,6 @@
 <?php
 
+// Informa que se alcanzó el límite de pedidos pendientes.
 $pageCss = "pedido-limite.css";
 
 require __DIR__ . '/../layouts/head.php';

@@ -1,5 +1,6 @@
 <?php
 
+// Configura una sesión segura para el usuario.
 require_once __DIR__ . '/Url.php';
 
 function iniciar_sesion_segura()

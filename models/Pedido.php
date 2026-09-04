@@ -6,20 +6,14 @@ class Pedido
     private $ultimoError = '';
 
 
-    /* =========================================================
-       CONSTRUCTOR
-    ========================================================= */
-
+    /* CONSTRUCTOR */
     public function __construct($conn)
     {
         $this->conn = $conn;
     }
 
 
-    /* =========================================================
-       CREAR PEDIDO
-    ========================================================= */
-
+    /* CREAR PEDIDO */
     public function crearPedido(
         $usuarioId,
         $fechaRecepcion,
@@ -269,10 +263,7 @@ class Pedido
     }
 
 
-    /* =========================================================
-       CONTAR PEDIDOS PENDIENTES
-    ========================================================= */
-
+    /* CONTAR PEDIDOS PENDIENTES */
     public function cantidadPendientes($usuarioId)
     {
 
@@ -315,10 +306,7 @@ class Pedido
     }
 
 
-    /* =========================================================
-       AGREGAR DETALLE
-    ========================================================= */
-
+    /* AGREGAR DETALLE */
     public function agregarDetalle(
         $pedidoId,
         $productoId,
@@ -384,10 +372,7 @@ class Pedido
     }
 
 
-    /* =========================================================
-       OBTENER PEDIDOS DE UN USUARIO
-    ========================================================= */
-
+    /* OBTENER PEDIDOS DE UN USUARIO */
     public function obtenerPorUsuario($usuarioId)
     {
 
@@ -440,10 +425,7 @@ class Pedido
     }
 
 
-    /* =========================================================
-       OBTENER PEDIDO POR ID - CLIENTE
-    ========================================================= */
-
+    /* OBTENER PEDIDO POR ID - CLIENTE */
     public function obtenerPorId(
         $pedidoId,
         $usuarioId
@@ -499,10 +481,7 @@ class Pedido
     }
 
 
-    /* =========================================================
-       OBTENER PEDIDO POR ID - ADMIN / EMPLEADO
-    ========================================================= */
-
+    /* OBTENER PEDIDO POR ID - ADMIN / EMPLEADO */
     public function obtenerPorIdAdmin($pedidoId)
     {
 
@@ -561,10 +540,7 @@ class Pedido
     }
 
 
-    /* =========================================================
-       OBTENER DETALLES DE UN PEDIDO
-    ========================================================= */
-
+    /* OBTENER DETALLES DE UN PEDIDO */
     public function obtenerDetalles($pedidoId)
     {
 
@@ -650,10 +626,7 @@ class Pedido
     }
 
 
-    /* =========================================================
-       OBTENER PEDIDO COMPLETO
-    ========================================================= */
-
+    /* OBTENER PEDIDO COMPLETO */
     public function obtenerCompleto(
         $pedidoId,
         $usuarioId
@@ -677,10 +650,7 @@ class Pedido
     }
 
 
-    /* =========================================================
-       OBTENER TODOS LOS PEDIDOS
-    ========================================================= */
-
+    /* OBTENER TODOS LOS PEDIDOS */
     public function obtenerTodos($nombreCliente = '', $fechaDesde = '', $fechaHasta = '', $estado = '')
     {
 
@@ -763,10 +733,7 @@ class Pedido
     }
 
 
-    /* =========================================================
-       ACTUALIZAR ESTADO
-    ========================================================= */
-
+    /* ACTUALIZAR ESTADO */
     public function actualizarEstado(
         $pedidoId,
         $estado
@@ -866,10 +833,7 @@ class Pedido
     }
 
 
-    /* =========================================================
-       CANCELAR PEDIDO
-    ========================================================= */
-
+    /* CANCELAR PEDIDO */
     public function cancelarPedido(
         $pedidoId,
         $usuarioId
@@ -880,7 +844,7 @@ class Pedido
     /**
      * Cancela un pedido pendiente y devuelve sus cantidades al stock.
      * La transacción evita que el pedido quede cancelado sin recuperar inventario.
-     */
+*/
     private function cancelarPedidoSeguro($pedidoId, $usuarioId = null)
     {
         $pedidoId = (int) $pedidoId;
@@ -977,10 +941,7 @@ class Pedido
     }
 
 
-    /* =========================================================
-       MARCAR PEDIDO COMO PAGADO
-    ========================================================= */
-
+    /* MARCAR PEDIDO COMO PAGADO */
     public function marcarComoPagado($pedidoId)
     {
 

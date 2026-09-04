@@ -10,10 +10,7 @@ class Producto
     }
 
 
-    // =========================================================
     // OBTENER TODOS LOS PRODUCTOS
-    // =========================================================
-
     public function obtenerTodos()
     {
         $sql = "
@@ -44,10 +41,7 @@ class Producto
     }
 
 
-    // =========================================================
     // OBTENER PRODUCTO POR ID
-    // =========================================================
-
     public function obtenerPorId($id)
     {
         $sql = "
@@ -84,10 +78,7 @@ class Producto
     }
 
 
-    // =========================================================
     // BUSCAR PRODUCTOS ACTIVOS
-    // =========================================================
-
     public function buscar($busqueda)
     {
         $sql = "
@@ -134,10 +125,7 @@ class Producto
     }
 
 
-    // =========================================================
     // OBTENER CATEGORÍAS
-    // =========================================================
-
     public function obtenerCategorias()
     {
         $sql = "
@@ -158,10 +146,7 @@ class Producto
     }
 
 
-    // =========================================================
     // OBTENER POR CATEGORÍA
-    // =========================================================
-
     public function obtenerPorCategoria($categoriaId)
     {
         $sql = "
@@ -199,10 +184,7 @@ class Producto
     }
 
 
-    // =========================================================
     // CREAR PRODUCTO
-    // =========================================================
-
     public function crear(
         $nombre,
         $descripcion,
@@ -252,10 +234,7 @@ class Producto
     }
 
 
-    // =========================================================
     // ACTUALIZAR PRODUCTO
-    // =========================================================
-
     public function actualizar(
         $id,
         $nombre,
@@ -308,10 +287,7 @@ class Producto
     }
 
 
-    // =========================================================
     // DESACTIVAR PRODUCTO
-    // =========================================================
-
     public function desactivar($id)
     {
         $sql = "
@@ -332,10 +308,7 @@ class Producto
     }
 
 
-    // =========================================================
     // ACTIVAR PRODUCTO
-    // =========================================================
-
     public function activar($id)
     {
         $sql = "
@@ -356,10 +329,7 @@ class Producto
     }
 
 
-    // =========================================================
     // ELIMINAR PRODUCTO DEFINITIVAMENTE
-    // =========================================================
-
     public function eliminar($id)
     {
         $sql = "
@@ -378,10 +348,7 @@ class Producto
         return $stmt->execute();
     }
 
-    // =========================================================
     // OBTENER PRODUCTOS ACTIVOS PARA EL CATÁLOGO
-    // =========================================================
-
     public function obtenerActivos()
     {
         $sql = "
@@ -411,10 +378,7 @@ class Producto
         return $resultado->fetch_all(MYSQLI_ASSOC);
     }
 
-    // =========================================================
     // OBTENER NOVEDADES
-    // =========================================================
-
     public function obtenerNovedades($limite = 3)
     {
         $limite = (int) $limite;

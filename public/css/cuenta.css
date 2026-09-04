@@ -1,7 +1,4 @@
-/* =========================================================
-   CUENTA
-========================================================= */
-
+/* CUENTA */
 html {
     scrollbar-width: none;
 }
@@ -11,10 +8,7 @@ html::-webkit-scrollbar {
 }
 
 
-/* =========================================================
-   FONDO
-========================================================= */
-
+/* FONDO */
 .account-page {
     min-height: 100vh;
 
@@ -41,10 +35,7 @@ html::-webkit-scrollbar {
 }
 
 
-/* =========================================================
-   TARJETA PRINCIPAL
-========================================================= */
-
+/* TARJETA PRINCIPAL */
 .account-card {
     position: relative;
 
@@ -106,10 +97,7 @@ html::-webkit-scrollbar {
 }
 
 
-/* =========================================================
-   ENCABEZADO
-========================================================= */
-
+/* ENCABEZADO */
 .account-header {
     display: flex;
 
@@ -189,10 +177,7 @@ html::-webkit-scrollbar {
 }
 
 
-/* =========================================================
-   SECCIONES
-========================================================= */
-
+/* SECCIONES */
 .account-section {
     animation:
         contentAppear 0.6s ease-out 0.25s both;
@@ -212,10 +197,7 @@ html::-webkit-scrollbar {
 }
 
 
-/* =========================================================
-   INFORMACIÓN
-========================================================= */
-
+/* INFORMACIÓN */
 .account-info {
     display: flex;
 
@@ -292,10 +274,7 @@ html::-webkit-scrollbar {
 }
 
 
-/* =========================================================
-   OPCIONES
-========================================================= */
-
+/* OPCIONES */
 .account-options {
     display: flex;
 
@@ -430,10 +409,7 @@ html::-webkit-scrollbar {
 }
 
 
-/* =========================================================
-   CERRAR SESIÓN
-========================================================= */
-
+/* CERRAR SESIÓN */
 .account-footer {
     padding-top: 5px;
 
@@ -535,10 +511,7 @@ html::-webkit-scrollbar {
 }
 
 
-/* =========================================================
-   ANIMACIONES
-========================================================= */
-
+/* ANIMACIONES */
 @keyframes accountAppear {
 
     from {
@@ -596,10 +569,7 @@ html::-webkit-scrollbar {
 }
 
 
-/* =========================================================
-   RESPONSIVE
-========================================================= */
-
+/* RESPONSIVE */
 @media (max-width: 600px) {
 
     .account-page {
@@ -648,10 +618,7 @@ html::-webkit-scrollbar {
     }
 }
 
-/* =========================================================
-   MENSAJES DE CUENTA
-========================================================= */
-
+/* MENSAJES DE CUENTA */
 .account-message {
 
     margin-bottom: 25px;
@@ -701,10 +668,7 @@ html::-webkit-scrollbar {
 }
 
 
-/* =========================================================
-   FORMULARIO DE CUENTA
-========================================================= */
-
+/* FORMULARIO DE CUENTA */
 .account-form {
 
     display: flex;
@@ -730,10 +694,7 @@ html::-webkit-scrollbar {
 }
 
 
-/* =========================================================
-   CAMPOS
-========================================================= */
-
+/* CAMPOS */
 .account-input {
 
     display: flex;
@@ -831,10 +792,7 @@ html::-webkit-scrollbar {
 }
 
 
-/* =========================================================
-   TEXTO PEQUEÑO DEL EMAIL
-========================================================= */
-
+/* TEXTO PEQUEÑO DEL EMAIL */
 .account-input small {
 
     margin-top: -2px;
@@ -849,10 +807,7 @@ html::-webkit-scrollbar {
 }
 
 
-/* =========================================================
-   BOTÓN GUARDAR
-========================================================= */
-
+/* BOTÓN GUARDAR */
 .account-save-button {
 
     display: inline-flex;
@@ -928,10 +883,7 @@ html::-webkit-scrollbar {
 }
 
 
-/* =========================================================
-   RESPONSIVE FORMULARIO
-========================================================= */
-
+/* RESPONSIVE FORMULARIO */
 @media (max-width: 600px) {
 
     .account-form {

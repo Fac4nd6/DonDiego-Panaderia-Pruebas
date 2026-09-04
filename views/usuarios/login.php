@@ -20,19 +20,15 @@ $error = '';
 
 $email = '';
 
+$mensaje =
+    isset($_GET['restablecida'])
+    ? 'Tu contraseña fue actualizada. Ya podés iniciar sesión.'
+    : '';
 
-/* =========================================================
-   PROCESAR LOGIN
-========================================================= */
 
 if (
     $_SERVER["REQUEST_METHOD"] === "POST"
 ) {
-
-    /*
-     * Verificar CSRF antes de procesar
-     * las credenciales.
-     */
 
     verificar_csrf();
 
@@ -71,10 +67,6 @@ if (
 }
 
 
-/* =========================================================
-   HEAD
-========================================================= */
-
 require '../layouts/head.php';
 
 ?>
@@ -87,10 +79,6 @@ require '../layouts/head.php';
             class="login-card"
             aria-labelledby="login-title">
 
-
-            <!-- =================================================
-                 LOGO
-            ================================================== -->
 
             <header class="logo-container">
 
@@ -108,10 +96,6 @@ require '../layouts/head.php';
             <div class="login-content">
 
 
-                <!-- =================================================
-                     TÍTULO
-                ================================================== -->
-
                 <header class="form-header">
 
                     <h2
@@ -125,9 +109,21 @@ require '../layouts/head.php';
                 </header>
 
 
-                <!-- =================================================
-                     ERROR
-                ================================================== -->
+                <?php if (!empty($mensaje)): ?>
+
+                    <aside
+                        class="success-msg"
+                        role="status">
+
+                        <?= htmlspecialchars(
+                            $mensaje,
+                            ENT_QUOTES,
+                            'UTF-8'
+                        ) ?>
+
+                    </aside>
+
+                <?php endif; ?>
 
                 <?php if (!empty($error)): ?>
 
@@ -146,18 +142,12 @@ require '../layouts/head.php';
                 <?php endif; ?>
 
 
-                <!-- =================================================
-                     FORMULARIO
-                ================================================== -->
-
                 <form
                     action="<?= url('/login') ?>"
                     method="POST"
                     class="login-form"
                     id="loginForm">
 
-
-                    <!-- CSRF -->
 
                     <input
                         type="hidden"
@@ -175,10 +165,6 @@ require '../layouts/head.php';
                             Datos de inicio de sesión
                         </legend>
 
-
-                        <!-- =================================================
-                             EMAIL
-                        ================================================== -->
 
                         <div class="input-group">
 
@@ -202,10 +188,6 @@ require '../layouts/head.php';
 
                         </div>
 
-
-                        <!-- =================================================
-                             CONTRASEÑA
-                        ================================================== -->
 
                         <div class="input-group password-group">
 
@@ -240,12 +222,16 @@ require '../layouts/head.php';
 
                         </div>
 
+                        <p class="password-help">
+                            <a
+                                class="forgot-password-link"
+                                href="<?= url('/recuperar-contrasena') ?>">
+                                ¿Olvidaste tu contraseña?
+                            </a>
+                        </p>
+
                     </fieldset>
 
-
-                    <!-- =================================================
-                         BOTÓN
-                    ================================================== -->
 
                     <button
                         type="submit"
@@ -259,10 +245,6 @@ require '../layouts/head.php';
 
                 </form>
 
-
-                <!-- =================================================
-                     REGISTRO
-                ================================================== -->
 
                 <footer class="form-footer">
 
@@ -286,10 +268,7 @@ require '../layouts/head.php';
     </main>
 
 
-    <!-- =========================================================
-         JAVASCRIPT
-    ========================================================== -->
-
+    <!-- JAVASCRIPT -->
     <script
         src="<?= url('/public/js/auth.js') ?>"
         defer>

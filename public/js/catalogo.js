@@ -2,10 +2,7 @@ let productoActual = null;
 let cantidadActual = 1;
 
 
-/* =========================================================
-   ELEMENTOS
-========================================================= */
-
+/* ELEMENTOS */
 const overlay =
     document.getElementById('productoOverlay');
 
@@ -43,10 +40,7 @@ const agregarCarrito =
     document.getElementById('agregarCarrito');
 
 
-/* =========================================================
-   ABRIR PRODUCTO DESDE BOTÓN DEL CATÁLOGO
-========================================================= */
-
+/* ABRIR PRODUCTO DESDE BOTÓN DEL CATÁLOGO */
 function abrirProducto(boton) {
 
     const producto = {
@@ -73,10 +67,7 @@ function abrirProducto(boton) {
 }
 
 
-/* =========================================================
-   MOSTRAR PRODUCTO
-========================================================= */
-
+/* MOSTRAR PRODUCTO */
 function mostrarProducto(producto) {
 
     if (!producto) {
@@ -100,10 +91,7 @@ function mostrarProducto(producto) {
     }
 
 
-    /* =====================================================
-       INFORMACIÓN
-    ===================================================== */
-
+    /* INFORMACIÓN */
     detalleImagen.src =
         productoActual.imagen;
 
@@ -143,10 +131,7 @@ function mostrarProducto(producto) {
         cantidadActual;
 
 
-    /* =====================================================
-       ABRIR MODAL
-    ===================================================== */
-
+    /* ABRIR MODAL */
     if (!overlay) {
         return;
     }
@@ -163,10 +148,7 @@ function mostrarProducto(producto) {
 }
 
 
-/* =========================================================
-   ABRIR PRODUCTO DESDE HOME
-========================================================= */
-
+/* ABRIR PRODUCTO DESDE HOME */
 function abrirProductoDesdeDatos(producto) {
 
     if (!producto) {
@@ -205,10 +187,7 @@ function abrirProductoDesdeDatos(producto) {
 }
 
 
-/* =========================================================
-   CERRAR PRODUCTO
-========================================================= */
-
+/* CERRAR PRODUCTO */
 function cerrarDetalleProducto() {
 
     if (!overlay) {
@@ -227,10 +206,7 @@ function cerrarDetalleProducto() {
 }
 
 
-/* =========================================================
-   BOTÓN CERRAR
-========================================================= */
-
+/* BOTÓN CERRAR */
 if (cerrarProducto) {
 
     cerrarProducto.addEventListener(
@@ -240,10 +216,7 @@ if (cerrarProducto) {
 }
 
 
-/* =========================================================
-   CERRAR HACIENDO CLICK FUERA
-========================================================= */
-
+/* CERRAR HACIENDO CLICK FUERA */
 if (overlay) {
 
     overlay.addEventListener(
@@ -261,10 +234,7 @@ if (overlay) {
 }
 
 
-/* =========================================================
-   CERRAR CON ESC
-========================================================= */
-
+/* CERRAR CON ESC */
 document.addEventListener(
     'keydown',
     function (event) {
@@ -283,10 +253,7 @@ document.addEventListener(
 );
 
 
-/* =========================================================
-   RESTAR CANTIDAD
-========================================================= */
-
+/* RESTAR CANTIDAD */
 if (cantidadMenos) {
 
     cantidadMenos.addEventListener(
@@ -307,10 +274,7 @@ if (cantidadMenos) {
 }
 
 
-/* =========================================================
-   SUMAR CANTIDAD
-========================================================= */
-
+/* SUMAR CANTIDAD */
 if (cantidadMas) {
 
     cantidadMas.addEventListener(
@@ -335,20 +299,14 @@ if (cantidadMas) {
 }
 
 
-/* =========================================================
-   AGREGAR AL CARRITO
-========================================================= */
-
+/* AGREGAR AL CARRITO */
 if (agregarCarrito) {
 
     agregarCarrito.addEventListener(
         'click',
         async function () {
 
-            /* -------------------------------------------------
-               COMPROBAR PRODUCTO
-            ------------------------------------------------- */
-
+            /* COMPROBAR PRODUCTO */
             if (!productoActual) {
 
                 console.error(
@@ -365,20 +323,14 @@ if (agregarCarrito) {
             }
 
 
-            /* -------------------------------------------------
-               DESACTIVAR BOTÓN
-            ------------------------------------------------- */
-
+            /* DESACTIVAR BOTÓN */
             agregarCarrito.disabled = true;
 
             agregarCarrito.textContent =
                 'Agregando...';
 
 
-            /* -------------------------------------------------
-               OBTENER CSRF
-            ------------------------------------------------- */
-
+            /* OBTENER CSRF */
             const csrfToken =
                 document.querySelector(
                     'meta[name="csrf-token"]'
@@ -401,10 +353,7 @@ if (agregarCarrito) {
             }
 
 
-            /* -------------------------------------------------
-               CREAR DATOS
-            ------------------------------------------------- */
-
+            /* CREAR DATOS */
             const datos =
                 new URLSearchParams();
 
@@ -427,10 +376,7 @@ if (agregarCarrito) {
             );
 
 
-            /* -------------------------------------------------
-               CSRF
-            ------------------------------------------------- */
-
+            /* CSRF */
             datos.append(
                 'csrf_token',
                 csrfToken
@@ -439,10 +385,7 @@ if (agregarCarrito) {
 
             try {
 
-                /* =============================================
-                   ENVIAR AL CONTROLLER
-                ============================================= */
-
+                /* ENVIAR AL CONTROLLER */
                 const respuesta =
                     await fetch(
                         window.APP_BASE_URL + '/carrito',
@@ -459,10 +402,7 @@ if (agregarCarrito) {
                     );
 
 
-                /* =============================================
-                   COMPROBAR RESPUESTA
-                ============================================= */
-
+                /* COMPROBAR RESPUESTA */
                 if (!respuesta.ok) {
 
                     throw new Error(
@@ -473,10 +413,7 @@ if (agregarCarrito) {
                 }
 
 
-                /* =============================================
-                   LEER RESPUESTA
-                ============================================= */
-
+                /* LEER RESPUESTA */
                 const resultado =
                     await respuesta.text();
 
@@ -487,25 +424,16 @@ if (agregarCarrito) {
                 );
 
 
-                /* =============================================
-                   ACTUALIZAR CONTADOR
-                ============================================= */
-
+                /* ACTUALIZAR CONTADOR */
                 actualizarContadorCarrito();
 
 
-                /* =============================================
-                   CAMBIAR BOTÓN
-                ============================================= */
-
+                /* CAMBIAR BOTÓN */
                 agregarCarrito.textContent =
                     '✓ Agregado al carrito';
 
 
-                /* =============================================
-                   CERRAR MODAL
-                ============================================= */
-
+                /* CERRAR MODAL */
                 setTimeout(
                     function () {
 
@@ -554,10 +482,7 @@ if (agregarCarrito) {
 }
 
 
-/* =========================================================
-   ACTUALIZAR CONTADOR DEL CARRITO
-========================================================= */
-
+/* ACTUALIZAR CONTADOR DEL CARRITO */
 async function actualizarContadorCarrito() {
 
     try {
@@ -578,10 +503,7 @@ async function actualizarContadorCarrito() {
             await respuesta.text();
 
 
-        /* -------------------------------------------------
-           CREAR DOCUMENTO TEMPORAL
-        ------------------------------------------------- */
-
+        /* CREAR DOCUMENTO TEMPORAL */
         const temporal =
             document.createElement('div');
 
@@ -589,10 +511,7 @@ async function actualizarContadorCarrito() {
             html;
 
 
-        /* -------------------------------------------------
-           BUSCAR CANTIDAD
-        ------------------------------------------------- */
-
+        /* BUSCAR CANTIDAD */
         const cantidad =
             temporal.querySelector(
                 '.resumen-linea span:last-child'

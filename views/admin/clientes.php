@@ -1,5 +1,6 @@
 <?php
 
+// Muestra y filtra los clientes registrados.
 $pageCss = "admin-productos.css";
 
 require __DIR__ . '/../layouts/head.php';

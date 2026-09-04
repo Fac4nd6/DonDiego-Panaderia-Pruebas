@@ -5,6 +5,7 @@ $pageCss = "login.css";
 require '../../config/Database.php';
 require '../../config/Csrf.php';
 require '../../config/Brevo.php';
+require '../../config/Url.php';
 
 if (session_status() === PHP_SESSION_NONE) {
     require_once '../../config/Session.php';
@@ -18,23 +19,14 @@ $nombre = '';
 $email = '';
 
 
-/* =========================================================
-   PROCESAR REGISTRO
-========================================================= */
-
+/* PROCESAR REGISTRO */
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-    /* =====================================================
-       CSRF
-    ===================================================== */
-
+    /* CSRF */
     verificar_csrf();
 
 
-    /* =====================================================
-       DATOS
-    ===================================================== */
-
+    /* DATOS */
     $nombre =
         trim(
             $_POST['nombre'] ?? ''
@@ -54,10 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $_POST['password_confirmacion'] ?? '';
 
 
-    /* =====================================================
-       VALIDAR NOMBRE
-    ===================================================== */
-
+    /* VALIDAR NOMBRE */
     if (empty($nombre)) {
 
         $error =
@@ -73,7 +62,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
 
-    /* =====================================================
+    /*
        VALIDAR EMAIL
     ===================================================== */ elseif (
         !filter_var(
@@ -87,7 +76,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
 
-    /* =====================================================
+    /*
        VALIDAR CONTRASEÑA
     ===================================================== */ elseif (strlen($password) < 8) {
 
@@ -112,7 +101,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
 
-    /* =====================================================
+    /*
        CONFIRMAR CONTRASEÑA
     ===================================================== */ elseif (
         $password !==
@@ -124,7 +113,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
 
-    /* =====================================================
+    /*
        COMPROBAR EMAIL
     ===================================================== */ else {
 
@@ -162,20 +151,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $stmt->close();
 
 
-            /* =================================================
-               EMAIL YA EXISTE
-            ================================================== */
-
+            /* EMAIL YA EXISTE */
             if ($usuario) {
 
                 $error =
                     'El correo electrónico ya está registrado.';
             } else {
 
-                /* =============================================
-                   HASH DE CONTRASEÑA
-                ============================================== */
-
+                /* HASH DE CONTRASEÑA */
                 $passwordHash =
                     password_hash(
                         $password,
@@ -189,10 +172,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         'No se pudo proteger la contraseña.';
                 } else {
 
-                    /* =========================================
-                       GENERAR TOKEN
-                    ========================================== */
-
+                    /* GENERAR TOKEN */
                     $token =
                         bin2hex(
                             random_bytes(32)
@@ -201,8 +181,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                     /*
                      * El token será válido durante 24 horas.
-                     */
-
+                */
                     $tokenExpira =
                         date(
                             'Y-m-d H:i:s',
@@ -210,10 +189,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         );
 
 
-                    /* =========================================
-                       INSERTAR USUARIO
-                    ========================================== */
-
+                    /* INSERTAR USUARIO */
                     $stmt =
                         $conn->prepare(
                             "
@@ -249,27 +225,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         );
 
 
-                        /* =====================================
-                           CREAR CUENTA
-                        ====================================== */
-
+                        /* CREAR CUENTA */
                         if ($stmt->execute()) {
 
                             $stmt->close();
 
 
-                            /* =================================
-                               ENLACE DE VERIFICACIÓN
-                            ================================== */
-
+                            /* ENLACE DE VERIFICACIÓN */
                             $enlaceVerificacion =
                                 url_absoluta('/verificar-email?token=' . urlencode($token));
 
 
-                            /* =================================
-                               CONTENIDO DEL CORREO
-                            ================================== */
-
+                            /* CONTENIDO DEL CORREO */
                             $contenidoHTML = '
 
                             <!DOCTYPE html>
@@ -385,10 +352,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                             ';
 
 
-                            /* =================================
-                               ENVIAR CORREO
-                            ================================== */
-
+                            /* ENVIAR CORREO */
                             $resultadoCorreo =
                                 enviarCorreoBrevo(
                                     $email,
@@ -398,10 +362,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                 );
 
 
-                            /* =================================
-                               SI BREVO FALLA
-                            ================================== */
-
+                            /* SI BREVO FALLA */
                             if (
                                 !$resultadoCorreo['success']
                             ) {
@@ -410,8 +371,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                  * Eliminamos la cuenta para
                                  * no dejarla sin posibilidad
                                  * de verificación.
-                                 */
-
+                            */
                                 $stmt =
                                     $conn->prepare(
                                         "
@@ -440,22 +400,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                     . 'Intentá nuevamente más tarde.';
                             } else {
 
-                                /* =============================
-                                   REGENERAR CSRF
-                                ============================== */
-
+                                /* REGENERAR CSRF */
                                 $_SESSION['csrf_token'] =
                                     bin2hex(
                                         random_bytes(32)
                                     );
 
 
-                                /* =============================
-                                   AVISO
-                                ============================== */
-
+                                /* AVISO */
                                 header(
-                                    'Location: verificar_aviso.php'
+                                    'Location: ' . url('/verificacion')
                                 );
 
                                 exit;
@@ -482,10 +436,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 }
 
 
-/* =========================================================
-   HEAD
-========================================================= */
-
+/* HEAD */
 require '../layouts/head.php';
 
 ?>

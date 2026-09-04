@@ -17,23 +17,14 @@ $error = '';
 $email = '';
 
 
-/* =========================================================
-   PROCESAR SOLICITUD
-========================================================= */
-
+/* PROCESAR SOLICITUD */
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-    /* =====================================================
-       CSRF
-    ===================================================== */
-
+    /* CSRF */
     verificar_csrf();
 
 
-    /* =====================================================
-       EMAIL
-    ===================================================== */
-
+    /* EMAIL */
     $email =
         strtolower(
             trim(
@@ -42,10 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         );
 
 
-    /* =====================================================
-       VALIDAR EMAIL
-    ===================================================== */
-
+    /* VALIDAR EMAIL */
     if (
         !filter_var(
             $email,
@@ -58,10 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     } else {
 
-        /* =================================================
-           BUSCAR USUARIO
-        ================================================= */
-
+        /* BUSCAR USUARIO */
         $stmt =
             $conn->prepare(
                 "
@@ -103,8 +88,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             /*
              * No revelamos si el correo existe.
-             */
-
+        */
             if (!$usuario) {
 
                 $mensaje =
@@ -117,18 +101,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 /*
                  * La cuenta ya está verificada.
-                 */
-
+            */
                 $mensaje =
                     'Si existe una cuenta pendiente de verificación, '
                     . 'recibirás un nuevo correo electrónico.';
 
             } else {
 
-                /* =================================================
-                   CONTROL DE REENVÍO
-                ================================================== */
-
+                /* CONTROL DE REENVÍO */
                 $ahora = time();
 
                 $ultimoReenvio = null;
@@ -148,8 +128,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 /*
                  * Esperar 2 minutos entre reenvíos.
-                 */
-
+            */
                 if (
                     $ultimoReenvio !== null &&
                     ($ahora - $ultimoReenvio) < 120
@@ -163,8 +142,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                     /*
                      * Contador de reenvíos.
-                     */
-
+                */
                     $intentos =
                         (int)
                         $usuario['intentos_reenvio_verificacion'];
@@ -173,8 +151,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     /*
                      * Si pasó una hora desde el último
                      * reenvío, reiniciamos el contador.
-                     */
-
+                */
                     if (
                         $ultimoReenvio === null ||
                         ($ahora - $ultimoReenvio) >= 3600
@@ -186,8 +163,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                     /*
                      * Máximo 3 reenvíos por hora.
-                     */
-
+                */
                     if ($intentos >= 3) {
 
                         $error =
@@ -196,10 +172,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                     } else {
 
-                        /* =========================================
-                           GENERAR NUEVO TOKEN
-                        ========================================== */
-
+                        /* GENERAR NUEVO TOKEN */
                         $token =
                             bin2hex(
                                 random_bytes(32)
@@ -208,8 +181,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                         /*
                          * Nuevo token válido durante 24 horas.
-                         */
-
+                    */
                         $tokenExpira =
                             date(
                                 'Y-m-d H:i:s',
@@ -219,16 +191,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                         /*
                          * Nuevo contador.
-                         */
-
+                    */
                         $nuevoIntento =
                             $intentos + 1;
 
 
-                        /* =========================================
-                           GUARDAR TOKEN
-                        ========================================== */
-
+                        /* GUARDAR TOKEN */
                         $stmt =
                             $conn->prepare(
                                 "
@@ -274,18 +242,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                 $stmt->close();
 
 
-                                /* =================================
-                                   ENLACE
-                                ================================== */
-
+                                /* ENLACE */
                                 $enlaceVerificacion =
                                     url_absoluta('/verificar-email?token=' . urlencode($token));
 
 
-                                /* =================================
-                                   CONTENIDO EMAIL
-                                ================================== */
-
+                                /* CONTENIDO EMAIL */
                                 $contenidoHTML = '
 
                                 <!DOCTYPE html>
@@ -403,10 +365,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                 ';
 
 
-                                /* =================================
-                                   ENVIAR CON BREVO
-                                ================================== */
-
+                                /* ENVIAR CON BREVO */
                                 $resultadoCorreo =
                                     enviarCorreoBrevo(
                                         $email,
@@ -416,10 +375,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                     );
 
 
-                                /* =================================
-                                   RESULTADO
-                                ================================== */
-
+                                /* RESULTADO */
                                 if (
                                     !$resultadoCorreo['success']
                                 ) {
@@ -432,8 +388,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                                     /*
                                      * Regenerar CSRF.
-                                     */
-
+                                */
                                     $_SESSION['csrf_token'] =
                                         bin2hex(
                                             random_bytes(32)
@@ -455,10 +410,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 }
 
 
-/* =========================================================
-   HEAD
-========================================================= */
-
+/* HEAD */
 require '../layouts/head.php';
 
 ?>
@@ -472,10 +424,7 @@ require '../layouts/head.php';
             aria-labelledby="verification-title"
         >
 
-            <!-- =================================================
-                 LOGO
-            ================================================== -->
-
+            <!-- LOGO -->
             <header class="logo-container">
 
                 <div class="logo-badge">
@@ -492,10 +441,7 @@ require '../layouts/head.php';
 
             <div class="login-content">
 
-                <!-- =================================================
-                     TÍTULO
-                ================================================== -->
-
+                <!-- TÍTULO -->
                 <header class="form-header">
 
                     <h2
@@ -508,10 +454,7 @@ require '../layouts/head.php';
                 </header>
 
 
-                <!-- =================================================
-                     MENSAJE
-                ================================================== -->
-
+                <!-- MENSAJE -->
                 <?php if (!empty($mensaje)): ?>
 
                     <div
@@ -534,10 +477,7 @@ require '../layouts/head.php';
                 <?php endif; ?>
 
 
-                <!-- =================================================
-                     ERROR
-                ================================================== -->
-
+                <!-- ERROR -->
                 <?php if (!empty($error)): ?>
 
                     <aside
@@ -556,10 +496,7 @@ require '../layouts/head.php';
                 <?php endif; ?>
 
 
-                <!-- =================================================
-                     FORMULARIO
-                ================================================== -->
-
+                <!-- FORMULARIO -->
                 <form
                                     action="<?= url('/reenviar-verificacion') ?>"
                     method="POST"
@@ -622,10 +559,7 @@ require '../layouts/head.php';
                 </form>
 
 
-                <!-- =================================================
-                     REGISTRO
-                ================================================== -->
-
+                <!-- REGISTRO -->
                 <div class="form-footer">
 
                     <p>

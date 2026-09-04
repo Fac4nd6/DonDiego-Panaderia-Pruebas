@@ -202,6 +202,8 @@ CREATE TABLE `usuarios` (
   `email_verificado` tinyint(1) NOT NULL DEFAULT 0,
   `token_verificacion` varchar(64) DEFAULT NULL,
   `token_expira` datetime DEFAULT NULL,
+  `codigo_recuperacion` varchar(255) DEFAULT NULL,
+  `codigo_recuperacion_expira` datetime DEFAULT NULL,
   `ultimo_reenvio_verificacion` datetime DEFAULT NULL,
   `intentos_reenvio_verificacion` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

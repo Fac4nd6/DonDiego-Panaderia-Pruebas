@@ -1,5 +1,6 @@
 <?php
 
+// Abre la conexión principal con MySQL.
 $host = 'localhost';
 $user = 'root';
 $password = '';

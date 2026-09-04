@@ -15,10 +15,7 @@
     <link rel="icon" href="<?= url('/public/img/logo-don2.png') ?>" type="image/x-icon">
 
 
-    <!-- =====================================================
-         CSRF TOKEN
-    ====================================================== -->
-
+    <!-- CSRF TOKEN -->
     <?php
 
     require_once __DIR__ . '/../../config/Session.php';
@@ -41,10 +38,7 @@
         ) ?>">
 
 
-    <!-- =====================================================
-         GOOGLE FONTS
-    ====================================================== -->
-
+    <!-- GOOGLE FONTS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
@@ -53,10 +47,7 @@
         rel="stylesheet">
 
 
-    <!-- =====================================================
-         CSS GENERAL
-    ====================================================== -->
-
+    <!-- CSS GENERAL -->
     <link
         rel="stylesheet"
         href="<?= url('/public/css/variable.css') ?>">
@@ -66,19 +57,13 @@
         href="<?= url('/public/css/style.css') ?>">
 
 
-    <!-- =====================================================
-         CSS HEADER
-    ====================================================== -->
-
+    <!-- CSS HEADER -->
     <link
         rel="stylesheet"
         href="<?= url('/public/css/header.css') ?>">
 
 
-    <!-- =====================================================
-         CSS ESPECÍFICO DE LA PÁGINA
-    ====================================================== -->
-
+    <!-- CSS ESPECÍFICO DE LA PÁGINA -->
     <?php if (isset($pageCss)): ?>
 
         <?php
@@ -93,17 +78,14 @@
 
             <link
                 rel="stylesheet"
-                href="<?= url('/public/css/' . htmlspecialchars($css)) ?>">
+                href="<?= url('/public/css/' . htmlspecialchars($css)) ?>?v=<?= filemtime(__DIR__ . '/../../public/css/' . $css) ?>">
 
         <?php endforeach; ?>
 
     <?php endif; ?>
 
 
-    <!-- =====================================================
-         CSS FOOTER
-    ====================================================== -->
-
+    <!-- CSS FOOTER -->
     <link
         rel="stylesheet"
         href="<?= url('/public/css/footer.css') ?>">
@@ -113,10 +95,7 @@
         href="<?= url('/public/css/responsive.css') ?>">
 
 
-    <!-- =====================================================
-         FONT AWESOME
-    ====================================================== -->
-
+    <!-- FONT AWESOME -->
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
