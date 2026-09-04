@@ -263,8 +263,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                             ================================== */
 
                             $enlaceVerificacion =
-                                'http://localhost/DonDiego-Panaderia-Pruebas/views/usuarios/verificar_email.php?token='
-                                . urlencode($token);
+                                url_absoluta('/verificar-email?token=' . urlencode($token));
 
 
                             /* =================================
@@ -504,7 +503,7 @@ require '../layouts/head.php';
                 <div class="logo-badge">
 
                     <img
-                        src="../../public/img/logo.avif"
+                        src="<?= url('/public/img/logo.avif') ?>"
                         alt="Logo de Don Diego">
 
                 </div>
@@ -543,7 +542,7 @@ require '../layouts/head.php';
 
 
                 <form
-                    action="register.php"
+                                    action="<?= url('/registro') ?>"
                     method="POST"
                     class="login-form"
                     id="registerForm">
@@ -711,7 +710,7 @@ require '../layouts/head.php';
 
                         ¿Ya tienes una cuenta?
 
-                        <a href="login.php">
+                        <a href="<?= url('/login') ?>">
                             Inicia sesión
                         </a>
 
@@ -727,7 +726,7 @@ require '../layouts/head.php';
 
 
     <script
-        src="../../public/js/auth.js"
+        src="<?= url('/public/js/auth.js') ?>"
         defer></script>
 
 </body>

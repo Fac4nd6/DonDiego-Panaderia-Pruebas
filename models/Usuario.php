@@ -254,6 +254,68 @@ class Usuario
         return $resultado->fetch_all(MYSQLI_ASSOC);
     }
 
+    public function obtenerClientes($busqueda = '', $rol = 'cliente')
+    {
+        $sql = "
+            SELECT
+                id,
+                nombre_completo,
+                nombre_comercio,
+                email,
+                telefono,
+                rol,
+                fecha_registro
+            FROM usuarios
+            WHERE rol IN ('cliente', 'empleado', 'admin')
+        ";
+
+        $parametroBusqueda = '%' . $busqueda . '%';
+        $parametros = [];
+        $tipos = '';
+
+        if ($rol !== 'todos') {
+            $sql .= ' AND rol = ?';
+            $parametros[] = $rol;
+            $tipos .= 's';
+        }
+
+        if ($busqueda !== '') {
+            $sql .= "
+                AND (
+                    nombre_completo LIKE ?
+                    OR email LIKE ?
+                    OR telefono LIKE ?
+                )
+            ";
+            $parametros[] = $parametroBusqueda;
+            $parametros[] = $parametroBusqueda;
+            $parametros[] = $parametroBusqueda;
+            $tipos .= 'sss';
+        }
+
+        $sql .= ' ORDER BY nombre_completo ASC';
+
+        $stmt = $this->db->prepare($sql);
+
+        if (!$stmt) {
+            return [];
+        }
+
+        if (!empty($parametros)) {
+            $stmt->bind_param($tipos, ...$parametros);
+        }
+
+        if (!$stmt->execute()) {
+            $stmt->close();
+            return [];
+        }
+
+        $clientes = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+
+        return $clientes;
+    }
+
     // =========================================================
     // ACTUALIZAR ROL
     // =========================================================

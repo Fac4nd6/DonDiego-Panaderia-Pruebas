@@ -21,7 +21,7 @@ require_once '../../config/Csrf.php';
 
 if (!isset($_SESSION['usuario_id'])) {
 
-    header('Location: login.php');
+    header('Location: ' . url('/login'));
 
     exit;
 }
@@ -53,7 +53,7 @@ if (!$usuario) {
 
     session_destroy();
 
-    header('Location: login.php');
+    header('Location: ' . url('/login'));
 
     exit;
 }
@@ -463,7 +463,7 @@ require '../layouts/head.php';
                 <!-- CARRITO -->
 
                 <a
-                    href="/DonDiego-Panaderia-Pruebas/views/carrito/index.php"
+                    href="<?= url('/carrito') ?>"
                     class="account-option"
                 >
 
@@ -493,7 +493,7 @@ require '../layouts/head.php';
                 <!-- PEDIDOS -->
 
                 <a
-                    href="/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=listar"
+                    href="<?= url('/pedidos') ?>"
                     class="account-option"
                 >
 
@@ -523,7 +523,7 @@ require '../layouts/head.php';
                 <!-- VOLVER -->
 
                 <a
-                    href="/DonDiego-Panaderia-Pruebas/controllers/HomeController.php"
+                    href="<?= url('/') ?>"
                     class="account-option"
                 >
 
@@ -554,7 +554,7 @@ require '../layouts/head.php';
             <footer class="account-footer">
 
 
-                <form method="POST" action="/DonDiego-Panaderia-Pruebas/controllers/logout.php">
+                <form method="POST" action="<?= url('/logout') ?>">
 
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
 

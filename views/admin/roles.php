@@ -56,7 +56,7 @@ $csrfToken = $_SESSION['csrf_token'];
         <div class="admin-header-botones">
 
             <a
-                href="/DonDiego-Panaderia-Pruebas/controllers/ProductoController.php?accion=listar"
+                href="<?= url('/admin/productos') ?>"
                 class="btn-agregar"
             >
                 ← Volver a productos
@@ -81,7 +81,7 @@ $csrfToken = $_SESSION['csrf_token'];
 
             <form
                 method="POST"
-                action="/DonDiego-Panaderia-Pruebas/controllers/ProductoController.php"
+                action="<?= url('/admin/roles') ?>"
             >
 
                 <input
@@ -178,7 +178,7 @@ $csrfToken = $_SESSION['csrf_token'];
 
                 <form
                     method="POST"
-                    action="/DonDiego-Panaderia-Pruebas/controllers/ProductoController.php"
+                    action="<?= url('/admin/roles') ?>"
                 >
 
                     <input

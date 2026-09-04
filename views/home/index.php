@@ -24,7 +24,7 @@ require __DIR__ . '/../layouts/header.php';
                 <p>Los mejores productos de panadería.</p>
 
                 <a
-                    href="/DonDiego-Panaderia-Pruebas/controllers/CatalogoController.php"
+                    href="<?= url('/productos') ?>"
                     class="hero-button">
                     Ver catálogo
                 </a>
@@ -34,7 +34,7 @@ require __DIR__ . '/../layouts/header.php';
             <div class="hero-image">
 
                 <img
-                    src="/DonDiego-Panaderia-Pruebas/public/img/dondiego-algorico.jpeg"
+                    src="<?= url('/public/img/dondiego-algorico.jpeg') ?>"
                     alt="Productos de Don Diego">
 
             </div>
@@ -57,12 +57,12 @@ require __DIR__ . '/../layouts/header.php';
                 <?php foreach ($productosDestacados as $producto): ?>
 
                     <a
-                        href="/DonDiego-Panaderia-Pruebas/controllers/CatalogoController.php?producto=<?= (int) $producto['id'] ?>"
+                        href="<?= url('/productos?producto=' . (int) $producto['id']) ?>"
                         class="producto-card"
                     >
 
                         <img
-                            src="/DonDiego-Panaderia-Pruebas/public/img/<?= htmlspecialchars($producto['imagen']) ?>"
+                            src="<?= url('/public/img/' . htmlspecialchars($producto['imagen'])) ?>"
                             alt="<?= htmlspecialchars($producto['nombre']) ?>"
                         >
 
@@ -97,7 +97,7 @@ require __DIR__ . '/../layouts/header.php';
         ====================================================== -->
 
         <a
-            href="/DonDiego-Panaderia-Pruebas/controllers/CatalogoController.php"
+            href="<?= url('/productos') ?>"
             class="catalogo-button">
             Ver catálogo completo
         </a>
@@ -118,12 +118,12 @@ require __DIR__ . '/../layouts/header.php';
                 <?php foreach ($productosRecomendados as $producto): ?>
 
                     <a
-                        href="/DonDiego-Panaderia-Pruebas/controllers/CatalogoController.php?producto=<?= (int) $producto['id'] ?>"
+                        href="<?= url('/productos?producto=' . (int) $producto['id']) ?>"
                         class="producto-card"
                     >
 
                         <img
-                            src="/DonDiego-Panaderia-Pruebas/public/img/<?= htmlspecialchars($producto['imagen']) ?>"
+                            src="<?= url('/public/img/' . htmlspecialchars($producto['imagen'])) ?>"
                             alt="<?= htmlspecialchars($producto['nombre']) ?>"
                         >
 

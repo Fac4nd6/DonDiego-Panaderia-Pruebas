@@ -73,7 +73,7 @@ try {
         <div class="footer-logo">
 
             <img
-                src="/DonDiego-Panaderia-Pruebas/public/img/logo-don2.png"
+                src="<?= url('/public/img/logo-don2.png') ?>"
                 alt="Don Diego Panadería y Confitería"
             >
 
@@ -203,19 +203,19 @@ try {
             </h3>
 
             <a
-                href="/DonDiego-Panaderia-Pruebas/controllers/HomeController.php"
+                href="<?= url('/') ?>"
             >
                 Hogar
             </a>
 
             <a
-                href="/DonDiego-Panaderia-Pruebas/controllers/CatalogoController.php"
+                href="<?= url('/productos') ?>"
             >
                 Productos
             </a>
 
             <a
-                href="/DonDiego-Panaderia-Pruebas/views/contacto.php"
+                href="<?= url('/contacto') ?>"
             >
                 Contacto
             </a>
@@ -251,11 +251,11 @@ try {
                             <?php if (!empty($producto['imagen'])): ?>
 
                                 <img
-                                    src="/DonDiego-Panaderia-Pruebas/public/img/<?= htmlspecialchars(
+                                    src="<?= url('/public/img/' . htmlspecialchars(
                                         $producto['imagen'],
                                         ENT_QUOTES,
                                         'UTF-8'
-                                    ) ?>"
+                                    )) ?>"
                                     alt="<?= htmlspecialchars(
                                         $producto['nombre'],
                                         ENT_QUOTES,

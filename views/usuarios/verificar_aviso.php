@@ -19,7 +19,7 @@ require '../layouts/head.php';
                 <div class="logo-badge">
 
                     <img
-                        src="../../public/img/logo.avif"
+                        src="<?= url('/public/img/logo.avif') ?>"
                         alt="Logo de Don Diego">
 
                 </div>
@@ -84,7 +84,7 @@ require '../layouts/head.php';
 
                         ¿No recibiste el correo?
 
-                        <a href="reenviar_verificacion.php"
+                        <a href="<?= url('/reenviar-verificacion') ?>"
                             class="verification-resend">
                             Reenviar verificación
                         </a>
@@ -101,7 +101,7 @@ require '../layouts/head.php';
                             margin-top:20px;
                         ">
 
-                        <a href="login.php"
+                        <a href="<?= url('/login') ?>"
                             class="verification-resend">
                             Volver a iniciar sesión
                         </a>

@@ -680,7 +680,7 @@ class Pedido
        OBTENER TODOS LOS PEDIDOS
     ========================================================= */
 
-    public function obtenerTodos()
+    public function obtenerTodos($nombreCliente = '', $fechaDesde = '', $fechaHasta = '', $estado = '')
     {
 
         $sql = "
@@ -704,19 +704,61 @@ class Pedido
 
             INNER JOIN usuarios u
                 ON p.usuario_id = u.id
-
-            ORDER BY p.fecha_pedido DESC
         ";
 
-        $resultado = $this->conn->query($sql);
+        $condiciones = [];
+        $parametros = [];
+        $tipos = '';
 
-        if (!$resultado) {
+        if ($nombreCliente !== '') {
+            $condiciones[] = 'u.nombre_completo LIKE ?';
+            $parametros[] = '%' . $nombreCliente . '%';
+            $tipos .= 's';
+        }
+
+        if ($fechaDesde !== '') {
+            $condiciones[] = 'DATE(p.fecha_pedido) >= ?';
+            $parametros[] = $fechaDesde;
+            $tipos .= 's';
+        }
+
+        if ($fechaHasta !== '') {
+            $condiciones[] = 'DATE(p.fecha_pedido) <= ?';
+            $parametros[] = $fechaHasta;
+            $tipos .= 's';
+        }
+
+        if ($estado !== '') {
+            $condiciones[] = 'p.estado = ?';
+            $parametros[] = $estado;
+            $tipos .= 's';
+        }
+
+        if (!empty($condiciones)) {
+            $sql .= ' WHERE ' . implode(' AND ', $condiciones);
+        }
+
+        $sql .= ' ORDER BY p.fecha_pedido DESC';
+
+        $stmt = $this->conn->prepare($sql);
+
+        if (!$stmt) {
             return [];
         }
 
-        return $resultado->fetch_all(
-            MYSQLI_ASSOC
-        );
+        if (!empty($parametros)) {
+            $stmt->bind_param($tipos, ...$parametros);
+        }
+
+        if (!$stmt->execute()) {
+            $stmt->close();
+            return [];
+        }
+
+        $pedidos = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+
+        return $pedidos;
     }
 
 

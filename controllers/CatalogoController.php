@@ -1,5 +1,6 @@
 <?php
 
+require_once __DIR__ . '/../config/Url.php';
 require_once __DIR__ . '/../config/Database.php';
 require_once __DIR__ . '/../models/Producto.php';
 
@@ -49,7 +50,7 @@ if (isset($_GET['producto'])) {
             $codigoError = 404;
             $tituloError = 'Producto no encontrado';
             $descripcionError = 'El producto que buscás ya no está disponible.';
-            $urlVolver = '/DonDiego-Panaderia-Pruebas/controllers/CatalogoController.php';
+            $urlVolver = url('/productos');
             $textoVolver = 'Volver al catálogo';
             require __DIR__ . '/../views/errors/error.php';
             exit;

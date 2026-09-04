@@ -48,7 +48,7 @@ function verificar_csrf()
 if (!isset($_SESSION['usuario_id'])) {
 
     header(
-        'Location: /DonDiego-Panaderia-Pruebas/views/usuarios/login.php'
+        'Location: ' . url('/login')
     );
 
     exit;
@@ -69,7 +69,7 @@ if (
     $codigoError = 404;
     $tituloError = 'Página no encontrada';
     $descripcionError = 'No pudimos encontrar lo que estabas buscando.';
-    $urlVolver = '/DonDiego-Panaderia-Pruebas/controllers/HomeController.php';
+    $urlVolver = url('/');
     $textoVolver = 'Volver al inicio';
 
     require __DIR__ . '/../views/errors/error.php';
@@ -89,18 +89,39 @@ require_once __DIR__ . '/../models/Usuario.php';
 
 $productoModel = new Producto($conn);
 
-$accion = $_POST['accion'] ?? $_GET['accion'] ?? 'listar';
+$accion = $_POST['accion'] ?? $_GET['accion'] ?? 'admin_productos';
 
 
 // =========================================================
 // LISTAR
 // =========================================================
 
-if ($accion === 'listar') {
+if ($accion === 'admin_productos' || $accion === 'listar') {
 
     $productos = $productoModel->obtenerTodos();
 
     require __DIR__ . '/../views/admin/productos.php';
+
+    exit;
+}
+
+// =========================================================
+// CLIENTES
+// =========================================================
+
+if ($accion === 'clientes') {
+
+    $busqueda = trim($_GET['buscar'] ?? '');
+    $rol = trim($_GET['rol'] ?? 'cliente');
+
+    if (!in_array($rol, ['todos', 'cliente', 'empleado', 'admin'], true)) {
+        $rol = 'cliente';
+    }
+
+    $usuarioModel = new Usuario($conn);
+    $clientes = $usuarioModel->obtenerClientes($busqueda, $rol);
+
+    require __DIR__ . '/../views/admin/clientes.php';
 
     exit;
 }
@@ -266,7 +287,7 @@ if ($accion === 'actualizar_rol') {
     // -----------------------------------------------------
 
     header(
-        'Location: ProductoController.php?accion=roles'
+        'Location: ' . url('/admin/roles')
     );
 
     exit;
@@ -296,7 +317,7 @@ if ($accion === 'guardar') {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
         header(
-            'Location: ProductoController.php?accion=listar'
+               'Location: ' . url('/admin/productos')
         );
 
         exit;
@@ -494,7 +515,7 @@ if ($accion === 'guardar') {
 
 
     header(
-        'Location: ProductoController.php?accion=listar'
+           'Location: ' . url('/admin/productos')
     );
 
     exit;
@@ -528,7 +549,7 @@ if ($accion === 'editar') {
         $codigoError = 404;
         $tituloError = 'Producto no encontrado';
         $descripcionError = 'El producto que buscás ya no está disponible.';
-        $urlVolver = '/DonDiego-Panaderia-Pruebas/controllers/CatalogoController.php';
+        $urlVolver = url('/productos');
         $textoVolver = 'Volver al catálogo';
 
         require __DIR__ . '/../views/errors/error.php';
@@ -556,7 +577,7 @@ if ($accion === 'actualizar') {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
         header(
-            'Location: ProductoController.php?accion=listar'
+               'Location: ' . url('/admin/productos')
         );
 
         exit;
@@ -623,7 +644,7 @@ if ($accion === 'actualizar') {
         $codigoError = 404;
         $tituloError = 'Producto no encontrado';
         $descripcionError = 'El producto que buscás ya no está disponible.';
-        $urlVolver = '/DonDiego-Panaderia-Pruebas/controllers/ProductoController.php?accion=listar';
+        $urlVolver = url('/admin/productos');
         $textoVolver = 'Volver a productos';
 
         require __DIR__ . '/../views/errors/error.php';
@@ -797,7 +818,7 @@ if ($accion === 'actualizar') {
 
 
     header(
-        'Location: ProductoController.php?accion=listar'
+           'Location: ' . url('/admin/productos')
     );
 
     exit;
@@ -840,7 +861,7 @@ if ($accion === 'desactivar') {
 
 
     header(
-        'Location: ProductoController.php?accion=listar'
+           'Location: ' . url('/admin/productos')
     );
 
     exit;
@@ -883,7 +904,7 @@ if ($accion === 'activar') {
 
 
     header(
-        'Location: ProductoController.php?accion=listar'
+           'Location: ' . url('/admin/productos')
     );
 
     exit;
@@ -932,7 +953,7 @@ if ($accion === 'eliminar') {
         $codigoError = 404;
         $tituloError = 'Producto no encontrado';
         $descripcionError = 'El producto que buscás ya no está disponible.';
-        $urlVolver = '/DonDiego-Panaderia-Pruebas/controllers/ProductoController.php?accion=listar';
+        $urlVolver = url('/admin/productos');
         $textoVolver = 'Volver a productos';
 
         require __DIR__ . '/../views/errors/error.php';
@@ -977,7 +998,7 @@ if ($accion === 'eliminar') {
     // -----------------------------------------------------
 
     header(
-        'Location: ProductoController.php?accion=listar'
+        'Location: ' . url('/admin/productos')
     );
 
     exit;

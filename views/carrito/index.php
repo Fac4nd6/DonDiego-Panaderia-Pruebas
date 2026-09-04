@@ -51,7 +51,7 @@ require __DIR__ . '/../layouts/header.php';
                 </p>
 
                 <a
-                    href="/DonDiego-Panaderia-Pruebas/controllers/CatalogoController.php"
+                    href="<?= url('/productos') ?>"
                     class="btn-volver">
                     Ver catálogo
                 </a>
@@ -88,11 +88,11 @@ require __DIR__ . '/../layouts/header.php';
                                 <?php if (!empty($item['imagen'])): ?>
 
                                     <img
-                                        src="/DonDiego-Panaderia-Pruebas/public/img/<?= htmlspecialchars(
+                                        src="<?= url('/public/img/' . htmlspecialchars(
                                                                                         $item['imagen'],
                                                                                         ENT_QUOTES,
                                                                                         'UTF-8'
-                                                                                    ) ?>"
+                                                                                    )) ?>"
                                         alt="<?= htmlspecialchars(
                                                     $item['nombre'],
                                                     ENT_QUOTES,
@@ -102,7 +102,7 @@ require __DIR__ . '/../layouts/header.php';
                                 <?php else: ?>
 
                                     <img
-                                        src="/DonDiego-Panaderia-Pruebas/public/img/logo.avif"
+                                        src="<?= url('/public/img/logo.avif') ?>"
                                         alt="Don Diego">
 
                                 <?php endif; ?>
@@ -145,7 +145,7 @@ require __DIR__ . '/../layouts/header.php';
 
                                 <form
                                     method="POST"
-                                    action="/DonDiego-Panaderia-Pruebas/controllers/CarritoController.php"
+                                    action="<?= url('/carrito') ?>"
                                     class="cantidad-form">
 
                                     <input
@@ -195,7 +195,7 @@ require __DIR__ . '/../layouts/header.php';
 
                                 <form
                                     method="POST"
-                                    action="/DonDiego-Panaderia-Pruebas/controllers/CarritoController.php">
+                                    action="<?= url('/carrito') ?>">
 
 
                                     <input
@@ -308,7 +308,7 @@ require __DIR__ . '/../layouts/header.php';
                     <!-- CONTINUAR PEDIDO -->
 
                     <a
-                        href="/DonDiego-Panaderia-Pruebas/controllers/PedidoController.php?accion=crear"
+                        href="<?= url('/pedidos/crear') ?>"
                         class="btn-continuar">
                         Continuar con el pedido
                     </a>
@@ -317,7 +317,7 @@ require __DIR__ . '/../layouts/header.php';
                     <!-- SEGUIR COMPRANDO -->
 
                     <a
-                        href="/DonDiego-Panaderia-Pruebas/controllers/CatalogoController.php"
+                        href="<?= url('/productos') ?>"
                         class="btn-seguir-comprando">
                         ← Seguir comprando
                     </a>

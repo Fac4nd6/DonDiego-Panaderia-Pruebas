@@ -43,7 +43,7 @@ $editando = !empty($producto);
 
 
             <a
-                href="ProductoController.php?accion=listar"
+                href="<?= url('/admin/productos') ?>"
                 class="btn-volver">
 
                 <i class="fa-solid fa-arrow-left"></i>
@@ -63,7 +63,7 @@ $editando = !empty($producto);
         <section class="admin-form-card">
 
             <form
-                action="ProductoController.php"
+                action="<?= url('/admin/productos') ?>"
                 method="POST"
                 enctype="multipart/form-data"
                 class="producto-form">
@@ -281,7 +281,7 @@ $editando = !empty($producto);
                         <div class="imagen-actual">
 
                             <img
-                                src="/DonDiego-Panaderia-Pruebas/public/img/<?= htmlspecialchars($producto['imagen']) ?>"
+                                src="<?= url('/public/img/' . htmlspecialchars($producto['imagen'])) ?>"
                                 alt="<?= htmlspecialchars($producto['nombre']) ?>">
 
 
@@ -402,7 +402,7 @@ $editando = !empty($producto);
 
 
                     <a
-                        href="ProductoController.php?accion=listar"
+                        href="<?= url('/admin/productos') ?>"
                         class="btn-cancelar">
 
                         Cancelar
@@ -451,7 +451,7 @@ $editando = !empty($producto);
 
 
                     <form
-                        action="ProductoController.php"
+                        action="<?= url('/admin/productos') ?>"
                         method="POST"
                         onsubmit="return confirm(
                             '¿Seguro que querés eliminar este producto? Esta acción no se puede deshacer.'

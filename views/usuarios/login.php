@@ -59,7 +59,7 @@ if (
     ) {
 
         header(
-            'Location: ../../controllers/HomeController.php'
+            'Location: ' . url('/')
         );
 
         exit;
@@ -97,7 +97,7 @@ require '../layouts/head.php';
                 <div class="logo-badge">
 
                     <img
-                        src="../../public/img/logo.avif"
+                        src="<?= url('/public/img/logo.avif') ?>"
                         alt="Logo de Don Diego">
 
                 </div>
@@ -151,7 +151,7 @@ require '../layouts/head.php';
                 ================================================== -->
 
                 <form
-                    action="login.php"
+                    action="<?= url('/login') ?>"
                     method="POST"
                     class="login-form"
                     id="loginForm">
@@ -270,7 +270,7 @@ require '../layouts/head.php';
 
                         ¿No tienes una cuenta?
 
-                        <a href="register.php">
+                        <a href="<?= url('/registro') ?>">
                             Regístrate
                         </a>
 
@@ -291,7 +291,7 @@ require '../layouts/head.php';
     ========================================================== -->
 
     <script
-        src="../../public/js/auth.js"
+        src="<?= url('/public/js/auth.js') ?>"
         defer>
     </script>
 
