@@ -1,7 +1,4 @@
-/* =========================================================
-   HERO
-========================================================= */
-
+/* HERO */
 .producto-card {
     text-decoration: none;
     color: inherit;
@@ -35,7 +32,7 @@
 }
 
 
-/* ---------- Decoración ---------- */
+/* Decoración */
 
 .hero::before {
     content: "";
@@ -70,7 +67,7 @@
 }
 
 
-/* ---------- Contenido ---------- */
+/* Contenido */
 
 .hero-content {
     width: 60%;
@@ -108,7 +105,7 @@
 }
 
 
-/* ---------- Botón ---------- */
+/* Botón */
 
 .hero-button {
     display: inline-block;
@@ -146,7 +143,7 @@
 }
 
 
-/* ---------- Imagen ---------- */
+/* Imagen */
 
 .hero-image {
     width: 25%;
@@ -183,10 +180,7 @@
 }
 
 
-/* =========================================================
-   PRODUCTOS
-========================================================= */
-
+/* PRODUCTOS */
 .productos {
     position: relative;
 
@@ -206,7 +200,7 @@
 }
 
 
-/* ---------- Decoración ---------- */
+/* Decoración */
 
 .productos::before {
     content: "";
@@ -245,7 +239,7 @@
 }
 
 
-/* ---------- Título ---------- */
+/* Título */
 
 h2 {
     position: relative;
@@ -278,7 +272,7 @@ h2::after {
 }
 
 
-/* ---------- Grid ---------- */
+/* Grid */
 
 .productos-grid {
     position: relative;
@@ -294,7 +288,7 @@ h2::after {
 }
 
 
-/* ---------- Card ---------- */
+/* Card */
 
 .producto-card {
     position: relative;
@@ -329,7 +323,7 @@ h2::after {
 }
 
 
-/* ---------- Imagen ---------- */
+/* Imagen */
 
 .producto-card img {
     width: 100%;
@@ -347,7 +341,7 @@ h2::after {
 }
 
 
-/* ---------- Capa de interacción ---------- */
+/* Capa de interacción */
 
 .producto-card::before {
     content: "";
@@ -372,7 +366,7 @@ h2::after {
 }
 
 
-/* ---------- Degradado ---------- */
+/* Degradado */
 
 .producto-card::after {
     content: "";
@@ -393,7 +387,7 @@ h2::after {
 }
 
 
-/* ---------- Información ---------- */
+/* Información */
 
 .producto-info {
     position: absolute;
@@ -445,7 +439,7 @@ h2::after {
 }
 
 
-/* ---------- Ver producto ---------- */
+/* Ver producto */
 
 .ver-producto {
     position: absolute;
@@ -485,7 +479,7 @@ h2::after {
 }
 
 
-/* ---------- Botón catálogo ---------- */
+/* Botón catálogo */
 
 .catalogo-button {
     
@@ -532,10 +526,7 @@ h2::after {
         0 9px 16px rgba(0, 0, 0, 0.15);
 }
 
-/* =========================================================
-   recomendado
-========================================================= */
-
+/* recomendado */
 .recommended {
     position: relative;
 
@@ -555,10 +546,7 @@ h2::after {
 }
 
 
-/* =========================================================
-   CONÓCENOS
-========================================================= */
-
+/* CONÓCENOS */
 .conocenos {
     position: relative;
 
@@ -593,7 +581,7 @@ h2::after {
 }
 
 
-/* ---------- Decoración animada ---------- */
+/* Decoración animada */
 
 .conocenos::before {
     content: "";
@@ -637,7 +625,7 @@ h2::after {
 }
 
 
-/* ---------- Contenido ---------- */
+/* Contenido */
 
 .conocenos-contenido {
     position: relative;
@@ -657,7 +645,7 @@ h2::after {
 }
 
 
-/* ---------- Texto ---------- */
+/* Texto */
 
 .info-texto {
     color: white;
@@ -728,7 +716,7 @@ h2::after {
 }
 
 
-/* ---------- Datos ---------- */
+/* Datos */
 
 .info-datos {
     display: flex;
@@ -802,7 +790,7 @@ h2::after {
 }
 
 
-/* ---------- Botón ---------- */
+/* Botón */
 
 .conocenos-button {
     display: inline-flex;
@@ -856,7 +844,7 @@ h2::after {
 }
 
 
-/* ---------- Mapa ---------- */
+/* Mapa */
 
 .mapa-container {
     position: relative;
@@ -902,7 +890,7 @@ h2::after {
 }
 
 
-/* ---------- Etiqueta mapa ---------- */
+/* Etiqueta mapa */
 
 .mapa-label {
     position: absolute;
@@ -927,10 +915,7 @@ h2::after {
 }
 
 
-/* =========================================================
-   SEPARADOR
-========================================================= */
-
+/* SEPARADOR */
 .separador {
     border: none;
 
@@ -952,11 +937,8 @@ h2::after {
 }
 
 
-/* =========================================================
-   ANIMACIONES
-========================================================= */
-
-/* ---------- Hero ---------- */
+/* ANIMACIONES */
+/* Hero */
 
 @keyframes heroText {
     from {
@@ -994,7 +976,7 @@ h2::after {
 }
 
 
-/* ---------- Conócenos ---------- */
+/* Conócenos */
 
 @keyframes conocenosTexto {
     from {
@@ -1033,7 +1015,7 @@ h2::after {
 }
 
 
-/* ---------- Círculos ---------- */
+/* Círculos */
 
 @keyframes circuloGrande {
     0% {
@@ -1096,13 +1078,10 @@ h2::after {
 }
 
 
-/* =========================================================
-   RESPONSIVE — TABLET
-========================================================= */
-
+/* RESPONSIVE — TABLET */
 @media (max-width: 900px) {
 
-    /* ---------- Hero ---------- */
+    /* Hero */
 
     .hero {
         flex-direction: column;
@@ -1123,7 +1102,7 @@ h2::after {
     }
 
 
-    /* ---------- Productos ---------- */
+    /* Productos */
 
     .productos {
         min-height: auto;
@@ -1138,7 +1117,7 @@ h2::after {
     }
 
 
-    /* ---------- Conócenos ---------- */
+    /* Conócenos */
 
     .conocenos {
         min-height: auto;
@@ -1195,13 +1174,10 @@ h2::after {
 }
 
 
-/* =========================================================
-   RESPONSIVE — MÓVIL
-========================================================= */
-
+/* RESPONSIVE — MÓVIL */
 @media (max-width: 600px) {
 
-    /* ---------- Hero ---------- */
+    /* Hero */
 
     .hero-content h1 {
         font-size: 55px;
@@ -1216,7 +1192,7 @@ h2::after {
     }
 
 
-    /* ---------- Productos ---------- */
+    /* Productos */
 
     .productos {
         padding: 50px 0 40px;
@@ -1241,7 +1217,7 @@ h2::after {
     }
 
 
-    /* ---------- Conócenos ---------- */
+    /* Conócenos */
 
     .conocenos {
         padding: 65px 6%;

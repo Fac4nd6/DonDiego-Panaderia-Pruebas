@@ -1,3 +1,4 @@
+/* Ajustes de diseño para pantallas medianas y pequeñas. */
 @media (max-width: 900px) {
     .productos-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));

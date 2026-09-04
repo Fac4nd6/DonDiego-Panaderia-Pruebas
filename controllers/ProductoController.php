@@ -1,17 +1,11 @@
 <?php
 
-// =========================================================
 // SESIÓN
-// =========================================================
-
 require_once __DIR__ . '/../config/Session.php';
 
 iniciar_sesion_segura();
 
-// =========================================================
 // CSRF PARA GESTIÓN DE ROLES
-// =========================================================
-
 function csrf_token()
 {
     iniciar_sesion_segura();
@@ -41,10 +35,7 @@ function verificar_csrf()
     }
 }
 
-// =========================================================
 // COMPROBAR SESIÓN
-// =========================================================
-
 if (!isset($_SESSION['usuario_id'])) {
 
     header(
@@ -55,10 +46,7 @@ if (!isset($_SESSION['usuario_id'])) {
 }
 
 
-// =========================================================
 // COMPROBAR QUE SEA ADMIN
-// =========================================================
-
 if (
     !isset($_SESSION['usuario_rol']) ||
     $_SESSION['usuario_rol'] !== 'admin'
@@ -78,10 +66,7 @@ if (
 }
 
 
-// =========================================================
 // MODELOS
-// =========================================================
-
 require_once __DIR__ . '/../config/Database.php';
 require_once __DIR__ . '/../models/Producto.php';
 require_once __DIR__ . '/../models/Usuario.php';
@@ -92,10 +77,7 @@ $productoModel = new Producto($conn);
 $accion = $_POST['accion'] ?? $_GET['accion'] ?? 'admin_productos';
 
 
-// =========================================================
 // LISTAR
-// =========================================================
-
 if ($accion === 'admin_productos' || $accion === 'listar') {
 
     $productos = $productoModel->obtenerTodos();
@@ -105,10 +87,7 @@ if ($accion === 'admin_productos' || $accion === 'listar') {
     exit;
 }
 
-// =========================================================
 // CLIENTES
-// =========================================================
-
 if ($accion === 'clientes') {
 
     $busqueda = trim($_GET['buscar'] ?? '');
@@ -127,10 +106,7 @@ if ($accion === 'clientes') {
 }
 
 
-// =========================================================
 // GESTIONAR ROLES
-// =========================================================
-
 if ($accion === 'roles') {
 
     require __DIR__ . '/../views/admin/roles.php';
@@ -139,10 +115,7 @@ if ($accion === 'roles') {
 }
 
 
-// =========================================================
 // BUSCAR USUARIO PARA GESTIÓN DE ROLES
-// =========================================================
-
 if ($accion === 'buscar_usuario_rol') {
 
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -153,17 +126,11 @@ if ($accion === 'buscar_usuario_rol') {
     }
 
 
-    // -----------------------------------------------------
     // VERIFICAR CSRF
-    // -----------------------------------------------------
-
     verificar_csrf();
 
 
-    // -----------------------------------------------------
     // OBTENER CORREO
-    // -----------------------------------------------------
-
     $correo =
         trim($_POST['correo'] ?? '');
 
@@ -180,10 +147,7 @@ if ($accion === 'buscar_usuario_rol') {
     }
 
 
-    // -----------------------------------------------------
     // BUSCAR USUARIO
-    // -----------------------------------------------------
-
     $usuarioModel = new Usuario($conn);
 
     $usuario = $usuarioModel->obtenerPorEmail($correo);
@@ -194,19 +158,13 @@ if ($accion === 'buscar_usuario_rol') {
     }
 
 
-    // -----------------------------------------------------
     // MOSTRAR VISTA DE ROLES
-    // -----------------------------------------------------
-
     require __DIR__ . '/../views/admin/roles.php';
 
     exit;
 }
 
-// =========================================================
 // ACTUALIZAR ROL DE USUARIO
-// =========================================================
-
 if ($accion === 'actualizar_rol') {
 
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -224,19 +182,13 @@ if ($accion === 'actualizar_rol') {
     $rol =
         trim($_POST['rol'] ?? '');
 
-    // -----------------------------------------------------
     // VALIDAR USUARIO
-    // -----------------------------------------------------
-
     if ($usuarioId <= 0) {
 
         exit('Usuario no válido.');
     }
 
-    // -----------------------------------------------------
     // VALIDAR ROL
-    // -----------------------------------------------------
-
     $rolesPermitidos = [
         'cliente',
         'empleado',
@@ -248,10 +200,7 @@ if ($accion === 'actualizar_rol') {
         exit('El rol seleccionado no es válido.');
     }
 
-    // -----------------------------------------------------
     // COMPROBAR QUE EL USUARIO EXISTA
-    // -----------------------------------------------------
-
     $usuarioModel = new Usuario($conn);
 
     $usuario =
@@ -264,28 +213,19 @@ if ($accion === 'actualizar_rol') {
         exit('El usuario no existe.');
     }
 
-    // -----------------------------------------------------
     // EVITAR CAMBIARSE EL PROPIO ROL
-    // -----------------------------------------------------
-
     if ($usuarioId === (int) $_SESSION['usuario_id']) {
 
         exit('No podés modificar tu propio rol.');
     }
 
-    // -----------------------------------------------------
     // ACTUALIZAR ROL
-    // -----------------------------------------------------
-
     if (!$usuarioModel->actualizarRol($usuarioId, $rol)) {
 
         exit('No se pudo actualizar el rol del usuario.');
     }
 
-    // -----------------------------------------------------
     // VOLVER A LA GESTIÓN DE ROLES
-    // -----------------------------------------------------
-
     header(
         'Location: ' . url('/admin/roles')
     );
@@ -294,10 +234,7 @@ if ($accion === 'actualizar_rol') {
 }
 
 
-// =========================================================
 // CREAR
-// =========================================================
-
 if ($accion === 'crear') {
 
     $categorias = $productoModel->obtenerCategorias();
@@ -308,10 +245,7 @@ if ($accion === 'crear') {
 }
 
 
-// =========================================================
 // GUARDAR
-// =========================================================
-
 if ($accion === 'guardar') {
 
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -349,10 +283,7 @@ if ($accion === 'guardar') {
     $unidadesPermitidas = ['unidad', 'docena', 'media docena', 'kilogramo'];
 
 
-    // -----------------------------------------------------
     // VALIDAR DATOS
-    // -----------------------------------------------------
-
     if (
         $nombre === '' ||
         $precio === '' ||
@@ -366,10 +297,7 @@ if ($accion === 'guardar') {
     }
 
 
-    // -----------------------------------------------------
     // COMPROBAR IMAGEN
-    // -----------------------------------------------------
-
     if (!isset($_FILES['imagen'])) {
 
         exit('No se recibió ninguna imagen.');
@@ -386,10 +314,7 @@ if ($accion === 'guardar') {
     $archivo = $_FILES['imagen'];
 
 
-    // -----------------------------------------------------
     // CARPETA
-    // -----------------------------------------------------
-
     $carpeta =
         __DIR__ . '/../public/img/';
 
@@ -409,10 +334,7 @@ if ($accion === 'guardar') {
     }
 
 
-    // -----------------------------------------------------
     // VALIDAR IMAGEN
-    // -----------------------------------------------------
-
     $tipo =
         mime_content_type(
             $archivo['tmp_name']
@@ -457,10 +379,7 @@ if ($accion === 'guardar') {
     }
 
 
-    // -----------------------------------------------------
     // NOMBRE DE IMAGEN
-    // -----------------------------------------------------
-
     $extension =
         $tiposPermitidos[$tipo];
 
@@ -475,10 +394,7 @@ if ($accion === 'guardar') {
         $carpeta . $nombreImagen;
 
 
-    // -----------------------------------------------------
     // GUARDAR IMAGEN
-    // -----------------------------------------------------
-
     if (
         !move_uploaded_file(
             $archivo['tmp_name'],
@@ -492,10 +408,7 @@ if ($accion === 'guardar') {
     }
 
 
-    // -----------------------------------------------------
     // GUARDAR PRODUCTO
-    // -----------------------------------------------------
-
     $resultado =
         $productoModel->crear(
             $nombre,
@@ -527,10 +440,7 @@ if ($accion === 'guardar') {
 }
 
 
-// =========================================================
 // EDITAR
-// =========================================================
-
 if ($accion === 'editar') {
 
     $id =
@@ -573,10 +483,7 @@ if ($accion === 'editar') {
 }
 
 
-// =========================================================
 // ACTUALIZAR
-// =========================================================
-
 if ($accion === 'actualizar') {
 
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -620,10 +527,7 @@ if ($accion === 'actualizar') {
     $unidadesPermitidas = ['unidad', 'docena', 'media docena', 'kilogramo'];
 
 
-    // -----------------------------------------------------
     // VALIDAR DATOS
-    // -----------------------------------------------------
-
     if (
         $id <= 0 ||
         $nombre === '' ||
@@ -638,10 +542,7 @@ if ($accion === 'actualizar') {
     }
 
 
-    // -----------------------------------------------------
     // OBTENER PRODUCTO ACTUAL
-    // -----------------------------------------------------
-
     $productoActual =
         $productoModel->obtenerPorId($id);
 
@@ -662,10 +563,7 @@ if ($accion === 'actualizar') {
     }
 
 
-    // -----------------------------------------------------
     // MANTENER IMAGEN ACTUAL
-    // -----------------------------------------------------
-
     $imagen =
         $productoActual['imagen'];
 
@@ -674,10 +572,7 @@ if ($accion === 'actualizar') {
         __DIR__ . '/../public/img/';
 
 
-    // -----------------------------------------------------
     // NUEVA IMAGEN
-    // -----------------------------------------------------
-
     if (
         isset($_FILES['imagen']) &&
         $_FILES['imagen']['error'] === UPLOAD_ERR_OK
@@ -775,10 +670,7 @@ if ($accion === 'actualizar') {
     }
 
 
-    // -----------------------------------------------------
     // ACTUALIZAR BASE DE DATOS
-    // -----------------------------------------------------
-
     $resultado =
         $productoModel->actualizar(
             $id,
@@ -807,10 +699,7 @@ if ($accion === 'actualizar') {
     }
 
 
-    // -----------------------------------------------------
     // ELIMINAR IMAGEN ANTERIOR
-    // -----------------------------------------------------
-
     if (
         !empty($nuevaImagen) &&
         !empty($productoActual['imagen'])
@@ -835,10 +724,7 @@ if ($accion === 'actualizar') {
 }
 
 
-// =========================================================
 // DESACTIVAR
-// =========================================================
-
 if ($accion === 'desactivar') {
 
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -878,10 +764,7 @@ if ($accion === 'desactivar') {
 }
 
 
-// =========================================================
 // ACTIVAR
-// =========================================================
-
 if ($accion === 'activar') {
 
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -921,10 +804,7 @@ if ($accion === 'activar') {
 }
 
 
-// =========================================================
 // ELIMINAR PRODUCTO DEFINITIVAMENTE
-// =========================================================
-
 if ($accion === 'eliminar') {
 
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -948,10 +828,7 @@ if ($accion === 'eliminar') {
     }
 
 
-    // -----------------------------------------------------
     // OBTENER PRODUCTO
-    // -----------------------------------------------------
-
     $producto =
         $productoModel->obtenerPorId($id);
 
@@ -972,10 +849,7 @@ if ($accion === 'eliminar') {
     }
 
 
-    // -----------------------------------------------------
     // ELIMINAR DE LA BASE DE DATOS
-    // -----------------------------------------------------
-
     if (
         !$productoModel->eliminar($id)
     ) {
@@ -984,10 +858,7 @@ if ($accion === 'eliminar') {
     }
 
 
-    // -----------------------------------------------------
     // ELIMINAR IMAGEN
-    // -----------------------------------------------------
-
     if (!empty($producto['imagen'])) {
 
         $rutaImagen =
@@ -1003,10 +874,7 @@ if ($accion === 'eliminar') {
     }
 
 
-    // -----------------------------------------------------
     // VOLVER A PRODUCTOS
-    // -----------------------------------------------------
-
     header(
         'Location: ' . url('/admin/productos')
     );
@@ -1015,10 +883,7 @@ if ($accion === 'eliminar') {
 }
 
 
-// =========================================================
 // ACCIÓN NO EXISTENTE
-// =========================================================
-
 http_response_code(404);
 
 echo 'Acción no encontrada.';

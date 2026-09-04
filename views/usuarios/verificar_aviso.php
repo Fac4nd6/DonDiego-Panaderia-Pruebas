@@ -73,10 +73,7 @@ require '../layouts/head.php';
                     </p>
 
 
-                    <!-- =================================================
-                         REENVIAR VERIFICACIÓN
-                    ================================================== -->
-
+                    <!-- REENVIAR VERIFICACIÓN -->
                     <p
                         style="
                             margin-top:30px;
@@ -92,10 +89,7 @@ require '../layouts/head.php';
                     </p>
 
 
-                    <!-- =================================================
-                         VOLVER AL LOGIN
-                    ================================================== -->
-
+                    <!-- VOLVER AL LOGIN -->
                     <p
                         style="
                             margin-top:20px;

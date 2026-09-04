@@ -1,10 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
 
 
-    /* =========================================================
-       MOSTRAR / OCULTAR CONTRASEÑA
-    ========================================================= */
-
+    /* MOSTRAR / OCULTAR CONTRASEÑA */
     const botonesPassword =
         document.querySelectorAll('.toggle-password');
 
@@ -95,10 +92,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 
-    /* =========================================================
-       ELEMENTOS DEL REGISTRO
-    ========================================================= */
-
+    /* ELEMENTOS DEL REGISTRO */
     const registerForm =
         document.getElementById(
             'registerForm'
@@ -129,10 +123,7 @@ document.addEventListener('DOMContentLoaded', function () {
         );
 
 
-    /* =========================================================
-       VALIDACIÓN VISUAL DE CONTRASEÑA
-    ========================================================= */
-
+    /* VALIDACIÓN VISUAL DE CONTRASEÑA */
     if (
         password &&
         passwordRequirements
@@ -184,10 +175,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
-    /* =========================================================
-       COMPROBAR CONTRASEÑAS
-    ========================================================= */
-
+    /* COMPROBAR CONTRASEÑAS */
     function comprobarContraseñas() {
 
         if (
@@ -253,10 +241,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
-    /* =========================================================
-       VALIDAR REGISTRO ANTES DE ENVIAR
-    ========================================================= */
-
+    /* VALIDAR REGISTRO ANTES DE ENVIAR */
     if (registerForm) {
 
         registerForm.addEventListener(
@@ -318,8 +303,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 /*
                  * Evitar doble envío.
-                 */
-
+            */
                 const boton =
                     document.getElementById(
                         'registerSubmit'
@@ -340,10 +324,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
-    /* =========================================================
-       EVITAR DOBLE ENVÍO DEL LOGIN
-    ========================================================= */
-
+    /* EVITAR DOBLE ENVÍO DEL LOGIN */
     const loginForm =
         document.getElementById(
             'loginForm'

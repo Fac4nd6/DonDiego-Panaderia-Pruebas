@@ -3,10 +3,7 @@
 require_once __DIR__ . '/../../config/whatsapp.php';
 $footerWhatsAppUrl = crearUrlWhatsApp('Hola Don Diego, quisiera realizar una consulta.');
 
-// =========================================================
 // CONEXIÓN A LA BASE DE DATOS
-// =========================================================
-
 $novedades = [];
 
 try {
@@ -28,17 +25,11 @@ try {
     $footerDb->set_charset('utf8mb4');
 
 
-    // =====================================================
     // CARGAR MODELO
-    // =====================================================
-
     require_once __DIR__ . '/../../models/Producto.php';
 
 
-    // =====================================================
     // OBTENER NOVEDADES
-    // =====================================================
-
     $productoModel = new Producto($footerDb);
 
     $novedades = $productoModel->obtenerNovedades(3);
@@ -61,10 +52,7 @@ try {
 <footer class="footer">
 
 
-    <!-- =====================================================
-         PARTE SUPERIOR
-    ====================================================== -->
-
+    <!-- PARTE SUPERIOR -->
     <div class="footer-top">
 
 
@@ -160,17 +148,11 @@ try {
     <hr>
 
 
-    <!-- =====================================================
-         CONTENIDO
-    ====================================================== -->
-
+    <!-- CONTENIDO -->
     <div class="footer-content">
 
 
-        <!-- =================================================
-             SOBRE NOSOTROS
-        ================================================== -->
-
+        <!-- SOBRE NOSOTROS -->
         <div class="footer-column">
 
             <h3>
@@ -192,10 +174,7 @@ try {
         </div>
 
 
-        <!-- =================================================
-             EXPLORAR
-        ================================================== -->
-
+        <!-- EXPLORAR -->
         <div class="footer-column">
 
             <h3>
@@ -223,10 +202,7 @@ try {
         </div>
 
 
-        <!-- =================================================
-             NOVEDADES
-        ================================================== -->
-
+        <!-- NOVEDADES -->
         <div class="footer-column">
 
             <h3>
@@ -339,10 +315,7 @@ try {
     </div>
 
 
-    <!-- =====================================================
-         COPYRIGHT
-    ====================================================== -->
-
+    <!-- COPYRIGHT -->
     <div class="footer-bottom">
 
         <p>
@@ -357,10 +330,7 @@ try {
 
 <?php
 
-// =========================================================
 // CERRAR CONEXIÓN DEL FOOTER
-// =========================================================
-
 if (isset($footerDb) && $footerDb instanceof mysqli) {
 
     $footerDb->close();

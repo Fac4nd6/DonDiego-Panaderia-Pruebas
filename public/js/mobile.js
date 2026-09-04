@@ -1,3 +1,4 @@
+// Controla la apertura y cierre del menú móvil.
 document.addEventListener('DOMContentLoaded', function () {
     const toggle = document.querySelector('.menu-toggle');
     const menu = document.getElementById('menuPrincipal');

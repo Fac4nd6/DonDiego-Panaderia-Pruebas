@@ -10,10 +10,7 @@ require_once __DIR__ . '/../models/Usuario.php';
 class UsuarioController
 {
 
-    /* =========================================================
-       LOGIN
-    ========================================================= */
-
+    /* LOGIN */
     public function login($email, $password)
     {
 
@@ -23,10 +20,7 @@ class UsuarioController
             );
 
 
-        /* =====================================================
-           VALIDAR DATOS
-        ===================================================== */
-
+        /* VALIDAR DATOS */
         if (
             empty($email) ||
             empty($password)
@@ -55,10 +49,7 @@ class UsuarioController
         }
 
 
-        /* =====================================================
-           CONTROL BÁSICO DE INTENTOS
-        ===================================================== */
-
+        /* CONTROL BÁSICO DE INTENTOS */
         if (
             !isset(
                 $_SESSION['login_intentos']
@@ -87,8 +78,7 @@ class UsuarioController
         /*
          * Después de 10 minutos se reinician
          * los intentos.
-         */
-
+    */
         if ($tiempoTranscurrido >= 600) {
 
             $_SESSION['login_intentos'] = 0;
@@ -101,8 +91,7 @@ class UsuarioController
         /*
          * Máximo 5 intentos dentro de la sesión
          * durante el período establecido.
-         */
-
+    */
         if (
             $_SESSION['login_intentos'] >= 5
         ) {
@@ -116,10 +105,7 @@ class UsuarioController
         }
 
 
-        /* =====================================================
-           BUSCAR USUARIO
-        ===================================================== */
-
+        /* BUSCAR USUARIO */
         global $conn;
 
 
@@ -133,10 +119,7 @@ class UsuarioController
             );
 
 
-        /* =====================================================
-           VERIFICAR CONTRASEÑA
-        ===================================================== */
-
+        /* VERIFICAR CONTRASEÑA */
         if (
             !$usuario ||
             !password_verify(
@@ -159,10 +142,7 @@ class UsuarioController
         }
 
 
-        /* =====================================================
-           VERIFICAR EMAIL
-        ===================================================== */
-
+        /* VERIFICAR EMAIL */
         if (
             (int) $usuario['email_verificado'] !== 1
         ) {
@@ -175,17 +155,11 @@ class UsuarioController
         }
 
 
-        /* =====================================================
-           REGENERAR SESIÓN
-        ===================================================== */
-
+        /* REGENERAR SESIÓN */
         session_regenerate_id(true);
 
 
-        /* =====================================================
-           GUARDAR DATOS DE SESIÓN
-        ===================================================== */
-
+        /* GUARDAR DATOS DE SESIÓN */
         $_SESSION['usuario_id'] =
             (int) $usuario['id'];
 
@@ -199,20 +173,14 @@ class UsuarioController
             $usuario['rol'];
 
 
-        /* =====================================================
-           REINICIAR INTENTOS
-        ===================================================== */
-
+        /* REINICIAR INTENTOS */
         $_SESSION['login_intentos'] = 0;
 
         $_SESSION['login_ultimo_intento'] =
             time();
 
 
-        /* =====================================================
-           REGENERAR CSRF
-        ===================================================== */
-
+        /* REGENERAR CSRF */
         $_SESSION['csrf_token'] =
             bin2hex(
                 random_bytes(32)
@@ -225,10 +193,7 @@ class UsuarioController
     }
 
 
-    /* =========================================================
-       ACTUALIZAR DATOS
-    ========================================================= */
-
+    /* ACTUALIZAR DATOS */
     public function actualizarDatos(
         $id,
         $nombreCompleto,
@@ -253,10 +218,7 @@ class UsuarioController
             trim($direccion);
 
 
-        /* =====================================================
-           VALIDACIONES
-        ===================================================== */
-
+        /* VALIDACIONES */
         if (
             empty($nombreCompleto)
         ) {
@@ -293,10 +255,7 @@ class UsuarioController
         }
 
 
-        /* =====================================================
-           ACTUALIZAR
-        ===================================================== */
-
+        /* ACTUALIZAR */
         $usuarioModel =
             new Usuario($conn);
 
@@ -321,10 +280,7 @@ class UsuarioController
         }
 
 
-        /* =====================================================
-           ACTUALIZAR SESIÓN
-        ===================================================== */
-
+        /* ACTUALIZAR SESIÓN */
         $_SESSION['usuario_nombre'] =
             $nombreCompleto;
 
@@ -337,10 +293,7 @@ class UsuarioController
     }
 
 
-    /* =========================================================
-       LOGOUT
-    ========================================================= */
-
+    /* LOGOUT */
     public function logout()
     {
 
@@ -353,17 +306,11 @@ class UsuarioController
         }
 
 
-        /* =====================================================
-           ELIMINAR DATOS DE SESIÓN
-        ===================================================== */
-
+        /* ELIMINAR DATOS DE SESIÓN */
         $_SESSION = [];
 
 
-        /* =====================================================
-           ELIMINAR COOKIE DE SESIÓN
-        ===================================================== */
-
+        /* ELIMINAR COOKIE DE SESIÓN */
         if (
             ini_get('session.use_cookies')
         ) {
@@ -384,10 +331,7 @@ class UsuarioController
         }
 
 
-        /* =====================================================
-           DESTRUIR SESIÓN
-        ===================================================== */
-
+        /* DESTRUIR SESIÓN */
         session_destroy();
 
 

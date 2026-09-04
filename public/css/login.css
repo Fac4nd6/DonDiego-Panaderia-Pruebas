@@ -9,10 +9,7 @@
 }
 
 
-/* ==============================
-   FONDO DEL LOGIN
-============================== */
-
+/* Fondo del login. */
 .background-container {
     position: relative;
 
@@ -47,10 +44,7 @@
 }
 
 
-/* ==============================
-   IMAGEN DE FONDO
-============================== */
-
+/* Imagen de fondo. */
 .background-container::before {
     content: "";
 
@@ -74,10 +68,7 @@
 }
 
 
-/* ==============================
-   CÍRCULOS DECORATIVOS
-============================== */
-
+/* Elementos decorativos del fondo. */
 .background-container::after {
     content: "";
 
@@ -102,19 +93,13 @@
 }
 
 
-/* ==============================
-   AISLAMIENTO
-============================== */
-
+/* Aislamiento visual del fondo. */
 .background-container {
     isolation: isolate;
 }
 
 
-/* ==============================
-   TARJETA
-============================== */
-
+/* Tarjeta del formulario. */
 .login-card {
     position: relative;
 
@@ -148,11 +133,7 @@
 }
 
 
-/* ==============================
-   BRILLO DE LA TARJETA
-============================== */
-
-
+/* Línea decorativa de la tarjeta. */
 .login-card::before {
     content: "";
 
@@ -181,10 +162,7 @@
 
     animation: cardGlow 3s ease-in-out infinite;
 }
-/* ==============================
-   LOGO
-============================== */
-
+/* Logo. */
 .logo-container {
     position: absolute;
 
@@ -240,10 +218,7 @@
 }
 
 
-/* ==============================
-   TÍTULO
-============================== */
-
+/* Título. */
 .form-header {
     margin-top: 10px;
     margin-bottom: 30px;
@@ -267,10 +242,7 @@
 }
 
 
-/* ==============================
-   ERROR
-============================== */
-
+/* Mensajes del formulario. */
 .error-msg {
     color: #b31b21;
 
@@ -288,11 +260,77 @@
         errorAppear 0.3s ease-out;
 }
 
+.success-msg {
+    color: #287a45;
 
-/* ==============================
-   FORMULARIO
-============================== */
+    background: rgba(40, 122, 69, 0.1);
 
+    border-radius: 8px;
+
+    padding: 9px 12px;
+
+    font-size: 0.8rem;
+
+    margin-bottom: 20px;
+}
+
+.password-help {
+    width: 80%;
+
+    margin: -10px auto 0;
+
+    text-align: center;
+}
+
+.forgot-password-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 5px 8px;
+
+    color: #b31b21;
+
+    border-radius: 6px;
+
+    font-size: 0.78rem;
+    font-weight: 600;
+
+    text-decoration: none;
+
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.forgot-password-link::after {
+    content: ">";
+
+    font-size: 0.95rem;
+
+    transition: transform 0.2s ease;
+}
+
+.forgot-password-link:hover {
+    color: #801318;
+
+    background-color: rgba(179, 27, 33, 0.08);
+
+    transform: translateX(-2px);
+}
+
+.forgot-password-link:hover::after {
+    transform: translateX(3px);
+}
+
+.forgot-password-link:focus-visible {
+    outline: 2px solid #b31b21;
+    outline-offset: 3px;
+}
+
+
+/* Formulario. */
 .login-form {
     display: flex;
     flex-direction: column;
@@ -312,10 +350,7 @@
 }
 
 
-/* ==============================
-   INPUTS
-============================== */
-
+/* Campos de entrada. */
 .input-group {
     display: flex;
     flex-direction: column;
@@ -390,10 +425,7 @@
 }
 
 
-/* ==============================
-   BOTÓN
-============================== */
-
+/* Botón principal. */
 .btn-submit {
     position: relative;
 
@@ -491,10 +523,7 @@
         0 3px 0 #801318,
         0 5px 10px rgba(179,27,33,0.2);
 }
-/* ==============================
-   FOOTER
-============================== */
-
+/* Enlace inferior. */
 .form-footer {
     margin-top: 25px;
 
@@ -530,10 +559,7 @@
 }
 
 
-/* ==============================
-   ANIMACIONES
-============================== */
-
+/* Animaciones. */
 @keyframes cardGlow {
 
     0%, 100% {
@@ -637,10 +663,7 @@
 }
 
 
-/* ==============================
-   RESPONSIVE
-============================== */
-
+/* Ajustes responsive. */
 @media (max-width: 480px) {
 
     .background-container {
@@ -653,6 +676,10 @@
         border-radius: 24px;
 
         margin-top: 30px;
+    }
+
+    .login-form {
+        gap: 18px;
     }
 
     .input-group {
