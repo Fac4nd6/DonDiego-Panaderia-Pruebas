@@ -61,6 +61,8 @@ function abrirProducto(boton) {
 
         stock: parseInt(boton.dataset.stock, 10) || 0,
 
+        unidadVenta: boton.dataset.unidadVenta || 'unidad',
+
         categoria: boton.dataset.categoria,
 
         imagen: boton.dataset.imagen
@@ -132,7 +134,7 @@ function mostrarProducto(producto) {
 
     if (detalleStock) {
         detalleStock.textContent = productoActual.stock > 0
-            ? 'Stock disponible: ' + productoActual.stock + ' unidades'
+            ? 'Stock disponible: ' + productoActual.stock + ' ' + productoActual.unidadVenta
             : 'Producto agotado';
     }
 
@@ -183,6 +185,8 @@ function abrirProductoDesdeDatos(producto) {
         precio: parseFloat(producto.precio),
 
         stock: parseInt(producto.stock, 10) || 0,
+
+        unidadVenta: producto.unidad_venta || 'unidad',
 
         categoria: producto.categoria,
 

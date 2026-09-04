@@ -23,6 +23,7 @@ class Producto
                 p.descripcion,
                 p.precio,
                 p.stock,
+                p.unidad_venta,
                 p.imagen,
                 p.activo,
                 p.categoria_id,
@@ -56,6 +57,7 @@ class Producto
                 p.descripcion,
                 p.precio,
                 p.stock,
+                p.unidad_venta,
                 p.imagen,
                 p.activo,
                 p.categoria_id,
@@ -95,6 +97,7 @@ class Producto
                 p.descripcion,
                 p.precio,
                 p.stock,
+                p.unidad_venta,
                 p.imagen,
                 p.activo,
                 c.nombre AS categoria
@@ -168,6 +171,7 @@ class Producto
                 p.descripcion,
                 p.precio,
                 p.stock,
+                p.unidad_venta,
                 p.imagen,
                 p.activo,
                 c.nombre AS categoria
@@ -205,6 +209,7 @@ class Producto
         $precio,
         $categoriaId,
         $imagen,
+        $unidadVenta,
         $stock
     ) {
         if (!is_int($stock) || $stock < 0) {
@@ -219,10 +224,11 @@ class Producto
                 precio,
                 categoria_id,
                 imagen,
+                unidad_venta,
                 stock,
                 activo
             )
-            VALUES (?, ?, ?, ?, ?, ?, 1)
+            VALUES (?, ?, ?, ?, ?, ?, ?, 1)
         ";
 
         $stmt = $this->db->prepare($sql);
@@ -232,12 +238,13 @@ class Producto
         }
 
         $stmt->bind_param(
-            "ssdisi",
+            "ssdissi",
             $nombre,
             $descripcion,
             $precio,
             $categoriaId,
             $imagen,
+            $unidadVenta,
             $stock
         );
 
@@ -256,6 +263,7 @@ class Producto
         $precio,
         $categoriaId,
         $imagen,
+        $unidadVenta,
         $activo,
         $stock
     ) {
@@ -271,6 +279,7 @@ class Producto
                 precio = ?,
                 categoria_id = ?,
                 imagen = ?,
+                unidad_venta = ?,
                 activo = ?,
                 stock = ?
             WHERE id = ?
@@ -283,12 +292,13 @@ class Producto
         }
 
         $stmt->bind_param(
-            "ssdisiii",
+            "ssdissiii",
             $nombre,
             $descripcion,
             $precio,
             $categoriaId,
             $imagen,
+            $unidadVenta,
             $activo,
             $stock,
             $id
@@ -381,6 +391,7 @@ class Producto
             p.descripcion,
             p.precio,
             p.stock,
+            p.unidad_venta,
             p.imagen,
             p.categoria_id,
             c.nombre AS categoria

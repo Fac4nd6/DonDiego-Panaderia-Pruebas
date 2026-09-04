@@ -40,7 +40,7 @@ require __DIR__ . '/../layouts/head.php';
 
             <h1>
 
-                Pedido #<?= (int) $pedido['id'] ?>
+                ID del pedido #<?= (int) $pedido['id'] ?>
 
             </h1>
 
@@ -373,6 +373,12 @@ require __DIR__ . '/../layouts/head.php';
                                         <span>
 
                                             <?= (int) $item['cantidad'] ?>
+
+                                            <?= htmlspecialchars(
+                                                $item['unidad_venta'] ?? 'unidad',
+                                                ENT_QUOTES,
+                                                'UTF-8'
+                                            ) ?>
 
                                             ×
 

@@ -238,7 +238,8 @@ if ($accion === 'actualizar_estado') {
     }
 
     if ($pedidoActual['estado'] === $estado) {
-        exit('El pedido ya se encuentra en ese estado.');
+        header('Location: ' . url('/admin/pedidos?error=estado_igual'));
+        exit;
     }
 
     $estadosPermitidos = [
@@ -259,8 +260,8 @@ if ($accion === 'actualizar_estado') {
             true
         )
     ) {
-
-        exit('El estado seleccionado no es válido.');
+        header('Location: ' . url('/admin/pedidos?error=estado_invalido'));
+        exit;
     }
 
     $resultado =
@@ -270,8 +271,8 @@ if ($accion === 'actualizar_estado') {
         );
 
     if (!$resultado) {
-
-        exit('La transición de estado no es válida para este pedido.');
+        header('Location: ' . url('/admin/pedidos?error=transicion_invalida'));
+        exit;
     }
 
     header(
@@ -722,7 +723,18 @@ if ($accion === 'crear') {
         exit('El pedido #' . $pedidoId . ' fue creado correctamente. Configurá el número de WhatsApp para contactar al comercio.');
     }
 
-    header('Location: ' . $whatsappUrl);
+    $pedidosUrl = url('/pedidos');
+
+    header('Content-Type: text/html; charset=UTF-8');
+    echo '<!doctype html><html lang="es"><head><meta charset="UTF-8"><title>Pedido confirmado</title></head><body>';
+    echo '<script>';
+    echo 'const pedidosUrl = ' . json_encode($pedidosUrl, JSON_UNESCAPED_SLASHES) . ';';
+    echo 'const whatsappUrl = ' . json_encode($whatsappUrl, JSON_UNESCAPED_SLASHES) . ';';
+    echo 'localStorage.setItem("dondiego_pedido_confirmado", Date.now().toString());';
+    echo 'if (window.opener && !window.opener.closed) { window.opener.location.href = pedidosUrl; }';
+    echo 'window.location.replace(whatsappUrl);';
+    echo '</script>';
+    echo '<p>Pedido confirmado. Abriendo WhatsApp...</p></body></html>';
     exit;
 }
 

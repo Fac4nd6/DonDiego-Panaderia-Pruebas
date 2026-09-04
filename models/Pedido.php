@@ -120,7 +120,7 @@ class Pedido
             $marcadores = implode(',', array_fill(0, count($ids), '?'));
             $tipos = str_repeat('i', count($ids));
             $stmt = $this->conn->prepare(
-                "SELECT id, nombre, precio, stock, activo FROM productos WHERE id IN ($marcadores) FOR UPDATE"
+                "SELECT id, nombre, precio, stock, unidad_venta, activo FROM productos WHERE id IN ($marcadores) FOR UPDATE"
             );
 
             if (!$stmt) {
@@ -574,6 +574,7 @@ class Pedido
                 pd.pedido_id,
                 pd.producto_id,
                 pd.cantidad,
+                p.unidad_venta,
                 pd.precio_unitario,
                 pd.subtotal,
 

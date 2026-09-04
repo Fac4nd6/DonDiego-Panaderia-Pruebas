@@ -252,6 +252,17 @@ $editando = !empty($producto);
                             required>
                     </div>
 
+                    <div class="form-grupo">
+                        <label for="unidad_venta">Se vende por</label>
+                        <select id="unidad_venta" name="unidad_venta" required>
+                            <?php $unidadSeleccionada = $producto['unidad_venta'] ?? 'unidad'; ?>
+                            <option value="unidad" <?= $unidadSeleccionada === 'unidad' ? 'selected' : '' ?>>Unidad</option>
+                            <option value="docena" <?= $unidadSeleccionada === 'docena' ? 'selected' : '' ?>>Docena</option>
+                            <option value="media docena" <?= $unidadSeleccionada === 'media docena' ? 'selected' : '' ?>>Media docena</option>
+                            <option value="kilogramo" <?= $unidadSeleccionada === 'kilogramo' ? 'selected' : '' ?>>Kilogramo</option>
+                        </select>
+                    </div>
+
                 </div>
 
 

@@ -345,6 +345,9 @@ if ($accion === 'guardar') {
             FILTER_VALIDATE_INT
         );
 
+    $unidadVenta = trim($_POST['unidad_venta'] ?? 'unidad');
+    $unidadesPermitidas = ['unidad', 'docena', 'media docena', 'kilogramo'];
+
 
     // -----------------------------------------------------
     // VALIDAR DATOS
@@ -355,7 +358,8 @@ if ($accion === 'guardar') {
         $precio === '' ||
         $categoriaId <= 0 ||
         $stock === false ||
-        $stock < 0
+        $stock < 0 ||
+        !in_array($unidadVenta, $unidadesPermitidas, true)
     ) {
 
         exit('Faltan datos obligatorios.');
@@ -499,6 +503,7 @@ if ($accion === 'guardar') {
             $precio,
             $categoriaId,
             $nombreImagen,
+            $unidadVenta,
             $stock
         );
 
@@ -611,6 +616,9 @@ if ($accion === 'actualizar') {
             FILTER_VALIDATE_INT
         );
 
+    $unidadVenta = trim($_POST['unidad_venta'] ?? 'unidad');
+    $unidadesPermitidas = ['unidad', 'docena', 'media docena', 'kilogramo'];
+
 
     // -----------------------------------------------------
     // VALIDAR DATOS
@@ -622,7 +630,8 @@ if ($accion === 'actualizar') {
         $precio === '' ||
         $categoriaId <= 0 ||
         $stock === false ||
-        $stock < 0
+        $stock < 0 ||
+        !in_array($unidadVenta, $unidadesPermitidas, true)
     ) {
 
         exit('Datos inválidos.');
@@ -778,6 +787,7 @@ if ($accion === 'actualizar') {
             $precio,
             $categoriaId,
             $imagen,
+            $unidadVenta,
             $activo,
             $stock
         );

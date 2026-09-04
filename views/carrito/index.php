@@ -134,7 +134,11 @@ require __DIR__ . '/../layouts/header.php';
                                             '.'
                                         ) ?>
 
-                                    por unidad
+                                    por <?= htmlspecialchars(
+                                        $item['unidad_venta'] ?? 'unidad',
+                                        ENT_QUOTES,
+                                        'UTF-8'
+                                    ) ?>
 
                                 </p>
 

@@ -381,6 +381,12 @@ require __DIR__ . '/../layouts/header.php';
 
                                         <?= (int) $item['cantidad'] ?>
 
+                                        <?= htmlspecialchars(
+                                            $item['unidad_venta'] ?? 'unidad',
+                                            ENT_QUOTES,
+                                            'UTF-8'
+                                        ) ?>
+
                                         ×
 
                                         $<?= number_format(
@@ -463,6 +469,14 @@ require __DIR__ . '/../layouts/header.php';
 
 
     <?php require __DIR__ . '/../layouts/footer.php'; ?>
+
+    <script>
+        window.addEventListener('storage', (evento) => {
+            if (evento.key === 'dondiego_pedido_confirmado') {
+                window.location.replace('<?= url('/pedidos') ?>');
+            }
+        });
+    </script>
 
 
 </body>

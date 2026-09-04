@@ -51,6 +51,42 @@
         120px auto 70px;
 }
 
+.notificacion-estado {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    width: min(100%, 460px);
+    margin: 0 auto 22px;
+    padding: 12px 14px 12px 16px;
+    background: #fff7e6;
+    color: #765313;
+    border: 1px solid #f0d28f;
+    border-radius: 9px;
+    box-shadow: 0 5px 16px rgba(95, 67, 18, 0.1);
+    font-size: 0.9rem;
+}
+
+.notificacion-estado button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    background: transparent;
+    color: #765313;
+    border: 0;
+    border-radius: 50%;
+    font-size: 1.25rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.notificacion-estado button:hover {
+    background: rgba(118, 83, 19, 0.1);
+}
+
 
 /* =========================================================
    ENCABEZADO
