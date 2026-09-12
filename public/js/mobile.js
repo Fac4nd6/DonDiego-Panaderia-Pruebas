@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     window.addEventListener('resize', function () {
-        if (window.innerWidth > 700) {
+        if (window.innerWidth > 1100) {
             setMenu(false);
         }
     });

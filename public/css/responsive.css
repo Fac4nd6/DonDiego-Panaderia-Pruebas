@@ -1,5 +1,27 @@
 /* Ajustes de diseño para pantallas medianas y pequeñas. */
+/* Responsive general */
 @media (max-width: 900px) {
+    /* responsive de header.css */
+    .header {
+        width: 94%;
+    }
+
+    .navbar {
+        gap: 20px;
+    }
+
+    .nav-links {
+        gap: 18px;
+    }
+
+    .nav-links a {
+        font-size: 14px;
+    }
+
+    .nav-button {
+        padding: 10px 15px;
+    }
+
     .productos-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
@@ -13,9 +35,547 @@
     .pedido-resumen {
         position: static;
     }
+
+    .carrito-resumen {
+        animation-name: productoEntrada;
+    }
+
+    .pedido-info {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
-@media (min-width: 701px) {
+/* Menú compacto del header */
+@media (min-width: 701px) and (max-width: 1100px) {
+    .header,
+    .pagina-admin .header,
+    .pagina-admin-pedidos .header {
+        width: 94%;
+    }
+
+    .productos-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 22px;
+    }
+
+    .catalogo-container {
+        padding: 110px 5% 70px;
+    }
+
+    .mariposa {
+        transform: scale(0.8);
+    }
+
+    /* responsive de home.css */
+    .hero {
+        min-height: auto;
+        height: auto;
+        padding: 120px 5% 56px;
+        gap: 22px;
+    }
+
+    .hero-content {
+        width: 100%;
+        max-width: 820px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .hero-content h1 {
+        margin-bottom: 18px;
+        font-size: clamp(72px, 8vw, 96px);
+    }
+
+    .hero-content p {
+        max-width: 720px;
+        margin: 0 auto 26px;
+        font-size: 26px;
+    }
+
+    .hero-image {
+        width: min(64%, 500px);
+        margin: 0 auto;
+    }
+
+    .productos {
+        min-height: auto;
+        padding: 54px 0 46px;
+    }
+
+    .productos h2,
+    .recommended h2 {
+        font-size: 48px;
+    }
+
+    .recommended {
+        min-height: auto;
+        padding: 54px 0 46px;
+    }
+
+    .productos .productos-grid,
+    .recommended .productos-grid {
+        margin: 0 5%;
+        gap: 24px;
+    }
+
+    .productos .producto-card,
+    .recommended .producto-card {
+        height: 380px;
+    }
+
+    .productos .producto-info,
+    .recommended .producto-info {
+        padding: 20px;
+    }
+
+    .productos .producto-info h3,
+    .recommended .producto-info h3 {
+        font-size: 28px;
+    }
+
+    .productos .producto-info p,
+    .recommended .producto-info p {
+        font-size: 19px;
+    }
+
+    .conocenos {
+        min-height: auto;
+        height: auto;
+        margin-top: 30px;
+        padding: 64px 5%;
+    }
+
+    .conocenos-contenido {
+        gap: 38px;
+    }
+
+    .info-texto h2 {
+        font-size: 52px;
+    }
+
+    .info-descripcion {
+        font-size: 22px;
+    }
+
+    .info-datos {
+        gap: 18px;
+    }
+
+    .info-dato span {
+        width: 48px;
+        height: 48px;
+        font-size: 19px;
+    }
+
+    .info-dato p {
+        font-size: 20px;
+    }
+
+    .conocenos-button {
+        padding: 15px 26px;
+        font-size: 18px;
+    }
+
+    /* responsive de catalogo.css */
+    .catalogo-header h1,
+    .carrito-header h1,
+    .pedidos-header h1 {
+        font-size: clamp(52px, 6vw, 72px);
+        line-height: 1.05;
+    }
+
+    .catalogo-header p,
+    .carrito-header p,
+    .pedidos-header p {
+        font-size: 20px;
+    }
+
+    .catalogo-buscador input,
+    .catalogo-buscador button,
+    .catalogo-categorias a,
+    .cantidad-form input,
+    .btn-actualizar,
+    .btn-eliminar,
+    .btn-continuar,
+    .btn-seguir-comprando,
+    .btn-volver-carrito,
+    .btn-confirmar-pedido {
+        min-height: 52px;
+        font-size: 18px;
+    }
+
+    .catalogo-categorias a {
+        padding: 12px 18px;
+    }
+
+    .catalogo-etiqueta {
+        font-size: 15px;
+    }
+
+    .catalogo-resultados-header h2 {
+        font-size: 38px;
+    }
+
+    .catalogo-resultados-header span {
+        font-size: 18px;
+    }
+
+    .catalogo-container .producto-info h3 {
+        font-size: 26px;
+        min-height: 62px;
+    }
+
+    .catalogo-container .producto-info p {
+        font-size: 18px;
+        min-height: 54px;
+    }
+
+    .catalogo-container .producto-footer strong {
+        font-size: 26px;
+    }
+
+    .catalogo-container .producto-boton {
+        min-height: 50px;
+        padding: 12px 16px;
+        font-size: 16px;
+    }
+
+    .catalogo-vacio p,
+    .catalogo-vacio a {
+        font-size: 18px;
+    }
+
+    .producto-imagen {
+        height: 230px;
+    }
+
+    /* responsive de carrito.css */
+    .carrito-item {
+        grid-template-columns: 110px minmax(0, 1fr);
+        gap: 20px;
+        padding: 20px;
+    }
+
+    .carrito-item-imagen {
+        width: 110px;
+        height: 110px;
+    }
+
+    .carrito-item-info h2 {
+        font-size: 24px;
+    }
+
+    .carrito-item-subtotal {
+        font-size: 19px;
+    }
+
+    .carrito-resumen h2,
+    .pedido-resumen h2 {
+        font-size: 28px;
+    }
+
+    .carrito-resumen p,
+    .pedido-resumen p,
+    .carrito-resumen li,
+    .pedido-resumen li {
+        font-size: 18px;
+    }
+
+    /* responsive de crear.css y pedidos.css */
+    .pedido-formulario,
+    .pedido-resumen,
+    .carrito-resumen,
+    .pedido-card {
+        padding: 28px 24px;
+    }
+
+    .pedido-card h2 {
+        font-size: 26px;
+    }
+
+    .pedido-card p,
+    .pedido-info,
+    .pedido-formulario label,
+    .pedido-resumen {
+        font-size: 18px;
+    }
+
+    /* responsive de admin-productos.css, admin-productos-form.css y admin-pedidos.css */
+    .admin-header h1,
+    .admin-form-header h1,
+    .admin-pedidos-header h1 {
+        font-size: 3rem;
+    }
+
+    .admin-header p,
+    .admin-form-header p,
+    .admin-pedidos-header p {
+        font-size: 19px;
+    }
+
+    .btn-agregar,
+    .btn-volver-admin {
+        min-height: 52px;
+        padding: 14px 20px;
+        font-size: 18px;
+    }
+
+    /* responsive de login.css */
+    .login-card {
+        padding: 72px 32px 32px;
+    }
+
+    .login-card label,
+    .login-card input,
+    .login-card button {
+        font-size: 18px;
+    }
+
+    /* responsive de contacto.css y detalle-pedido.css */
+    .contacto-container,
+    .error-container,
+    .detalle-pedido-container {
+        padding: 120px 5% 76px;
+    }
+
+    .contacto-header h1,
+    .detalle-pedido-header h1 {
+        font-size: clamp(52px, 6vw, 72px);
+    }
+
+    .contacto-header p,
+    .detalle-pedido-header p {
+        font-size: 20px;
+    }
+
+    .contacto-contenido {
+        gap: 34px;
+    }
+
+    .contacto-informacion,
+    .contacto-formulario,
+    .detalle-pedido-card {
+        padding: 34px;
+    }
+
+    .contacto-informacion h2,
+    .contacto-formulario h2,
+    .detalle-pedido-card h2 {
+        font-size: 28px;
+    }
+
+    .contacto-informacion p,
+    .contacto-formulario label,
+    .contacto-formulario input,
+    .contacto-formulario textarea,
+    .contacto-formulario button {
+        font-size: 18px;
+    }
+
+    .contacto-formulario input,
+    .contacto-formulario textarea,
+    .contacto-formulario button {
+        min-height: 52px;
+    }
+
+    /* responsive de cuenta.css */
+    .account-card {
+        padding: 48px;
+    }
+
+    .account-header h1 {
+        font-size: 2.4rem;
+    }
+
+    .account-header p,
+    .account-section,
+    .info-item {
+        font-size: 18px;
+    }
+
+    .account-section h2 {
+        font-size: 1.3rem;
+    }
+
+    /* responsive de error.css */
+    .error-card {
+        padding: 60px 42px;
+    }
+
+    .error-card h1 {
+        font-size: 48px;
+    }
+
+    .error-card p,
+    .error-boton {
+        font-size: 18px;
+    }
+
+    .error-boton {
+        min-height: 52px;
+        padding: 14px 24px;
+    }
+
+    /* responsive de pedido-limite.css */
+    .limite-card {
+        padding: 60px 48px;
+    }
+
+    .limite-card h1 {
+        font-size: 40px;
+    }
+
+    .limite-card p,
+    .limite-descripcion,
+    .btn-pedidos,
+    .btn-carrito {
+        font-size: 18px;
+    }
+
+    .btn-pedidos,
+    .btn-carrito {
+        min-height: 52px;
+    }
+
+    /* responsive de header.css: menú tablet */
+    .navbar {
+        position: relative;
+        min-height: 76px;
+        padding: 8px 12px;
+        gap: 14px;
+        overflow: visible;
+    }
+
+    .logo img {
+        width: 62px;
+        height: 62px;
+    }
+
+    .menu-toggle {
+        display: flex;
+        width: 44px;
+        height: 44px;
+        margin-left: auto;
+        padding: 9px;
+        flex-direction: column;
+        justify-content: center;
+        gap: 5px;
+        border: 0;
+        border-radius: 8px;
+        background: transparent;
+        color: var(--color-background);
+        cursor: pointer;
+    }
+
+    .menu-toggle span {
+        display: block;
+        width: 24px;
+        height: 2px;
+        margin: 0 auto;
+        background: currentColor;
+        transition: transform 0.25s ease, opacity 0.25s ease;
+    }
+
+    .mobile-menu {
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 0;
+        right: 0;
+        z-index: 20;
+        display: flex;
+        max-height: calc(100vh - 90px);
+        padding: 14px;
+        flex-direction: column;
+        gap: 12px;
+        overflow-y: auto;
+        background: var(--color-primary);
+        border-radius: 14px;
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-8px);
+        transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
+    }
+
+    .mobile-menu .nav-links,
+    .mobile-menu .nav-actions {
+        display: flex;
+        width: 100%;
+        margin: 0;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+    }
+
+    .mobile-menu .nav-links {
+        padding-bottom: 8px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.24);
+    }
+
+    .mobile-menu .nav-links a,
+    .mobile-menu .nav-actions a {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        padding: 10px 12px;
+        border-radius: 8px;
+        white-space: normal;
+    }
+
+    .mobile-menu .nav-links a:hover,
+    .mobile-menu .nav-actions a:hover {
+        background: rgba(255, 255, 255, 0.12);
+        transform: none;
+    }
+
+    .mobile-menu .cart-button {
+        width: auto;
+        height: 44px;
+        justify-content: flex-start;
+        gap: 10px;
+        border-radius: 8px;
+    }
+
+    .mobile-menu .cart-count {
+        position: static;
+    }
+
+    .mobile-menu .login-button {
+        justify-content: flex-start;
+        color: var(--color-primary);
+        background: white;
+    }
+
+    .mobile-menu .nav-button {
+        display: flex;
+        box-shadow: none;
+    }
+
+    .navbar.menu-visible .mobile-menu {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    .navbar.menu-visible .menu-toggle span:nth-child(1) {
+        transform: translateY(7px) rotate(45deg);
+    }
+
+    .navbar.menu-visible .menu-toggle span:nth-child(2) {
+        opacity: 0;
+    }
+
+    .navbar.menu-visible .menu-toggle span:nth-child(3) {
+        transform: translateY(-7px) rotate(-45deg);
+    }
+
+    body.menu-abierto {
+        overflow: hidden;
+    }
+}
+
+/* Header de escritorio */
+@media (min-width: 1101px) {
     .menu-toggle {
         display: none;
     }
@@ -25,6 +585,7 @@
     }
 }
 
+/* Header móvil */
 @media (max-width: 700px) {
     html,
     body {
@@ -43,16 +604,25 @@
         width: calc(100% - 20px);
     }
 
+    .nav-links a {
+        font-size: 13px;
+    }
+
+    .nav-button {
+        display: none;
+    }
+
     .navbar {
         position: relative;
         min-height: 70px;
-        padding: 6px 10px;
+        gap: 12px;
+        padding: 8px 12px;
         overflow: visible;
     }
 
     .logo img {
-        width: 56px;
-        height: 56px;
+        width: 55px;
+        height: 55px;
     }
 
     .menu-toggle {
