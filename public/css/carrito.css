@@ -646,22 +646,6 @@
 }
 
 
-/* RESPONSIVE */
-@media (max-width: 900px) {
-
-    .carrito-contenido {
-        grid-template-columns: 1fr;
-    }
-
-    .carrito-resumen {
-        position: static;
-
-        animation-name: productoEntrada;
-    }
-
-}
-
-
 @media (max-width: 650px) {
 
     .carrito-container {
