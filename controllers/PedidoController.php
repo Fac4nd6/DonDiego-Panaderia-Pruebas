@@ -49,6 +49,11 @@ $accion =
     ?? $_GET['accion']
     ?? 'listar';
 
+if ($accion === 'enviar_a_produccion') {
+    http_response_code(410);
+    exit('El envío desde el detalle del pedido fue reemplazado por Planificación de producción.');
+}
+
 
 // COMPROBAR ROL DE ADMIN / EMPLEADO
 if (
@@ -79,97 +84,6 @@ if (
     }
 }
 
-
-if ($accion === 'produccion') {
-    if (!usuarioPuede('ver_produccion')) {
-        http_response_code(403);
-        exit('No tenés permisos para ver producción.');
-    }
-
-    $estadosProduccion = ['pendiente', 'en_produccion', 'terminado'];
-    $filtroProduccion = (string) ($_GET['estado_produccion'] ?? '');
-    if (!in_array($filtroProduccion, array_merge([''], $estadosProduccion), true)) {
-        $filtroProduccion = '';
-    }
-
-    $produccionConfigurada = $pedidoModel->produccionConfigurada();
-    $produccion = $pedidoModel->obtenerProduccion($filtroProduccion);
-    require __DIR__ . '/../views/admin/produccion.php';
-    exit;
-}
-
-if ($accion === 'actualizar_produccion') {
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-        http_response_code(405);
-        exit('Método no permitido.');
-    }
-
-    if (!usuarioPuede('gestionar_produccion')) {
-        http_response_code(403);
-        exit('No tenés permisos para gestionar producción.');
-    }
-
-    verificar_csrf();
-
-    if (!$pedidoModel->produccionConfigurada()) {
-        header('Location: ' . url('/admin/produccion?error=esquema'));
-        exit;
-    }
-
-    $detalleId = (int) ($_POST['detalle_id'] ?? 0);
-    $estadoProduccion = (string) ($_POST['estado_produccion'] ?? '');
-    if (!$pedidoModel->actualizarEstadoProduccion($detalleId, $estadoProduccion)) {
-        header('Location: ' . url('/admin/produccion?error=estado'));
-        exit;
-    }
-
-    header('Location: ' . url('/admin/produccion?estado_produccion=' . rawurlencode((string) ($_POST['filtro_produccion'] ?? '')) . '&actualizado=1'));
-    exit;
-}
-
-if ($accion === 'enviar_a_produccion') {
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-        http_response_code(405);
-        exit('Método no permitido.');
-    }
-
-    verificar_csrf();
-
-    $pedidoId = (int) ($_POST['pedido_id'] ?? 0);
-    if ($pedidoId <= 0) {
-        exit('Pedido no válido.');
-    }
-
-    if (!usuarioPuede('enviar_a_produccion')) {
-        http_response_code(403);
-        exit('No tenés permisos para enviar elementos a producción.');
-    }
-
-    if (!$pedidoModel->produccionConfigurada()) {
-        header('Location: ' . url('/admin/produccion?error=esquema'));
-        exit;
-    }
-
-    $detalleIds = [];
-    foreach ($_POST['detalle_ids'] ?? [] as $detalleId) {
-        $detalleId = (int) $detalleId;
-        if ($detalleId > 0) {
-            $detalleIds[] = $detalleId;
-        }
-    }
-
-    $sectores = $_POST['sector'] ?? [];
-    $sucursales = $_POST['sucursal'] ?? [];
-
-    $resultado = $pedidoModel->guardarProduccionPedido($pedidoId, $detalleIds, $sectores, $sucursales);
-    if (!$resultado) {
-        header('Location: ' . url('/admin/pedidos/detalle?id=' . $pedidoId . '&error=produccion'));
-        exit;
-    }
-
-    header('Location: ' . url('/admin/produccion'));
-    exit;
-}
 
 // PANEL DE PEDIDOS - ADMIN / EMPLEADO
 if ($accion === 'gestionar_pedidos' || $accion === 'admin') {

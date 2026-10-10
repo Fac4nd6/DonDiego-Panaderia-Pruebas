@@ -348,6 +348,48 @@ ALTER TABLE `pedido_detalles`
   ADD COLUMN IF NOT EXISTS `sector` varchar(100) DEFAULT 'Por definir',
   ADD COLUMN IF NOT EXISTS `sucursal` varchar(150) DEFAULT NULL;
 
+-- Tablas de planificación de producción.
+-- Guardan instantáneas; crear una tanda no modifica pedidos ni pedido_detalles.
+CREATE TABLE IF NOT EXISTS `tandas_produccion` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `usuario_id` int(11) NOT NULL,
+  `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp(),
+  `titulo` varchar(150) DEFAULT NULL,
+  `destinos` text DEFAULT NULL,
+  `observaciones` text DEFAULT NULL,
+  `historial_metadatos` mediumtext DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_tandas_usuario` (`usuario_id`),
+  CONSTRAINT `fk_tanda_usuario` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `tandas_produccion_detalles` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `tanda_id` int(11) NOT NULL,
+  `pedido_detalle_id` int(11) NOT NULL,
+  `pedido_id` int(11) NOT NULL,
+  `producto_id` int(11) NOT NULL,
+  `producto_nombre` varchar(150) NOT NULL,
+  `cantidad` decimal(10,1) NOT NULL,
+  `unidad_venta` varchar(30) NOT NULL,
+  `sector` varchar(100) NOT NULL DEFAULT 'Por definir',
+  `sucursal` varchar(150) DEFAULT NULL,
+  `observaciones` text DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_tanda_linea_pedido` (`tanda_id`, `pedido_detalle_id`),
+  KEY `idx_tanda_detalle_origen` (`pedido_detalle_id`),
+  KEY `idx_tanda_detalle_pedido` (`pedido_id`),
+  KEY `idx_tanda_detalle_sector` (`tanda_id`, `sector`),
+  CONSTRAINT `fk_tanda_detalle_tanda` FOREIGN KEY (`tanda_id`) REFERENCES `tandas_produccion` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Metadatos de tandas para bases existentes; en instalaciones nuevas ya existen arriba.
+ALTER TABLE `tandas_produccion`
+  ADD COLUMN IF NOT EXISTS `titulo` varchar(150) DEFAULT NULL,
+  ADD COLUMN IF NOT EXISTS `destinos` text DEFAULT NULL,
+  ADD COLUMN IF NOT EXISTS `observaciones` text DEFAULT NULL,
+  ADD COLUMN IF NOT EXISTS `historial_metadatos` mediumtext DEFAULT NULL;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

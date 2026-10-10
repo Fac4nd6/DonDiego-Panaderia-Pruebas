@@ -39,4 +39,7 @@ RewriteRule ^admin/clientes/?$ controllers/ProductoController.php?accion=cliente
 RewriteRule ^admin/roles/?$ controllers/ProductoController.php?accion=roles [END,QSA]
 RewriteRule ^admin/pedidos/?$ controllers/PedidoController.php?accion=gestionar_pedidos [END,QSA]
 RewriteRule ^admin/pedidos/detalle/?$ controllers/PedidoController.php?accion=detalle_admin [END,QSA]
-RewriteRule ^admin/produccion/?$ controllers/PedidoController.php?accion=produccion [END,QSA]
+RewriteRule ^admin/planificacion/?$ controllers/ProduccionController.php [END,QSA]
+RewriteRule ^admin/tandas/?$ controllers/ProduccionController.php?accion=historial [END,QSA]
+RewriteRule ^admin/tandas/detalle/?$ controllers/ProduccionController.php?accion=detalle [END,QSA]
+RewriteRule ^admin/tandas/imprimir/?$ controllers/ProduccionController.php?accion=imprimir [END,QSA]
