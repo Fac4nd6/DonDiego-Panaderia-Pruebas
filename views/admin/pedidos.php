@@ -73,7 +73,7 @@ $mensajeEstado = match ($_GET['error'] ?? '') {
 
             <div class="admin-header-acciones">
                 <?php if (usuarioPuede('ver_produccion')): ?>
-                    <a href="<?= url('/admin/produccion') ?>" class="btn-agregar">Producción</a>
+                    <a href="<?= url('/admin/planificacion') ?>" class="btn-agregar">Planificación</a>
                 <?php endif; ?>
                 <a href="<?= url('/admin/productos') ?>" class="btn-agregar btn-volver-admin">Volver</a>
             </div>

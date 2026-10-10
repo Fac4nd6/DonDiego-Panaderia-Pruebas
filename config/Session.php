@@ -37,7 +37,6 @@ function usuarioPuede($permiso, $rol = null)
             'modificar_precios',
             'modificar_stock',
             'configurar_modalidades',
-            'enviar_a_produccion',
             'gestionar_produccion',
             'ver_usuarios'
         ],
@@ -45,7 +44,6 @@ function usuarioPuede($permiso, $rol = null)
             'ver_pedidos',
             'ver_produccion',
             'gestionar_pedidos',
-            'enviar_a_produccion',
             'gestionar_produccion'
         ],
         'cliente' => []

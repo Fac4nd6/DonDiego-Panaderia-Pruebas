@@ -1,8 +1,6 @@
 <?php
 
-$pageCss = (!empty($esAdmin) || !empty($esEmpleado))
-    ? ["detalle-pedido.css", "produccion.css"]
-    : "detalle-pedido.css";
+$pageCss = 'detalle-pedido.css';
 
 require __DIR__ . '/../layouts/head.php';
 
@@ -317,13 +315,6 @@ require __DIR__ . '/../layouts/head.php';
                 </h2>
 
 
-                <?php if (!empty($esAdmin) || !empty($esEmpleado)): ?>
-                    <form method="POST" action="<?= url('/admin/pedidos') ?>" class="detalle-productos-form">
-                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
-                        <input type="hidden" name="accion" value="enviar_a_produccion">
-                        <input type="hidden" name="pedido_id" value="<?= (int) $pedido['id'] ?>">
-                <?php endif; ?>
-
                 <div class="detalle-productos">
 
                     <?php if (!empty($detalles)): ?>
@@ -331,20 +322,6 @@ require __DIR__ . '/../layouts/head.php';
                         <?php foreach ($detalles as $item): ?>
 
                             <div class="detalle-producto">
-
-                                <?php if (!empty($esAdmin) || !empty($esEmpleado)): ?>
-                                    <div class="detalle-producto-check">
-                                        <label>
-                                            <input
-                                                type="checkbox"
-                                                name="detalle_ids[]"
-                                                value="<?= (int) $item['id'] ?>"
-                                                <?= !empty($item['seleccionada']) ? 'checked' : '' ?>>
-                                            Seleccionar para producción
-                                        </label>
-                                    </div>
-                                <?php endif; ?>
-
 
                                 <div class="detalle-producto-info">
 
@@ -398,29 +375,6 @@ require __DIR__ . '/../layouts/head.php';
 
                                         </span>
 
-                                        <?php if (!empty($esAdmin) || !empty($esEmpleado)): ?>
-                                            <div class="detalle-producto-meta">
-                                                <label>
-                                                    Sector
-                                                    <input
-                                                        type="text"
-                                                        name="sector[<?= (int) $item['id'] ?>]"
-                                                        value="<?= htmlspecialchars($item['sector'] ?? 'Por definir', ENT_QUOTES, 'UTF-8') ?>"
-                                                        maxlength="100"
-                                                        placeholder="Por definir">
-                                                </label>
-
-                                                <label>
-                                                    Sucursal
-                                                    <input
-                                                        type="text"
-                                                        name="sucursal[<?= (int) $item['id'] ?>]"
-                                                        value="<?= htmlspecialchars($item['sucursal'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
-                                                        placeholder="Sin sucursal">
-                                                </label>
-                                            </div>
-                                        <?php endif; ?>
-
                                     </div>
 
                                 </div>
@@ -451,15 +405,6 @@ require __DIR__ . '/../layouts/head.php';
                     <?php endif; ?>
 
                 </div>
-
-                <?php if (!empty($esAdmin) || !empty($esEmpleado)): ?>
-                        <div class="detalle-acciones detalle-acciones-produccion">
-                            <button type="submit" class="btn-agregar">Enviar seleccionados a producción</button>
-                        </div>
-                    </form>
-                <?php endif; ?>
-
-
 
                 <!-- TOTAL -->
                 <div class="detalle-total">

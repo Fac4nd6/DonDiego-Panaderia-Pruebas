@@ -255,6 +255,29 @@ Los usuarios autorizados pueden:
 * Actualizar estados.
 * Gestionar los pedidos durante su procesamiento.
 
+## Planificación de producción
+
+El personal autorizado puede abrir **Planificación** desde la gestión de
+pedidos, filtrar por estado comercial y seleccionar varios pedidos. Los
+productos se agrupan automáticamente solo si coinciden producto, presentación
+y sector; la asignación normal toma el remanente completo y permite un ajuste
+parcial secundario por pedido de origen. El sistema conserva la distribución
+por pedido, el estado comercial, el sector guardado en cada línea y resta las
+cantidades ya comprometidas en otras tandas. El historial conserva las tandas
+y ofrece documentos agrupados por sector, imprimibles o guardables como PDF
+desde el navegador.
+La planificación es el único punto de entrada para crear tandas. Las columnas
+históricas de producción de `pedido_detalles` se conservan para bloquear
+duplicados de líneas enviadas anteriormente.
+
+El esquema completo de tandas, incluidos título, destinos, observaciones y su
+historial de edición, está en `database/don_diego.sql`. Para una base existente,
+ejecutar únicamente el bloque `ALTER TABLE tandas_produccion` que aparece al
+final del archivo; no importar el dump completo sobre datos existentes. El
+bloque agrega columnas idempotentes, no crea tablas ni modifica líneas de
+pedidos. Las tandas antiguas muestran un título automático hasta que se les
+asigne uno explícitamente.
+
 ---
 
 # 💳 Métodos de pago
