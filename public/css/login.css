@@ -523,6 +523,40 @@
         0 3px 0 #801318,
         0 5px 10px rgba(179,27,33,0.2);
 }
+
+/* Aceptación de políticas del registro. */
+.politicas-aceptacion {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    margin-top: 18px;
+    color: #555;
+    font-size: 0.8rem;
+    line-height: 1.5;
+}
+
+.politicas-aceptacion input {
+    width: 16px;
+    height: 16px;
+    flex: 0 0 auto;
+    margin-top: 3px;
+    accent-color: #b31b21;
+}
+
+.politicas-aceptacion label {
+    cursor: pointer;
+}
+
+.politicas-aceptacion a {
+    color: #333;
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+.politicas-aceptacion a:hover {
+    color: #b31b21;
+}
+
 /* Enlace inferior. */
 .form-footer {
     margin-top: 25px;

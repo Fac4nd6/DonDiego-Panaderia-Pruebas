@@ -355,10 +355,10 @@ require __DIR__ . '/../layouts/header.php';
 
                                     <span>
 
-                                        <?= (int) $item['cantidad'] ?>
+                                        <?= htmlspecialchars(Producto::formatearCantidad($item['cantidad'], $item['unidad_venta'] ?? 'unidad'), ENT_QUOTES, 'UTF-8') ?>
 
                                         <?= htmlspecialchars(
-                                            $item['unidad_venta'] ?? 'unidad',
+                                            Producto::nombrePresentacion($item['unidad_venta'] ?? 'unidad', $item['cantidad']),
                                             ENT_QUOTES,
                                             'UTF-8'
                                         ) ?>
@@ -367,7 +367,7 @@ require __DIR__ . '/../layouts/header.php';
 
                                         $<?= number_format(
                                                 $item['precio'],
-                                                0,
+                                                2,
                                                 ',',
                                                 '.'
                                             ) ?>
@@ -382,7 +382,7 @@ require __DIR__ . '/../layouts/header.php';
                                     $<?= number_format(
                                             $item['precio']
                                                 * $item['cantidad'],
-                                            0,
+                                            2,
                                             ',',
                                             '.'
                                         ) ?>
@@ -411,7 +411,7 @@ require __DIR__ . '/../layouts/header.php';
 
                             $<?= number_format(
                                     $total,
-                                    0,
+                                    2,
                                     ',',
                                     '.'
                                 ) ?>

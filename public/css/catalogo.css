@@ -104,6 +104,15 @@
         buscadorEntrada 0.6s ease-out 0.1s both;
 }
 
+.pedido-encargo-link {
+    display: block;
+    width: fit-content;
+    margin: 10px auto 24px;
+    color: var(--color-primary);
+    font-weight: 600;
+    text-align: center;
+}
+
 
 .catalogo-buscador {
     display: flex;

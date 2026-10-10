@@ -35,6 +35,68 @@ function verificar_csrf()
     }
 }
 
+function obtenerPresentacionesFormulario()
+{
+    $unidades = $_POST['unidad_venta'] ?? [];
+    $precios = $_POST['precios_unidad'] ?? [];
+    $permitidas = ['unidad', 'docena', 'media docena', 'kilogramo'];
+
+    if (!is_array($unidades) || !is_array($precios) || empty($unidades)) {
+        return false;
+    }
+
+    $unidades = array_values(array_unique(array_filter($unidades, 'is_string')));
+    if (empty($unidades) || count(array_diff($unidades, $permitidas)) > 0) {
+        return false;
+    }
+
+    $presentaciones = [];
+    foreach ($unidades as $unidad) {
+        $precio = $precios[$unidad] ?? null;
+        if (!is_numeric($precio) || (float) $precio < 0 || (float) $precio > 99999999.99) {
+            return false;
+        }
+
+        $presentaciones[$unidad] = round((float) $precio, 2);
+    }
+
+    return $presentaciones;
+}
+
+function obtenerStocksFormulario($presentaciones)
+{
+    $stocks = $_POST['stocks_modalidades'] ?? [];
+    if (!is_array($presentaciones) || !is_array($stocks)) {
+        return false;
+    }
+
+    $resultado = ['unidad' => 0, 'kilogramo' => 0.0];
+    $vendePiezas = !empty(array_intersect(
+        array_keys($presentaciones),
+        ['unidad', 'docena', 'media docena']
+    ));
+
+    if ($vendePiezas) {
+        $stockPiezas = Producto::normalizarStock($stocks['unidad'] ?? null, 'unidad');
+        if ($stockPiezas === false) {
+            return false;
+        }
+
+        $resultado['unidad'] = $stockPiezas;
+    }
+
+    if (array_key_exists('kilogramo', $presentaciones)) {
+        $stockKilos = Producto::normalizarStock($stocks['kilogramo'] ?? null, 'kilogramo');
+        if ($stockKilos === false) {
+            return false;
+        }
+
+        $resultado['kilogramo'] = $stockKilos;
+    }
+
+    return $resultado;
+}
+
 // COMPROBAR SESIÓN
 if (!isset($_SESSION['usuario_id'])) {
 
@@ -91,10 +153,10 @@ if ($accion === 'admin_productos' || $accion === 'listar') {
 if ($accion === 'clientes') {
 
     $busqueda = trim($_GET['buscar'] ?? '');
-    $rol = trim($_GET['rol'] ?? 'cliente');
+    $rol = trim($_GET['rol'] ?? 'todos');
 
     if (!in_array($rol, ['todos', 'cliente', 'empleado', 'admin'], true)) {
-        $rol = 'cliente';
+        $rol = 'todos';
     }
 
     $usuarioModel = new Usuario($conn);
@@ -267,30 +329,26 @@ if ($accion === 'guardar') {
     $descripcion =
         trim($_POST['descripcion'] ?? '');
 
-    $precio =
-        $_POST['precio'] ?? '';
+    $presentaciones = obtenerPresentacionesFormulario();
+    $stocksModalidades = obtenerStocksFormulario($presentaciones);
+    $unidadVenta = is_array($presentaciones) ? array_key_first($presentaciones) : '';
+    $precio = is_array($presentaciones) ? $presentaciones[$unidadVenta] : '';
+    $presentacionesJson = is_array($presentaciones) ? json_encode($presentaciones) : '';
+    $stocksJson = is_array($stocksModalidades) ? json_encode($stocksModalidades) : '';
+    $stock = is_array($stocksModalidades)
+        ? Producto::stockCompatibilidad($stocksModalidades)
+        : false;
 
     $categoriaId =
         (int) ($_POST['categoria_id'] ?? 0);
-
-    $stock =
-        filter_var(
-            $_POST['stock'] ?? null,
-            FILTER_VALIDATE_INT
-        );
-
-    $unidadVenta = trim($_POST['unidad_venta'] ?? 'unidad');
-    $unidadesPermitidas = ['unidad', 'docena', 'media docena', 'kilogramo'];
-
 
     // VALIDAR DATOS
     if (
         $nombre === '' ||
         $precio === '' ||
         $categoriaId <= 0 ||
-        $stock === false ||
-        $stock < 0 ||
-        !in_array($unidadVenta, $unidadesPermitidas, true)
+        $stocksModalidades === false ||
+        $presentaciones === false
     ) {
 
         exit('Faltan datos obligatorios.');
@@ -417,7 +475,9 @@ if ($accion === 'guardar') {
             $categoriaId,
             $nombreImagen,
             $unidadVenta,
-            $stock
+            $stock,
+            $presentacionesJson,
+            $stocksJson
         );
 
 
@@ -508,8 +568,15 @@ if ($accion === 'actualizar') {
     $descripcion =
         trim($_POST['descripcion'] ?? '');
 
-    $precio =
-        $_POST['precio'] ?? '';
+    $presentaciones = obtenerPresentacionesFormulario();
+    $stocksModalidades = obtenerStocksFormulario($presentaciones);
+    $unidadVenta = is_array($presentaciones) ? array_key_first($presentaciones) : '';
+    $precio = is_array($presentaciones) ? $presentaciones[$unidadVenta] : '';
+    $presentacionesJson = is_array($presentaciones) ? json_encode($presentaciones) : '';
+    $stocksJson = is_array($stocksModalidades) ? json_encode($stocksModalidades) : '';
+    $stock = is_array($stocksModalidades)
+        ? Producto::stockCompatibilidad($stocksModalidades)
+        : false;
 
     $categoriaId =
         (int) ($_POST['categoria_id'] ?? 0);
@@ -517,25 +584,14 @@ if ($accion === 'actualizar') {
     $activo =
         (int) ($_POST['activo'] ?? 1);
 
-    $stock =
-        filter_var(
-            $_POST['stock'] ?? null,
-            FILTER_VALIDATE_INT
-        );
-
-    $unidadVenta = trim($_POST['unidad_venta'] ?? 'unidad');
-    $unidadesPermitidas = ['unidad', 'docena', 'media docena', 'kilogramo'];
-
-
     // VALIDAR DATOS
     if (
         $id <= 0 ||
         $nombre === '' ||
         $precio === '' ||
         $categoriaId <= 0 ||
-        $stock === false ||
-        $stock < 0 ||
-        !in_array($unidadVenta, $unidadesPermitidas, true)
+        $stocksModalidades === false ||
+        $presentaciones === false
     ) {
 
         exit('Datos inválidos.');
@@ -681,7 +737,9 @@ if ($accion === 'actualizar') {
             $imagen,
             $unidadVenta,
             $activo,
-            $stock
+            $stock,
+            $presentacionesJson,
+            $stocksJson
         );
 
 

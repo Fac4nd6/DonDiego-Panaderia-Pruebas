@@ -71,11 +71,12 @@ $mensajeEstado = match ($_GET['error'] ?? '') {
 
             </div>
 
-            <a
-                href="<?= url('/admin/productos') ?>"
-                class="btn-agregar btn-volver-admin">
-                Volver
-            </a>
+            <div class="admin-header-acciones">
+                <?php if (usuarioPuede('ver_produccion')): ?>
+                    <a href="<?= url('/admin/produccion') ?>" class="btn-agregar">Producción</a>
+                <?php endif; ?>
+                <a href="<?= url('/admin/productos') ?>" class="btn-agregar btn-volver-admin">Volver</a>
+            </div>
 
         </header>
 
@@ -211,9 +212,11 @@ $mensajeEstado = match ($_GET['error'] ?? '') {
 
                                     <td>
 
-                                        <strong class="pedido-numero">
+                                        <strong
+                                            class="pedido-numero"
+                                            title="Pedido #<?= (int) $pedido['id'] ?>">
 
-                                            #<?= (int) $pedido['id'] ?>
+                                            <?= ($pedido['tipo'] ?? 'normal') === 'encargo' ? 'Encargo' : 'Normal' ?> #<?= (int) $pedido['id'] ?>
 
                                         </strong>
 
@@ -327,22 +330,15 @@ $mensajeEstado = match ($_GET['error'] ?? '') {
 
                                             <strong>
 
-                                                <?= date(
-                                                    'd/m/Y',
-                                                    strtotime(
-                                                        $pedido['fecha_recepcion']
-                                                    )
-                                                ) ?>
+                                                <?= !empty($pedido['fecha_recepcion'])
+                                                    ? date('d/m/Y', strtotime($pedido['fecha_recepcion']))
+                                                    : 'A coordinar' ?>
 
                                             </strong>
 
                                             <span>
 
-                                                <?= htmlspecialchars(
-                                                    $pedido['franja_horaria'],
-                                                    ENT_QUOTES,
-                                                    'UTF-8'
-                                                ) ?>
+                                                <?= htmlspecialchars($pedido['franja_horaria'] ?? 'A coordinar', ENT_QUOTES, 'UTF-8') ?>
 
                                             </span>
 
@@ -356,6 +352,10 @@ $mensajeEstado = match ($_GET['error'] ?? '') {
                                     <td>
 
                                         <strong class="pedido-total">
+
+                                            <?php if (($pedido['tipo'] ?? 'normal') === 'encargo'): ?>
+                                                Estimado:
+                                            <?php endif; ?>
 
                                             $<?= number_format(
                                                     $pedido['total'],

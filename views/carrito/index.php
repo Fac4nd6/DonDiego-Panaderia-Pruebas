@@ -67,7 +67,7 @@ require __DIR__ . '/../layouts/header.php';
                 <div class="carrito-productos">
 
 
-                    <?php foreach ($carrito as $item): ?>
+                    <?php foreach ($carrito as $claveCarrito => $item): ?>
 
                         <article class="carrito-item">
 
@@ -117,13 +117,13 @@ require __DIR__ . '/../layouts/header.php';
 
                                     $<?= number_format(
                                             $item['precio'],
-                                            0,
+                                            2,
                                             ',',
                                             '.'
                                         ) ?>
 
                                     por <?= htmlspecialchars(
-                                        $item['unidad_venta'] ?? 'unidad',
+                                        Producto::nombrePresentacion($item['unidad_venta'] ?? 'unidad'),
                                         ENT_QUOTES,
                                         'UTF-8'
                                     ) ?>
@@ -156,18 +156,28 @@ require __DIR__ . '/../layouts/header.php';
                                         name="producto_id"
                                         value="<?= (int) $item['id'] ?>">
 
+                                    <input
+                                        type="hidden"
+                                        name="linea_id"
+                                        value="<?= htmlspecialchars($item['clave'] ?? $claveCarrito, ENT_QUOTES, 'UTF-8') ?>">
+
                                     <label
-                                        for="cantidad-<?= (int) $item['id'] ?>">
-                                        Cantidad
+                                        for="cantidad-<?= htmlspecialchars($item['clave'] ?? $claveCarrito, ENT_QUOTES, 'UTF-8') ?>">
+                                        Cantidad (<?= htmlspecialchars(
+                                            Producto::nombrePresentacion($item['unidad_venta'] ?? 'unidad', $item['cantidad']),
+                                            ENT_QUOTES,
+                                            'UTF-8'
+                                        ) ?>)
                                     </label>
 
                                     <input
                                         type="number"
-                                        id="cantidad-<?= (int) $item['id'] ?>"
+                                        id="cantidad-<?= htmlspecialchars($item['clave'] ?? $claveCarrito, ENT_QUOTES, 'UTF-8') ?>"
                                         name="cantidad"
-                                        value="<?= (int) $item['cantidad'] ?>"
-                                        min="1"
-                                        max="99">
+                                        value="<?= htmlspecialchars(Producto::formatearCantidad($item['cantidad'], $item['unidad_venta'] ?? 'unidad'), ENT_QUOTES, 'UTF-8') ?>"
+                                        min="<?= ($item['unidad_venta'] ?? '') === 'kilogramo' ? '0.1' : '1' ?>"
+                                        max="99"
+                                        step="<?= ($item['unidad_venta'] ?? '') === 'kilogramo' ? '0.1' : '1' ?>">
 
                                     <button
                                         type="submit"
@@ -201,8 +211,8 @@ require __DIR__ . '/../layouts/header.php';
 
                                     <input
                                         type="hidden"
-                                        name="producto_id"
-                                        value="<?= (int) $item['id'] ?>">
+                                        name="linea_id"
+                                        value="<?= htmlspecialchars($item['clave'] ?? $claveCarrito, ENT_QUOTES, 'UTF-8') ?>">
 
                                     <button
                                         type="submit"
@@ -226,7 +236,7 @@ require __DIR__ . '/../layouts/header.php';
 
                                     $<?= number_format(
                                             $item['precio'] * $item['cantidad'],
-                                            0,
+                                            2,
                                             ',',
                                             '.'
                                         ) ?>
@@ -275,7 +285,7 @@ require __DIR__ . '/../layouts/header.php';
 
                             $<?= number_format(
                                     $total,
-                                    0,
+                                    2,
                                     ',',
                                     '.'
                                 ) ?>

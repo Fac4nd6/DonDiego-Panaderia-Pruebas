@@ -66,6 +66,7 @@ require __DIR__ . '/../layouts/header.php';
                     <thead>
                         <tr>
                             <th>Nombre</th>
+                            <th>Comercio</th>
                             <th>Email</th>
                             <th>Teléfono</th>
                             <th>Rol</th>
@@ -77,10 +78,8 @@ require __DIR__ . '/../layouts/header.php';
                             <tr>
                                 <td>
                                     <strong><?= htmlspecialchars($cliente['nombre_completo'], ENT_QUOTES, 'UTF-8') ?></strong>
-                                    <?php if (!empty($cliente['nombre_comercio'])): ?>
-                                        <span class="cliente-comercio"><?= htmlspecialchars($cliente['nombre_comercio'], ENT_QUOTES, 'UTF-8') ?></span>
-                                    <?php endif; ?>
                                 </td>
+                                <td><?= !empty($cliente['nombre_comercio']) ? htmlspecialchars($cliente['nombre_comercio'], ENT_QUOTES, 'UTF-8') : 'No aplica' ?></td>
                                 <td><?= htmlspecialchars($cliente['email'], ENT_QUOTES, 'UTF-8') ?></td>
                                 <td><?= !empty($cliente['telefono']) ? htmlspecialchars($cliente['telefono'], ENT_QUOTES, 'UTF-8') : 'No informado' ?></td>
                                 <td><?= htmlspecialchars(ucfirst($cliente['rol']), ENT_QUOTES, 'UTF-8') ?></td>

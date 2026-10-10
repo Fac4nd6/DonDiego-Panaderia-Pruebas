@@ -116,7 +116,7 @@ require __DIR__ . '/../layouts/head.php';
                             <tr>
                                 <th>Producto</th>
                                 <th>Categoría</th>
-                                <th>Precio</th>
+                                <th>Modalidades y precios</th>
                                 <th>Estado</th>
                                 <th>Acciones</th>
                             </tr>
@@ -180,14 +180,14 @@ require __DIR__ . '/../layouts/head.php';
 
                                     <td>
 
-                                        <strong class="precio-producto">
-                                            $<?= number_format(
-                                                    $producto['precio'],
-                                                    0,
-                                                    ',',
-                                                    '.'
-                                                ) ?>
-                                        </strong>
+                                        <?php foreach (Producto::obtenerPresentaciones($producto) as $unidad => $precio): ?>
+                                            <?php $stockModalidad = Producto::stockDisponibleVenta(Producto::obtenerStocks($producto), $unidad); ?>
+                                            <strong class="precio-producto">
+                                                <?= htmlspecialchars(ucfirst($unidad), ENT_QUOTES, 'UTF-8') ?>:
+                                                $<?= number_format($precio, 2, ',', '.') ?>
+                                            </strong><br>
+                                            <span>Disponibles: <?= htmlspecialchars(Producto::formatearCantidad($stockModalidad, $unidad), ENT_QUOTES, 'UTF-8') ?> <?= htmlspecialchars(Producto::nombrePresentacion($unidad, $stockModalidad), ENT_QUOTES, 'UTF-8') ?></span><br>
+                                        <?php endforeach; ?>
 
                                     </td>
 
