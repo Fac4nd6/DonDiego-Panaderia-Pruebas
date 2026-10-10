@@ -80,6 +80,97 @@ if (
 }
 
 
+if ($accion === 'produccion') {
+    if (!usuarioPuede('ver_produccion')) {
+        http_response_code(403);
+        exit('No tenés permisos para ver producción.');
+    }
+
+    $estadosProduccion = ['pendiente', 'en_produccion', 'terminado'];
+    $filtroProduccion = (string) ($_GET['estado_produccion'] ?? '');
+    if (!in_array($filtroProduccion, array_merge([''], $estadosProduccion), true)) {
+        $filtroProduccion = '';
+    }
+
+    $produccionConfigurada = $pedidoModel->produccionConfigurada();
+    $produccion = $pedidoModel->obtenerProduccion($filtroProduccion);
+    require __DIR__ . '/../views/admin/produccion.php';
+    exit;
+}
+
+if ($accion === 'actualizar_produccion') {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        http_response_code(405);
+        exit('Método no permitido.');
+    }
+
+    if (!usuarioPuede('gestionar_produccion')) {
+        http_response_code(403);
+        exit('No tenés permisos para gestionar producción.');
+    }
+
+    verificar_csrf();
+
+    if (!$pedidoModel->produccionConfigurada()) {
+        header('Location: ' . url('/admin/produccion?error=esquema'));
+        exit;
+    }
+
+    $detalleId = (int) ($_POST['detalle_id'] ?? 0);
+    $estadoProduccion = (string) ($_POST['estado_produccion'] ?? '');
+    if (!$pedidoModel->actualizarEstadoProduccion($detalleId, $estadoProduccion)) {
+        header('Location: ' . url('/admin/produccion?error=estado'));
+        exit;
+    }
+
+    header('Location: ' . url('/admin/produccion?estado_produccion=' . rawurlencode((string) ($_POST['filtro_produccion'] ?? '')) . '&actualizado=1'));
+    exit;
+}
+
+if ($accion === 'enviar_a_produccion') {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        http_response_code(405);
+        exit('Método no permitido.');
+    }
+
+    verificar_csrf();
+
+    $pedidoId = (int) ($_POST['pedido_id'] ?? 0);
+    if ($pedidoId <= 0) {
+        exit('Pedido no válido.');
+    }
+
+    if (!usuarioPuede('enviar_a_produccion')) {
+        http_response_code(403);
+        exit('No tenés permisos para enviar elementos a producción.');
+    }
+
+    if (!$pedidoModel->produccionConfigurada()) {
+        header('Location: ' . url('/admin/produccion?error=esquema'));
+        exit;
+    }
+
+    $detalleIds = [];
+    foreach ($_POST['detalle_ids'] ?? [] as $detalleId) {
+        $detalleId = (int) $detalleId;
+        if ($detalleId > 0) {
+            $detalleIds[] = $detalleId;
+        }
+    }
+
+    $sectores = $_POST['sector'] ?? [];
+    $sucursales = $_POST['sucursal'] ?? [];
+
+    $resultado = $pedidoModel->guardarProduccionPedido($pedidoId, $detalleIds, $sectores, $sucursales);
+    if (!$resultado) {
+        header('Location: ' . url('/admin/pedidos/detalle?id=' . $pedidoId . '&error=produccion'));
+        exit;
+    }
+
+    header('Location: ' . url('/admin/produccion'));
+    exit;
+}
+
 // PANEL DE PEDIDOS - ADMIN / EMPLEADO
 if ($accion === 'gestionar_pedidos' || $accion === 'admin') {
 
@@ -299,7 +390,7 @@ if ($accion === 'cancelar') {
 }
 
 
-if ($accion === 'repetir') {
+if ($accion === 'repetir' || $accion === 'repetir_confirmado') {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         http_response_code(405);
         exit('Método no permitido.');
@@ -320,40 +411,134 @@ if ($accion === 'repetir') {
         exit('El pedido no existe o no pertenece a tu cuenta.');
     }
 
-    $agregados = [];
-    $noAgregados = [];
+    $itemsAAgregar = [];
+    $productosNoDisponibles = [];
+    $stockModalidadPlanificada = [];
 
     foreach ($detalles as $detalle) {
         $productoId = (int) $detalle['producto_id'];
-        $cantidadOriginal = filter_var($detalle['cantidad'], FILTER_VALIDATE_INT);
         $producto = $productoModel->obtenerPorId($productoId);
+        $nombreProducto = $producto['nombre'] ?? ('Producto #' . $productoId);
 
-        if (!$producto || (int) $producto['activo'] !== 1 || (int) $producto['stock'] <= 0) {
-            $noAgregados[] = $producto
-                ? $producto['nombre']
-                : ('Producto #' . $productoId);
+        if (!$producto || (int) $producto['activo'] !== 1) {
+            $productosNoDisponibles[] = [
+                'nombre' => $nombreProducto,
+                'motivo' => !$producto || (int) ($producto['activo'] ?? 0) !== 1
+                    ? 'Este producto ya no está disponible.'
+                    : 'No hay stock disponible.'
+            ];
             continue;
         }
 
-        $cantidadOriginal = max(0, (int) $cantidadOriginal);
-        $cantidadActual = (int) ($carritoModel->obtener()[$productoId]['cantidad'] ?? 0);
-        $cantidadDisponible = max(0, (int) $producto['stock'] - $cantidadActual);
+        $unidadVenta = (string) ($detalle['unidad_venta'] ?? 'unidad');
+        $presentaciones = Producto::obtenerPresentaciones($producto);
+        if (!array_key_exists($unidadVenta, $presentaciones)) {
+            $productosNoDisponibles[] = [
+                'nombre' => $nombreProducto,
+                'motivo' => 'La modalidad «' . $unidadVenta . '» ya no está disponible.'
+            ];
+            continue;
+        }
+
+        $cantidadOriginal = Producto::normalizarCantidad($detalle['cantidad'], $unidadVenta);
+        if ($cantidadOriginal === false) {
+            $productosNoDisponibles[] = [
+                'nombre' => $nombreProducto,
+                'motivo' => 'La cantidad original del pedido no es válida.'
+            ];
+            continue;
+        }
+
+        $stocksPorModalidad = Producto::obtenerStocks($producto);
+        $consumoOriginal = Producto::consumoInventario($unidadVenta, $cantidadOriginal);
+        $baseStock = $consumoOriginal['base'];
+
+        $consumoEnCarrito = 0;
+        foreach ($carritoModel->obtener() as $itemCarrito) {
+            if ((int) ($itemCarrito['id'] ?? 0) === $productoId) {
+                $consumoExistente = Producto::consumoInventario(
+                    $itemCarrito['unidad_venta'] ?? 'unidad',
+                    $itemCarrito['cantidad'] ?? 0
+                );
+                if ($consumoExistente['base'] === $baseStock) {
+                    $consumoEnCarrito += $consumoExistente['cantidad'];
+                }
+            }
+        }
+        $claveStock = $productoId . '|' . $baseStock;
+        $cantidadReservada = $stockModalidadPlanificada[$claveStock] ?? 0;
+        $stockDisponibleBase = max(
+            0,
+            (float) ($stocksPorModalidad[$baseStock] ?? 0)
+                - $consumoEnCarrito
+                - $cantidadReservada
+        );
+        $cantidadDisponible = $baseStock === 'kilogramo'
+            ? min(99, round($stockDisponibleBase, 1))
+            : min(99, (int) floor($stockDisponibleBase / Producto::factorPiezas($unidadVenta)));
         $cantidadAgregar = min($cantidadOriginal, $cantidadDisponible);
 
         if ($cantidadAgregar > 0) {
-            $carritoModel->agregar($producto, $cantidadAgregar);
-            $agregados[] = $producto['nombre'];
+            $itemsAAgregar[] = [
+                'producto' => $producto,
+                'cantidad' => $cantidadAgregar,
+                'unidad_venta' => $unidadVenta
+            ];
+            $consumoAgregado = Producto::consumoInventario($unidadVenta, $cantidadAgregar);
+            $stockModalidadPlanificada[$claveStock] = $cantidadReservada + $consumoAgregado['cantidad'];
         }
 
-        if ($cantidadAgregar < $cantidadOriginal) {
-            $noAgregados[] = $producto['nombre'];
+        if ($cantidadAgregar + 0.000001 < $cantidadOriginal) {
+            $cantidadFrase = Producto::formatearCantidad($cantidadAgregar, $unidadVenta);
+            $cantidadOriginalFrase = Producto::formatearCantidad($cantidadOriginal, $unidadVenta);
+            $productosNoDisponibles[] = [
+                'nombre' => $nombreProducto,
+                'motivo' => $cantidadAgregar > 0
+                    ? 'Solo hay ' . $cantidadFrase . ' de ' . $cantidadOriginalFrase . ' solicitados disponibles por ' . Producto::nombrePresentacion($unidadVenta, $cantidadAgregar) . '.'
+                    : 'No queda stock disponible por ' . Producto::nombrePresentacion($unidadVenta) . '.'
+            ];
         }
     }
 
-    $_SESSION['mensaje_repetir'] = empty($noAgregados)
-        ? 'Los productos del pedido fueron agregados al carrito.'
-        : 'Algunos productos no se agregaron por disponibilidad o stock: '
-        . implode(', ', $noAgregados) . '.';
+    $datosRevision = [
+        'agregar' => array_map(
+            static fn ($item) => [
+                (int) $item['producto']['id'],
+                (float) $item['cantidad'],
+                $item['unidad_venta']
+            ],
+            $itemsAAgregar
+        ),
+        'omitidos' => $productosNoDisponibles
+    ];
+    $revisionActual = hash_hmac(
+        'sha256',
+        json_encode($datosRevision, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+        $_SESSION['csrf_token'] ?? session_id()
+    );
+    $revisionEnviada = (string) ($_POST['revision'] ?? '');
+    $requiereRevision = !empty($productosNoDisponibles)
+        && $accion === 'repetir';
+    $cambioDesdeRevision = $accion === 'repetir_confirmado'
+        && !hash_equals($revisionActual, $revisionEnviada);
+
+    if ($requiereRevision || $cambioDesdeRevision) {
+        $pedidoRepetidoId = (int) $pedidoId;
+        require __DIR__ . '/../views/pedidos/repetir.php';
+        exit;
+    }
+
+    foreach ($itemsAAgregar as $item) {
+        $carritoModel->agregar(
+            $item['producto'],
+            $item['cantidad'],
+            $item['unidad_venta']
+        );
+    }
+
+    $_SESSION['mensaje_repetir'] = empty($itemsAAgregar)
+        ? 'No se agregaron productos porque ninguno está disponible actualmente.'
+        : 'Los productos disponibles fueron agregados al carrito.';
 
     header('Location: ' . url('/carrito'));
     exit;
@@ -585,17 +770,14 @@ if ($accion === 'crear') {
 
 
     $ids = [];
-    $cantidades = [];
     foreach ($carrito as $item) {
         $productoId = filter_var($item['id'] ?? null, FILTER_VALIDATE_INT);
-        $cantidad = filter_var($item['cantidad'] ?? null, FILTER_VALIDATE_INT);
 
-        if ($productoId === false || $productoId <= 0 || $cantidad === false || $cantidad <= 0 || $cantidad > 99) {
-            exit('La cantidad o el producto del carrito no son válidos.');
+        if ($productoId === false || $productoId <= 0) {
+            exit('El producto del carrito no es válido.');
         }
 
         $ids[] = $productoId;
-        $cantidades[$productoId] = $cantidad;
     }
 
     $productos = $pedidoModel->obtenerProductosActivos($ids);
@@ -605,11 +787,23 @@ if ($accion === 'crear') {
     }
 
     $detalles = [];
-    foreach ($ids as $productoId) {
-        $detalles[$productoId] = [
+    foreach ($carrito as $item) {
+        $productoId = (int) $item['id'];
+        $unidadVenta = (string) ($item['unidad_venta'] ?? '');
+        $presentaciones = Producto::obtenerPresentaciones($productos[$productoId]);
+        if (!array_key_exists($unidadVenta, $presentaciones)) {
+            exit('La presentación de ' . $productos[$productoId]['nombre'] . ' ya no está disponible.');
+        }
+
+        $cantidad = Producto::normalizarCantidad($item['cantidad'] ?? null, $unidadVenta);
+        if ($cantidad === false) {
+            exit('La cantidad de ' . $productos[$productoId]['nombre'] . ' no es válida.');
+        }
+
+        $detalles[] = [
             'producto_id' => $productoId,
-            'cantidad' => $cantidades[$productoId],
-            'precio_unitario' => (float) $productos[$productoId]['precio']
+            'cantidad' => $cantidad,
+            'unidad_venta' => $unidadVenta
         ];
     }
 
@@ -619,14 +813,12 @@ if ($accion === 'crear') {
         $franjaHoraria,
         $direccionEntrega,
         $metodoPago,
-        array_values($detalles)
+        $detalles
     );
 
     if (!$pedidoId) {
-        $errorPedido = $pedidoModel->obtenerUltimoError();
-        exit($errorPedido !== ''
-            ? $errorPedido
-            : 'No se pudo crear el pedido en la base de datos.');
+        http_response_code(500);
+        exit('No pudimos completar el pedido en este momento. Revisá tu carrito e intentá nuevamente.');
     }
 
     $pedido = $pedidoModel->obtenerPorId($pedidoId, $usuarioId);
@@ -660,6 +852,74 @@ if ($accion === 'crear') {
     exit;
 }
 
+
+if ($accion === 'encargo') {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        verificar_csrf();
+
+        $datos = [
+            'nombre_cliente' => trim((string) ($_POST['nombre_cliente'] ?? '')),
+            'telefono' => trim((string) ($_POST['telefono'] ?? '')),
+            'observaciones' => trim((string) ($_POST['observaciones'] ?? '')),
+            'fecha_entrega' => trim((string) ($_POST['fecha_entrega'] ?? '')),
+            'sucursal' => trim((string) ($_POST['sucursal'] ?? '')),
+            'direccion_entrega' => trim((string) ($_POST['direccion_entrega'] ?? ''))
+        ];
+
+        if ($datos['fecha_entrega'] !== '') {
+            $fechaSolicitada = DateTime::createFromFormat('!Y-m-d', $datos['fecha_entrega']);
+            $fechaMinima = new DateTimeImmutable('today +7 days');
+            if (
+                !$fechaSolicitada ||
+                $fechaSolicitada->format('Y-m-d') !== $datos['fecha_entrega'] ||
+                $fechaSolicitada < $fechaMinima
+            ) {
+                header('Location: ' . url('/pedidos/encargo?error=fecha_entrega'));
+                exit;
+            }
+        }
+
+        $productoIds = $_POST['producto_id'] ?? [];
+        $cantidades = $_POST['cantidad'] ?? [];
+        $modalidades = $_POST['unidad_venta'] ?? [];
+
+        if (!is_array($productoIds) || empty($productoIds)) {
+            header('Location: ' . url('/pedidos/encargo?error=sin_productos'));
+            exit;
+        }
+
+        $detalles = [];
+        foreach ($productoIds as $idx => $productoId) {
+            $cantidad = (float) ($cantidades[$idx] ?? 0);
+            $unidadVenta = (string) ($modalidades[$idx] ?? 'unidad');
+            if ((int) $productoId > 0 && $cantidad > 0) {
+                $detalles[] = [
+                    'producto_id' => (int) $productoId,
+                    'cantidad' => $cantidad,
+                    'unidad_venta' => $unidadVenta
+                ];
+            }
+        }
+
+        if (empty($detalles)) {
+            header('Location: ' . url('/pedidos/encargo?error=sin_productos'));
+            exit;
+        }
+
+        $pedidoId = $pedidoModel->crearPedidoEncargo((int) $_SESSION['usuario_id'], $datos, $detalles);
+        if (!$pedidoId) {
+            header('Location: ' . url('/pedidos/encargo?error=' . urlencode($pedidoModel->obtenerUltimoError()) ));
+            exit;
+        }
+
+        header('Location: ' . url('/admin/pedidos?pedido_encargo=' . (int) $pedidoId));
+        exit;
+    }
+
+    $productos = (new Producto($conn))->obtenerActivos();
+    require __DIR__ . '/../views/pedidos/encargo.php';
+    exit;
+}
 
 // LISTAR PEDIDOS DEL USUARIO
 if ($accion === 'listar') {

@@ -944,6 +944,131 @@
 }
 
 
+/* TABLET */
+@media (min-width: 701px) and (max-width: 1100px),
+       (min-width: 1101px) and (max-width: 1600px) and (any-pointer: coarse) {
+
+    .pagina-admin-pedidos .admin-pedidos-container {
+        width: 94%;
+    }
+
+    .pagina-admin-pedidos .admin-pedidos-header {
+        gap: 38px;
+        margin-bottom: 42px;
+    }
+
+    .pagina-admin-pedidos .admin-etiqueta {
+        margin-bottom: 10px;
+        font-size: 1rem;
+    }
+
+    .pagina-admin-pedidos .admin-pedidos-header h1 {
+        margin-bottom: 12px;
+        font-size: 3.4rem;
+    }
+
+    .pagina-admin-pedidos .admin-pedidos-header p {
+        font-size: 1.25rem;
+    }
+
+    .pagina-admin-pedidos .btn-volver-admin {
+        min-width: 145px;
+        min-height: 58px;
+        padding: 16px 24px;
+        font-size: 1.15rem;
+    }
+
+    .pagina-admin-pedidos .admin-pedidos-filtros {
+        margin-bottom: 38px;
+        padding: 32px;
+    }
+
+    .pagina-admin-pedidos .filtro-campo {
+        gap: 9px;
+    }
+
+    .pagina-admin-pedidos .filtro-campo label {
+        font-size: 1.1rem;
+    }
+
+    .pagina-admin-pedidos .filtro-campo input,
+    .pagina-admin-pedidos .filtro-campo select {
+        min-height: 60px;
+        padding: 14px 16px;
+        font-size: 1.1rem;
+    }
+
+    .pagina-admin-pedidos .filtros-acciones .btn-agregar,
+    .pagina-admin-pedidos .btn-filtro-limpiar {
+        min-height: 58px;
+        padding: 14px 22px;
+        font-size: 1.1rem;
+    }
+
+    .pagina-admin-pedidos .admin-pedidos-tabla table {
+        min-width: 1500px;
+    }
+
+    .pagina-admin-pedidos .admin-pedidos-tabla th {
+        padding: 22px 20px;
+        font-size: 1rem;
+    }
+
+    .pagina-admin-pedidos .admin-pedidos-tabla td {
+        padding: 22px 20px;
+        font-size: 1.1rem;
+    }
+
+    .pagina-admin-pedidos .cliente {
+        min-width: 220px;
+        max-width: 280px;
+        gap: 8px;
+    }
+
+    .pagina-admin-pedidos .cliente strong {
+        font-size: 1.1rem;
+    }
+
+    .pagina-admin-pedidos .cliente span,
+    .pagina-admin-pedidos .pedido-entrega strong,
+    .pagina-admin-pedidos .pedido-horario span {
+        font-size: 1rem;
+    }
+
+    .pagina-admin-pedidos .pedido-entrega {
+        width: 270px;
+        max-width: 270px;
+    }
+
+    .pagina-admin-pedidos .pedido-entrega span,
+    .pagina-admin-pedidos .pedido-horario strong {
+        font-size: 1.05rem;
+    }
+
+    .pagina-admin-pedidos .estado {
+        padding: 10px 14px;
+        font-size: 1rem;
+    }
+
+    .pagina-admin-pedidos .form-estado {
+        gap: 10px;
+    }
+
+    .pagina-admin-pedidos .form-estado select {
+        width: 190px;
+        min-height: 58px;
+        padding: 12px 14px;
+        font-size: 1rem;
+    }
+
+    .pagina-admin-pedidos .form-estado button {
+        min-height: 58px;
+        padding: 12px 16px;
+        font-size: 1rem;
+    }
+}
+
+
 /* TABLET / MÓVIL */
 @media (max-width: 700px) {
 

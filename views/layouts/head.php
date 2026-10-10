@@ -10,7 +10,7 @@
         name="viewport"
         content="width=device-width, initial-scale=1.0">
 
-    <title>Don Diego</title>
+    <title><?= htmlspecialchars($pageTitle ?? 'Don Diego', ENT_QUOTES, 'UTF-8') ?></title>
 
     <link rel="icon" href="<?= url('/public/img/logo-don2.png') ?>" type="image/x-icon">
 

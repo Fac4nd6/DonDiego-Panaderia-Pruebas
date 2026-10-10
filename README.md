@@ -153,16 +153,18 @@ Permite:
 * Calcular el total.
 * Revisar los productos antes de confirmar el pedido.
 
-Cada producto tiene una presentación de venta configurable desde el área
-administrativa. Las opciones disponibles son:
+Cada producto puede tener varias modalidades de venta configurables desde el
+área administrativa. Cada modalidad mantiene su precio independiente.
+Las opciones disponibles son:
 
 * Unidad.
 * Docena.
 * Media docena.
 * Kilogramo.
 
-El stock indica la cantidad disponible de esa presentación. Por ejemplo, un
-stock de `10` con presentación `docena` representa 10 docenas disponibles.
+Unidad, media docena y docena comparten un único inventario contado en piezas:
+una docena descuenta 12 piezas y media docena descuenta 6. El inventario en
+kilos es independiente y admite cantidades con una cifra decimal, como `0,5 kg`.
 
 El carrito se mantiene mediante la sesión del usuario.
 
@@ -361,6 +363,23 @@ archivo SQL, agregarla manualmente:
 ALTER TABLE productos
 ADD COLUMN unidad_venta VARCHAR(30) NOT NULL DEFAULT 'unidad'
 AFTER stock;
+```
+
+Para habilitar precios por presentación y guardar la presentación elegida en
+nuevos pedidos existentes, ejecutar también:
+
+```sql
+ALTER TABLE productos
+ADD COLUMN presentaciones TEXT DEFAULT NULL AFTER unidad_venta;
+
+ALTER TABLE pedido_detalles
+ADD COLUMN unidad_venta VARCHAR(30) NOT NULL DEFAULT 'unidad' AFTER cantidad;
+
+ALTER TABLE productos
+ADD COLUMN stocks_modalidades TEXT DEFAULT NULL AFTER presentaciones;
+
+ALTER TABLE pedido_detalles
+MODIFY COLUMN cantidad DECIMAL(10,1) NOT NULL;
 ```
 
 ---

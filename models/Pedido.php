@@ -5,6 +5,49 @@ class Pedido
     private $conn;
     private $ultimoError = '';
 
+    private function tablaExiste(string $tabla): bool
+    {
+        $stmt = $this->conn->query("SHOW TABLES LIKE '" . str_replace("'", "''", $tabla) . "'");
+        if (!$stmt) {
+            return false;
+        }
+
+        return $stmt->num_rows > 0;
+    }
+
+    private function columnasDisponibles(string $tabla, array $columnas): array
+    {
+        if ($tabla === '' || empty($columnas)) {
+            return [];
+        }
+
+        $stmt = $this->conn->query(
+            "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = '" . str_replace("'", "''", $tabla) . "'"
+        );
+
+        if (!$stmt) {
+            return [];
+        }
+
+        $existentes = [];
+        while ($fila = $stmt->fetch_assoc()) {
+            $existentes[] = $fila['COLUMN_NAME'];
+        }
+
+        return array_values(array_intersect($columnas, $existentes));
+    }
+
+    private function prepararSelectPedido(string $baseSelect, bool $conTipo = false): string
+    {
+        $select = $baseSelect;
+        if ($conTipo && $this->tablaExiste('pedido_encargos')) {
+            $select .= ", CASE WHEN pe.id IS NOT NULL THEN 'encargo' ELSE 'normal' END AS tipo";
+        } else {
+            $select .= ", 'normal' AS tipo";
+        }
+
+        return $select;
+    }
 
     /* CONSTRUCTOR */
     public function __construct($conn)
@@ -114,7 +157,7 @@ class Pedido
             $marcadores = implode(',', array_fill(0, count($ids), '?'));
             $tipos = str_repeat('i', count($ids));
             $stmt = $this->conn->prepare(
-                "SELECT id, nombre, precio, stock, unidad_venta, activo FROM productos WHERE id IN ($marcadores) FOR UPDATE"
+                "SELECT id, nombre, precio, stock, unidad_venta, presentaciones, stocks_modalidades, activo FROM productos WHERE id IN ($marcadores) FOR UPDATE"
             );
 
             if (!$stmt) {
@@ -139,26 +182,50 @@ class Pedido
             }
 
             $detallesRevalidados = [];
+            $stockSolicitado = [];
+            $stocksActualizados = [];
             $total = 0;
             foreach ($detalles as $detalle) {
                 $productoId = (int) ($detalle['producto_id'] ?? 0);
-                $cantidad = filter_var($detalle['cantidad'] ?? null, FILTER_VALIDATE_INT);
                 $producto = $porId[$productoId] ?? null;
 
                 if (!$producto || (int) $producto['activo'] !== 1) {
                     throw new RuntimeException('El producto seleccionado ya no está disponible.');
                 }
-                if ($cantidad === false || $cantidad <= 0 || $cantidad > (int) $producto['stock']) {
-                    throw new RuntimeException('Stock insuficiente para: ' . $producto['nombre']);
+                $unidadVenta = (string) ($detalle['unidad_venta'] ?? $producto['unidad_venta']);
+                $presentaciones = Producto::obtenerPresentaciones($producto);
+                if (!array_key_exists($unidadVenta, $presentaciones)) {
+                    throw new RuntimeException('La presentación seleccionada ya no está disponible para: ' . $producto['nombre']);
                 }
 
-                $precio = (float) $producto['precio'];
+                $cantidad = Producto::normalizarCantidad($detalle['cantidad'] ?? null, $unidadVenta);
+                if ($cantidad === false) {
+                    throw new RuntimeException('La cantidad solicitada no es válida para: ' . $producto['nombre']);
+                }
+
+                $precio = $presentaciones[$unidadVenta];
+                $consumo = Producto::consumoInventario($unidadVenta, $cantidad);
+
                 $detallesRevalidados[] = [
                     'producto_id' => $productoId,
                     'cantidad' => $cantidad,
-                    'precio_unitario' => $precio
+                    'unidad_venta' => $unidadVenta,
+                    'precio_unitario' => $precio,
+                    'base_stock' => $consumo['base'],
+                    'consumo_stock' => $consumo['cantidad']
                 ];
+                $claveStock = $productoId . '|' . $consumo['base'];
+                $stockSolicitado[$claveStock] = ($stockSolicitado[$claveStock] ?? 0) + $consumo['cantidad'];
                 $total += $precio * $cantidad;
+            }
+
+            foreach ($stockSolicitado as $claveStock => $cantidadSolicitada) {
+                [$productoId, $baseStock] = explode('|', $claveStock, 2);
+                $productoId = (int) $productoId;
+                $stocksPorModalidad = Producto::obtenerStocks($porId[$productoId]);
+                if ($cantidadSolicitada > (float) ($stocksPorModalidad[$baseStock] ?? 0) + 0.000001) {
+                    throw new RuntimeException('Stock insuficiente de ' . $baseStock . ' para: ' . $porId[$productoId]['nombre']);
+                }
             }
 
             if ($total <= 0) {
@@ -185,27 +252,37 @@ class Pedido
                     $pedidoId,
                     $detalle['producto_id'],
                     $detalle['cantidad'],
+                    $detalle['unidad_venta'],
                     $detalle['precio_unitario'],
                     $subtotal
                 )) {
                     throw new RuntimeException('No se pudo guardar un detalle.');
                 }
 
+                $productoId = (int) $detalle['producto_id'];
+                $baseStock = $detalle['base_stock'];
+                $stocksActualizados[$productoId] ??= Producto::obtenerStocks($porId[$productoId]);
+                $stocksActualizados[$productoId][$baseStock] = round(
+                    $stocksActualizados[$productoId][$baseStock] - $detalle['consumo_stock'],
+                    $baseStock === 'kilogramo' ? 1 : 0
+                );
+                $stockTotal = Producto::stockCompatibilidad($stocksActualizados[$productoId]);
+                $stocksJson = json_encode($stocksActualizados[$productoId]);
                 $stmtStock = $this->conn->prepare(
-                    'UPDATE productos SET stock = stock - ? WHERE id = ? AND stock >= ?'
+                    'UPDATE productos SET stocks_modalidades = ?, stock = ? WHERE id = ?'
                 );
                 if (!$stmtStock) {
                     throw new RuntimeException('No se pudo descontar el stock.');
                 }
                 $stmtStock->bind_param(
-                    'iii',
-                    $detalle['cantidad'],
-                    $detalle['producto_id'],
-                    $detalle['cantidad']
+                    'sii',
+                    $stocksJson,
+                    $stockTotal,
+                    $productoId
                 );
                 if (!$stmtStock->execute() || $stmtStock->affected_rows !== 1) {
                     $stmtStock->close();
-                    throw new RuntimeException('Stock insuficiente para el producto.');
+                    throw new RuntimeException('No se pudo descontar el stock de ' . $baseStock . '.');
                 }
                 $stmtStock->close();
             }
@@ -237,7 +314,7 @@ class Pedido
 
         $marcadores = implode(',', array_fill(0, count($ids), '?'));
         $tipos = str_repeat('i', count($ids));
-        $sql = "SELECT id, precio FROM productos WHERE activo = 1 AND id IN ($marcadores)";
+        $sql = "SELECT id, precio, unidad_venta, presentaciones, stocks_modalidades, stock FROM productos WHERE activo = 1 AND id IN ($marcadores)";
         $stmt = $this->conn->prepare($sql);
 
         if (!$stmt) {
@@ -311,6 +388,7 @@ class Pedido
         $pedidoId,
         $productoId,
         $cantidad,
+        $unidadVenta,
         $precioUnitario,
         $subtotal
     ) {
@@ -321,11 +399,13 @@ class Pedido
                 pedido_id,
                 producto_id,
                 cantidad,
+                unidad_venta,
                 precio_unitario,
                 subtotal
             )
             VALUES
             (
+                ?,
                 ?,
                 ?,
                 ?,
@@ -347,10 +427,11 @@ class Pedido
         }
 
         $stmt->bind_param(
-            "iiidd",
+            "iidsdd",
             $pedidoId,
             $productoId,
             $cantidad,
+            $unidadVenta,
             $precioUnitario,
             $subtotal
         );
@@ -375,24 +456,29 @@ class Pedido
     /* OBTENER PEDIDOS DE UN USUARIO */
     public function obtenerPorUsuario($usuarioId)
     {
+        $columnasPedido = $this->columnasDisponibles('pedidos', ['tipo']);
+        $tipoSelect = in_array('tipo', $columnasPedido, true)
+            ? "COALESCE(p.tipo, 'normal') AS tipo"
+            : "'normal' AS tipo";
 
         $sql = "
             SELECT
-                id,
-                usuario_id,
-                fecha_pedido,
-                fecha_recepcion,
-                franja_horaria,
-                direccion_entrega,
-                metodo_pago,
-                estado,
-                total
+                p.id,
+                p.usuario_id,
+                p.fecha_pedido,
+                p.fecha_recepcion,
+                p.franja_horaria,
+                p.direccion_entrega,
+                p.metodo_pago,
+                p.estado,
+                p.total,
+                $tipoSelect
 
-            FROM pedidos
+            FROM pedidos p
 
-            WHERE usuario_id = ?
+            WHERE p.usuario_id = ?
 
-            ORDER BY fecha_pedido DESC
+            ORDER BY p.fecha_pedido DESC
         ";
 
         $stmt = $this->conn->prepare($sql);
@@ -431,6 +517,11 @@ class Pedido
         $usuarioId
     ) {
 
+        $columnasPedido = $this->columnasDisponibles('pedidos', ['tipo']);
+        $tipoSelect = in_array('tipo', $columnasPedido, true)
+            ? "COALESCE(tipo, 'normal') AS tipo"
+            : "'normal' AS tipo";
+
         $sql = "
             SELECT
                 id,
@@ -441,7 +532,8 @@ class Pedido
                 direccion_entrega,
                 metodo_pago,
                 estado,
-                total
+                total,
+                $tipoSelect
 
             FROM pedidos
 
@@ -485,6 +577,20 @@ class Pedido
     public function obtenerPorIdAdmin($pedidoId)
     {
 
+        $columnasPedido = $this->columnasDisponibles(
+            'pedidos',
+            ['tipo', 'nombre_cliente', 'telefono']
+        );
+        $tipoSelect = in_array('tipo', $columnasPedido, true)
+            ? "COALESCE(p.tipo, 'normal') AS tipo"
+            : "'normal' AS tipo";
+        $nombreSelect = in_array('nombre_cliente', $columnasPedido, true)
+            ? "COALESCE(NULLIF(p.nombre_cliente, ''), u.nombre_completo) AS nombre_completo"
+            : 'u.nombre_completo AS nombre_completo';
+        $telefonoSelect = in_array('telefono', $columnasPedido, true)
+            ? "COALESCE(NULLIF(p.telefono, ''), u.telefono) AS telefono"
+            : 'u.telefono AS telefono';
+
         $sql = "
             SELECT
                 p.id,
@@ -496,11 +602,12 @@ class Pedido
                 p.metodo_pago,
                 p.estado,
                 p.total,
+                $tipoSelect,
 
-                u.nombre_completo,
+                $nombreSelect,
                 u.nombre_comercio,
                 u.email,
-                u.telefono
+                $telefonoSelect
 
             FROM pedidos p
 
@@ -544,15 +651,36 @@ class Pedido
     public function obtenerDetalles($pedidoId)
     {
 
+        $columnasDetalle = $this->columnasDisponibles(
+            'pedido_detalles',
+            ['seleccionada', 'estado_produccion', 'sector', 'sucursal']
+        );
+        $seleccionadaSelect = in_array('seleccionada', $columnasDetalle, true)
+            ? 'pd.seleccionada'
+            : '0 AS seleccionada';
+        $estadoProduccionSelect = in_array('estado_produccion', $columnasDetalle, true)
+            ? 'pd.estado_produccion'
+            : "'pendiente' AS estado_produccion";
+        $sectorSelect = in_array('sector', $columnasDetalle, true)
+            ? 'pd.sector'
+            : "'Por definir' AS sector";
+        $sucursalSelect = in_array('sucursal', $columnasDetalle, true)
+            ? 'pd.sucursal'
+            : 'NULL AS sucursal';
+
         $sql = "
             SELECT
                 pd.id,
                 pd.pedido_id,
                 pd.producto_id,
                 pd.cantidad,
-                p.unidad_venta,
+                pd.unidad_venta,
                 pd.precio_unitario,
                 pd.subtotal,
+                $seleccionadaSelect,
+                $estadoProduccionSelect,
+                $sectorSelect,
+                $sucursalSelect,
 
                 p.nombre,
                 p.imagen
@@ -596,10 +724,127 @@ class Pedido
         return $detalles;
     }
 
+    public function guardarProduccionPedido($pedidoId, array $detalleIds = [], array $sectores = [], array $sucursales = [])
+    {
+        $pedidoId = (int) $pedidoId;
+        if ($pedidoId <= 0) {
+            return false;
+        }
+
+        if (!$this->conn->begin_transaction()) {
+            return false;
+        }
+
+        try {
+            $stmtReset = $this->conn->prepare('UPDATE pedido_detalles SET seleccionada = 0 WHERE pedido_id = ?');
+            if (!$stmtReset) {
+                throw new RuntimeException('No se pudo limpiar la selección de producción.');
+            }
+            $stmtReset->bind_param('i', $pedidoId);
+            if (!$stmtReset->execute()) {
+                $stmtReset->close();
+                throw new RuntimeException('No se pudo limpiar la selección de producción.');
+            }
+            $stmtReset->close();
+
+            if (!empty($detalleIds)) {
+                $idsUnicos = [];
+                foreach ($detalleIds as $detalleId) {
+                    $detalleId = (int) $detalleId;
+                    if ($detalleId > 0) {
+                        $idsUnicos[] = $detalleId;
+                    }
+                }
+
+                $idsUnicos = array_values(array_unique($idsUnicos));
+                if (!empty($idsUnicos)) {
+                    $marcadores = implode(',', array_fill(0, count($idsUnicos), '?'));
+                    $sql = 'UPDATE pedido_detalles SET seleccionada = 1 WHERE pedido_id = ? AND id IN (' . $marcadores . ')';
+                    $stmt = $this->conn->prepare($sql);
+                    if (!$stmt) {
+                        throw new RuntimeException('No se pudo actualizar los productos seleccionados.');
+                    }
+
+                    $tipos = 'i' . str_repeat('i', count($idsUnicos));
+                    $params = [$tipos, $pedidoId];
+                    foreach ($idsUnicos as $id) {
+                        $params[] = $id;
+                    }
+
+                    $referencias = [];
+                    foreach ($params as $k => $v) {
+                        $referencias[$k] = &$params[$k];
+                    }
+
+                    call_user_func_array([$stmt, 'bind_param'], $referencias);
+                    if (!$stmt->execute()) {
+                        $stmt->close();
+                        throw new RuntimeException('No se pudo marcar los productos seleccionados.');
+                    }
+                    $stmt->close();
+                }
+            }
+
+            if (!empty($sectores) || !empty($sucursales)) {
+                foreach ($sectores as $detalleId => $sector) {
+                    $detalleId = (int) $detalleId;
+                    if ($detalleId <= 0) {
+                        continue;
+                    }
+                    $sectorValor = trim((string) ($sector ?? 'Por definir'));
+                    $sucursalValor = trim((string) ($sucursales[$detalleId] ?? ''));
+
+                    $stmtUpdate = $this->conn->prepare(
+                        'UPDATE pedido_detalles SET sector = ?, sucursal = ? WHERE pedido_id = ? AND id = ?'
+                    );
+                    if (!$stmtUpdate) {
+                        throw new RuntimeException('No se pudo guardar la asignación del sector.');
+                    }
+
+                    $stmtUpdate->bind_param('ssii', $sectorValor, $sucursalValor, $pedidoId, $detalleId);
+                    if (!$stmtUpdate->execute()) {
+                        $stmtUpdate->close();
+                        throw new RuntimeException('No se pudo guardar la asignación del sector.');
+                    }
+                    $stmtUpdate->close();
+                }
+            }
+
+            $this->conn->commit();
+            return true;
+        } catch (Throwable $e) {
+            $this->conn->rollback();
+            error_log('Error guardando producción del pedido: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function actualizarEstadoProduccion($detalleId, $estado)
+    {
+        $estadosPermitidos = ['pendiente', 'en_produccion', 'terminado'];
+        $detalleId = (int) $detalleId;
+        if ($detalleId <= 0 || !in_array($estado, $estadosPermitidos, true)) {
+            return false;
+        }
+
+        $stmt = $this->conn->prepare(
+            'UPDATE pedido_detalles SET estado_produccion = ? WHERE id = ? AND seleccionada = 1'
+        );
+        if (!$stmt) {
+            return false;
+        }
+
+        $stmt->bind_param('si', $estado, $detalleId);
+        $resultado = $stmt->execute();
+        $stmt->close();
+
+        return $resultado;
+    }
+
     public function obtenerDetallesDeUsuario($pedidoId, $usuarioId)
     {
         $sql = "
-            SELECT pd.producto_id, pd.cantidad
+            SELECT pd.producto_id, pd.cantidad, pd.unidad_venta
             FROM pedido_detalles pd
             INNER JOIN pedidos p ON p.id = pd.pedido_id
             WHERE pd.pedido_id = ? AND p.usuario_id = ?
@@ -654,6 +899,20 @@ class Pedido
     public function obtenerTodos($nombreCliente = '', $fechaDesde = '', $fechaHasta = '', $estado = '')
     {
 
+        $columnasPedido = $this->columnasDisponibles(
+            'pedidos',
+            ['tipo', 'nombre_cliente', 'telefono']
+        );
+        $tipoSelect = in_array('tipo', $columnasPedido, true)
+            ? "COALESCE(p.tipo, 'normal') AS tipo"
+            : "'normal' AS tipo";
+        $nombreSelect = in_array('nombre_cliente', $columnasPedido, true)
+            ? "COALESCE(NULLIF(p.nombre_cliente, ''), u.nombre_completo) AS nombre_completo"
+            : 'u.nombre_completo AS nombre_completo';
+        $telefonoSelect = in_array('telefono', $columnasPedido, true)
+            ? "COALESCE(NULLIF(p.telefono, ''), u.telefono) AS telefono"
+            : 'u.telefono AS telefono';
+
         $sql = "
             SELECT
                 p.id,
@@ -665,11 +924,12 @@ class Pedido
                 p.metodo_pago,
                 p.estado,
                 p.total,
+                $tipoSelect,
 
-                u.nombre_completo,
+                $nombreSelect,
                 u.nombre_comercio,
                 u.email,
-                u.telefono
+                $telefonoSelect
 
             FROM pedidos p
 
@@ -682,7 +942,10 @@ class Pedido
         $tipos = '';
 
         if ($nombreCliente !== '') {
-            $condiciones[] = 'u.nombre_completo LIKE ?';
+            $nombreFiltro = in_array('nombre_cliente', $columnasPedido, true)
+                ? "COALESCE(NULLIF(p.nombre_cliente, ''), u.nombre_completo)"
+                : 'u.nombre_completo';
+            $condiciones[] = $nombreFiltro . ' LIKE ?';
             $parametros[] = '%' . $nombreCliente . '%';
             $tipos .= 's';
         }
@@ -887,7 +1150,7 @@ class Pedido
             }
 
             $stmtDetalles = $this->conn->prepare(
-                'SELECT producto_id, cantidad FROM pedido_detalles WHERE pedido_id = ? FOR UPDATE'
+                'SELECT producto_id, cantidad, unidad_venta FROM pedido_detalles WHERE pedido_id = ? FOR UPDATE'
             );
             if (!$stmtDetalles) {
                 throw new RuntimeException('No se pudieron consultar los detalles.');
@@ -900,23 +1163,49 @@ class Pedido
             $detalles = $stmtDetalles->get_result()->fetch_all(MYSQLI_ASSOC);
             $stmtDetalles->close();
 
-            $stmtStock = $this->conn->prepare(
-                'UPDATE productos SET stock = stock + ? WHERE id = ?'
-            );
-            if (!$stmtStock) {
-                throw new RuntimeException('No se pudo preparar la devolución de stock.');
-            }
-
             foreach ($detalles as $detalle) {
-                $cantidad = (int) $detalle['cantidad'];
+                $cantidad = (float) $detalle['cantidad'];
                 $productoId = (int) $detalle['producto_id'];
-                $stmtStock->bind_param('ii', $cantidad, $productoId);
+                $stmtProducto = $this->conn->prepare(
+                    'SELECT stock, unidad_venta, stocks_modalidades FROM productos WHERE id = ? FOR UPDATE'
+                );
+                if (!$stmtProducto) {
+                    throw new RuntimeException('No se pudo devolver el stock.');
+                }
+                $stmtProducto->bind_param('i', $productoId);
+                if (!$stmtProducto->execute()) {
+                    $stmtProducto->close();
+                    throw new RuntimeException('No se pudo consultar el stock a devolver.');
+                }
+                $producto = $stmtProducto->get_result()->fetch_assoc();
+                $stmtProducto->close();
+                if (!$producto) {
+                    throw new RuntimeException('No se pudo devolver el stock de un producto eliminado.');
+                }
+
+                $unidadVenta = (string) ($detalle['unidad_venta'] ?? $producto['unidad_venta']);
+                $stocksPorModalidad = Producto::obtenerStocks($producto);
+                $consumo = Producto::consumoInventario($unidadVenta, $cantidad);
+                $stocksPorModalidad[$consumo['base']] += $consumo['cantidad'];
+                $stocksPorModalidad[$consumo['base']] = round(
+                    $stocksPorModalidad[$consumo['base']],
+                    $consumo['base'] === 'kilogramo' ? 1 : 0
+                );
+                $stocksJson = json_encode($stocksPorModalidad);
+                $stockTotal = Producto::stockCompatibilidad($stocksPorModalidad);
+                $stmtStock = $this->conn->prepare(
+                    'UPDATE productos SET stocks_modalidades = ?, stock = ? WHERE id = ?'
+                );
+                if (!$stmtStock) {
+                    throw new RuntimeException('No se pudo preparar la devolución de stock.');
+                }
+                $stmtStock->bind_param('sii', $stocksJson, $stockTotal, $productoId);
                 if (!$stmtStock->execute() || $stmtStock->affected_rows !== 1) {
                     $stmtStock->close();
                     throw new RuntimeException('No se pudo devolver el stock.');
                 }
+                $stmtStock->close();
             }
-            $stmtStock->close();
 
             $stmtCancelar = $this->conn->prepare(
                 'UPDATE pedidos SET estado = \'cancelado\' WHERE id = ? AND estado = \'pendiente\''
@@ -940,6 +1229,253 @@ class Pedido
         }
     }
 
+
+    public function crearPedidoEncargo($usuarioId, $datos, $detalles)
+    {
+        if (empty($detalles)) {
+            $this->ultimoError = 'Debés cargar al menos un producto.';
+            return false;
+        }
+
+        $nombreCliente = trim((string) ($datos['nombre_cliente'] ?? ''));
+        $telefono = trim((string) ($datos['telefono'] ?? ''));
+        $observaciones = trim((string) ($datos['observaciones'] ?? ''));
+        $sucursal = trim((string) ($datos['sucursal'] ?? ''));
+        $fechaEntrega = trim((string) ($datos['fecha_entrega'] ?? ''));
+        $direccionEntrega = trim((string) ($datos['direccion_entrega'] ?? ''));
+
+        if ($nombreCliente === '' || $telefono === '') {
+            $this->ultimoError = 'El nombre y teléfono del cliente son obligatorios.';
+            return false;
+        }
+
+        $total = 0.0;
+        $itemsValidados = [];
+
+        foreach ($detalles as $detalle) {
+            $productoId = (int) ($detalle['producto_id'] ?? 0);
+            $cantidad = (float) ($detalle['cantidad'] ?? 0);
+            $unidadVenta = (string) ($detalle['unidad_venta'] ?? 'unidad');
+
+            if ($productoId <= 0 || $cantidad <= 0) {
+                $this->ultimoError = 'Hay productos inválidos en este pedido por encargo.';
+                return false;
+            }
+
+            $producto = $this->conn->query('SELECT id, nombre, presentaciones, unidad_venta FROM productos WHERE id = ' . $productoId . ' LIMIT 1')->fetch_assoc();
+            if (!$producto) {
+                $this->ultimoError = 'Uno de los productos no existe.';
+                return false;
+            }
+
+            $precios = Producto::obtenerPresentaciones($producto);
+            if (!isset($precios[$unidadVenta])) {
+                $this->ultimoError = 'La modalidad de venta seleccionada no está disponible.';
+                return false;
+            }
+
+            $precio = (float) $precios[$unidadVenta];
+            $subtotal = $precio * $cantidad;
+            $itemsValidados[] = [
+                'producto_id' => $productoId,
+                'cantidad' => $cantidad,
+                'unidad_venta' => $unidadVenta,
+                'precio_unitario' => $precio,
+                'subtotal' => $subtotal,
+                'nombre' => $producto['nombre']
+            ];
+            $total += $subtotal;
+        }
+
+        if (!$this->conn->begin_transaction()) {
+            $this->ultimoError = 'No se pudo iniciar la transacción.';
+            return false;
+        }
+
+        try {
+            $stmtPedido = $this->conn->prepare(
+                'INSERT INTO pedidos (usuario_id, fecha_pedido, fecha_recepcion, franja_horaria, direccion_entrega, metodo_pago, estado, total, tipo, nombre_cliente, telefono, observaciones, fecha_entrega, sucursal) VALUES (?, NOW(), ?, ?, ?, ?, ?, ?, \'encargo\', ?, ?, ?, ?, ?)'
+            );
+            if (!$stmtPedido) {
+                throw new RuntimeException('No se pudo preparar el pedido original.');
+            }
+
+            $fechaRecepcion = $fechaEntrega !== '' ? $fechaEntrega : date('Y-m-d');
+            $fechaEntregaDb = $fechaEntrega !== '' ? $fechaEntrega : null;
+            $franjaHoraria = 'A coordinar';
+            $estadoInicial = 'pendiente';
+            $metodoPago = 'efectivo';
+            $stmtPedido->bind_param(
+                'isssssdsssss',
+                $usuarioId,
+                $fechaRecepcion,
+                $franjaHoraria,
+                $direccionEntrega,
+                $metodoPago,
+                $estadoInicial,
+                $total,
+                $nombreCliente,
+                $telefono,
+                $observaciones,
+                $fechaEntregaDb,
+                $sucursal
+            );
+            if (!$stmtPedido->execute()) {
+                throw new RuntimeException('No se pudo guardar el pedido.');
+            }
+            $pedidoId = $this->conn->insert_id;
+            $stmtPedido->close();
+
+            $detalleColumns = $this->columnasDisponibles('pedido_detalles', ['seleccionada', 'sector', 'sucursal']);
+            foreach ($itemsValidados as $item) {
+                $sql = 'INSERT INTO pedido_detalles (pedido_id, producto_id, cantidad, unidad_venta, precio_unitario, subtotal';
+                $params = [$pedidoId, $item['producto_id'], $item['cantidad'], $item['unidad_venta'], $item['precio_unitario'], $item['subtotal']];
+                $types = 'iidsdd';
+                if (in_array('seleccionada', $detalleColumns, true)) {
+                    $sql .= ', seleccionada';
+                    $params[] = 0;
+                    $types .= 'i';
+                }
+                if (in_array('sector', $detalleColumns, true)) {
+                    $sql .= ', sector';
+                    $params[] = 'Por definir';
+                    $types .= 's';
+                }
+                if (in_array('sucursal', $detalleColumns, true)) {
+                    $sql .= ', sucursal';
+                    $params[] = $sucursal;
+                    $types .= 's';
+                }
+                $sql .= ') VALUES (?,?,?,?,?';
+                if (in_array('seleccionada', $detalleColumns, true)) { $sql .= ',?'; }
+                if (in_array('sector', $detalleColumns, true)) { $sql .= ',?'; }
+                if (in_array('sucursal', $detalleColumns, true)) { $sql .= ',?'; }
+                $sql .= ')';
+
+                $stmtDetalle = $this->conn->prepare($sql);
+                if (!$stmtDetalle) {
+                    throw new RuntimeException('No se pudo guardar un detalle del pedido por encargo.');
+                }
+                $stmtDetalle->bind_param($types, ...$params);
+                if (!$stmtDetalle->execute()) {
+                    throw new RuntimeException('No se pudo completar un detalle del pedido por encargo.');
+                }
+                $stmtDetalle->close();
+            }
+
+            $this->conn->commit();
+            return $pedidoId;
+        } catch (Throwable $e) {
+            $this->conn->rollback();
+            $this->ultimoError = $e->getMessage();
+            error_log('Error creando encargo: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function produccionConfigurada(): bool
+    {
+        $columnas = $this->columnasDisponibles(
+            'pedido_detalles',
+            ['seleccionada', 'estado_produccion', 'sector', 'sucursal']
+        );
+
+        return count($columnas) === 4;
+    }
+
+    public function obtenerProduccion($estado = '')
+    {
+        if (!$this->tablaExiste('pedido_detalles')) {
+            return [];
+        }
+
+        $columnasDetalle = $this->columnasDisponibles(
+            'pedido_detalles',
+            ['seleccionada', 'estado_produccion', 'sector', 'sucursal']
+        );
+        if (!in_array('seleccionada', $columnasDetalle, true)) {
+            return [];
+        }
+
+        $columnasPedido = $this->columnasDisponibles(
+            'pedidos',
+            ['tipo', 'nombre_cliente', 'telefono', 'sucursal']
+        );
+        $estadoSelect = in_array('estado_produccion', $columnasDetalle, true)
+            ? 'pd.estado_produccion'
+            : "'pendiente' AS estado_produccion";
+        $sectorSelect = in_array('sector', $columnasDetalle, true)
+            ? 'pd.sector'
+            : "'Por definir' AS sector";
+        $sucursalDetalleSelect = in_array('sucursal', $columnasDetalle, true)
+            ? "NULLIF(pd.sucursal, '')"
+            : 'NULL';
+        $sucursalPedidoSelect = in_array('sucursal', $columnasPedido, true)
+            ? 'ped.sucursal'
+            : 'NULL';
+        $nombreClienteSelect = in_array('nombre_cliente', $columnasPedido, true)
+            ? "COALESCE(NULLIF(ped.nombre_cliente, ''), u.nombre_completo)"
+            : 'u.nombre_completo';
+        $telefonoSelect = in_array('telefono', $columnasPedido, true)
+            ? 'COALESCE(NULLIF(ped.telefono, \'\'), u.telefono)'
+            : 'u.telefono';
+        $tipoSelect = in_array('tipo', $columnasPedido, true)
+            ? "COALESCE(ped.tipo, 'normal')"
+            : "'normal'";
+
+        $sql = "
+            SELECT
+                pd.id,
+                pd.pedido_id,
+                pd.producto_id,
+                pd.cantidad,
+                pd.unidad_venta,
+                pd.seleccionada,
+                $estadoSelect,
+                $sectorSelect,
+                COALESCE($sucursalDetalleSelect, $sucursalPedidoSelect) AS sucursal,
+                p.nombre,
+                p.imagen,
+                ped.fecha_recepcion,
+                ped.fecha_pedido,
+                $nombreClienteSelect AS nombre_cliente,
+                u.nombre_comercio,
+                $telefonoSelect AS telefono,
+                $tipoSelect AS tipo_pedido
+            FROM pedido_detalles pd
+            INNER JOIN productos p ON p.id = pd.producto_id
+            INNER JOIN pedidos ped ON ped.id = pd.pedido_id
+            INNER JOIN usuarios u ON u.id = ped.usuario_id
+            WHERE pd.seleccionada = 1
+        ";
+
+        if (
+            in_array('estado_produccion', $columnasDetalle, true) &&
+            $estado !== '' &&
+            in_array($estado, ['pendiente', 'en_produccion', 'terminado'], true)
+        ) {
+            $sql .= ' AND pd.estado_produccion = ?';
+            $sql .= ' ORDER BY ped.fecha_recepcion ASC, pd.pedido_id ASC, pd.id ASC';
+            $stmt = $this->conn->prepare($sql);
+            if (!$stmt) {
+                return [];
+            }
+            $stmt->bind_param('s', $estado);
+            if (!$stmt->execute()) {
+                $stmt->close();
+                return [];
+            }
+
+            $items = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+            $stmt->close();
+            return $items;
+        }
+
+        $sql .= ' ORDER BY ped.fecha_recepcion ASC, pd.pedido_id ASC, pd.id ASC';
+
+        $resultado = $this->conn->query($sql);
+        return $resultado ? $resultado->fetch_all(MYSQLI_ASSOC) : [];
+    }
 
     /* MARCAR PEDIDO COMO PAGADO */
     public function marcarComoPagado($pedidoId)

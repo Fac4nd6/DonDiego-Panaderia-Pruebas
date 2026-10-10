@@ -18,6 +18,8 @@ $nombre = '';
 
 $email = '';
 
+$aceptaPoliticas = false;
+
 
 /* PROCESAR REGISTRO */
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
@@ -44,6 +46,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $passwordConfirmacion =
         $_POST['password_confirmacion'] ?? '';
+
+    $aceptaPoliticas =
+        ($_POST['acepta_politicas'] ?? '') === '1';
 
 
     /* VALIDAR NOMBRE */
@@ -110,6 +115,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         $error =
             'Las contraseñas no coinciden.';
+    }
+
+
+    /* ACEPTAR TÉRMINOS Y PRIVACIDAD */
+    elseif (!$aceptaPoliticas) {
+
+        $error =
+            'Debés aceptar los Términos y condiciones y la Política de privacidad para registrarte.';
     }
 
 
@@ -639,6 +652,36 @@ require '../layouts/head.php';
                             <small
                                 id="passwordMatch"
                                 class="password-match"></small>
+
+                        </div>
+
+
+                        <div class="politicas-aceptacion">
+
+                            <input
+                                type="checkbox"
+                                id="acepta_politicas"
+                                name="acepta_politicas"
+                                value="1"
+                                <?= $aceptaPoliticas ? 'checked' : '' ?>
+                                required>
+
+                            <label for="acepta_politicas">
+                                He leído y acepto los
+                                <a
+                                    href="<?= url('/terminos-y-condiciones') ?>"
+                                    target="_blank"
+                                    rel="noopener">
+                                    Términos y condiciones
+                                </a>
+                                y la
+                                <a
+                                    href="<?= url('/politica-de-privacidad') ?>"
+                                    target="_blank"
+                                    rel="noopener">
+                                    Política de privacidad
+                                </a>.
+                            </label>
 
                         </div>
 

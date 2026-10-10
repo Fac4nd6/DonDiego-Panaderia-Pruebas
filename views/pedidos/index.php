@@ -82,7 +82,7 @@ require __DIR__ . '/../layouts/header.php';
                             <div>
 
                                 <span class="pedido-label">
-                                    ID del pedido
+                                    <?= ($pedido['tipo'] ?? 'normal') === 'encargo' ? 'Pedido por encargo' : 'Pedido normal' ?>
                                 </span>
 
                                 <h2>
@@ -155,12 +155,9 @@ require __DIR__ . '/../layouts/header.php';
 
                                 <strong>
 
-                                    <?= date(
-                                        'd/m/Y',
-                                        strtotime(
-                                            $pedido['fecha_recepcion']
-                                        )
-                                    ) ?>
+                                    <?= !empty($pedido['fecha_recepcion'])
+                                        ? date('d/m/Y', strtotime($pedido['fecha_recepcion']))
+                                        : 'A coordinar' ?>
 
                                 </strong>
 
@@ -177,11 +174,7 @@ require __DIR__ . '/../layouts/header.php';
 
                                 <strong>
 
-                                    <?= htmlspecialchars(
-                                        $pedido['franja_horaria'],
-                                        ENT_QUOTES,
-                                        'UTF-8'
-                                    ) ?>
+                                    <?= htmlspecialchars($pedido['franja_horaria'] ?? 'A coordinar', ENT_QUOTES, 'UTF-8') ?>
 
                                 </strong>
 
@@ -220,11 +213,7 @@ require __DIR__ . '/../layouts/header.php';
 
                             <span>
 
-                                <?= htmlspecialchars(
-                                    $pedido['direccion_entrega'],
-                                    ENT_QUOTES,
-                                    'UTF-8'
-                                ) ?>
+                                <?= htmlspecialchars($pedido['direccion_entrega'] ?? 'A coordinar', ENT_QUOTES, 'UTF-8') ?>
 
                             </span>
 
