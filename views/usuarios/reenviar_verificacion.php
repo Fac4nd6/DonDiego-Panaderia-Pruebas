@@ -4,7 +4,8 @@ $pageCss = "login.css";
 
 require '../../config/Database.php';
 require '../../config/Csrf.php';
-require '../../config/Brevo.php';
+require '../../config/RateLimiter.php';
+require '../../config/EmailService.php';
 
 if (session_status() === PHP_SESSION_NONE) {
     require_once '../../config/Session.php';
@@ -23,6 +24,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     /* CSRF */
     verificar_csrf();
 
+    $reenvioLimitado = solicitudSuperaLimite(
+        $conn,
+        'resend_ip',
+        (string) ($_SERVER['REMOTE_ADDR'] ?? 'unknown'),
+        10,
+        3600
+    );
+
 
     /* EMAIL */
     $email =
@@ -34,7 +43,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 
     /* VALIDAR EMAIL */
-    if (
+    if ($reenvioLimitado) {
+        $error = 'Esperá antes de solicitar otro correo de verificación.';
+    } elseif (
         !filter_var(
             $email,
             FILTER_VALIDATE_EMAIL
@@ -367,11 +378,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                                 /* ENVIAR CON BREVO */
                                 $resultadoCorreo =
-                                    enviarCorreoBrevo(
+                                    enviarCorreoTransaccional(
                                         $email,
                                         $usuario['nombre_completo'],
                                         'Nuevo enlace de verificación - Don Diego',
-                                        $contenidoHTML
+                                        $contenidoHTML,
+                                        false
                                     );
 
 

@@ -21,16 +21,36 @@ class Carrito
 
 
     // AGREGAR PRODUCTO
-    public function agregar($producto, $cantidad = 1)
+    public function agregar($producto, $cantidad = 1, $unidadVenta = null)
     {
         $this->inicializar();
 
         $id = (int) $producto['id'];
 
-        $cantidad = (int) $cantidad;
+        $presentaciones = Producto::obtenerPresentaciones($producto);
+        if ($unidadVenta === null || !array_key_exists($unidadVenta, $presentaciones)) {
+            $unidadVenta = array_key_first($presentaciones);
+        }
+
+        $clave = $id . '|' . $unidadVenta;
+        $producto['unidad_venta'] = $unidadVenta;
+        $producto['precio'] = $presentaciones[$unidadVenta];
+
+        if (isset($_SESSION['carrito'][$id])) {
+            $productoAnterior = $_SESSION['carrito'][$id];
+            unset($_SESSION['carrito'][$id]);
+            $claveAnterior = $id . '|' . ($productoAnterior['unidad_venta'] ?? 'unidad');
+            $productoAnterior['clave'] = $claveAnterior;
+            $_SESSION['carrito'][$claveAnterior] = $productoAnterior;
+        }
+
+        $cantidad = Producto::normalizarCantidad($cantidad, $unidadVenta);
+        if ($cantidad === false) {
+            return;
+        }
 
         // Validar cantidad
-        if ($cantidad < 1) {
+        if ($cantidad < ($unidadVenta === 'kilogramo' ? 0.1 : 1)) {
             $cantidad = 1;
         }
 
@@ -40,18 +60,22 @@ class Carrito
 
 
         // SI EL PRODUCTO YA EXISTE
-        if (isset($_SESSION['carrito'][$id])) {
+        if (isset($_SESSION['carrito'][$clave])) {
 
-            $_SESSION['carrito'][$id]['cantidad'] += $cantidad;
+            $_SESSION['carrito'][$clave]['cantidad'] = round(
+                (float) $_SESSION['carrito'][$clave]['cantidad'] + $cantidad,
+                1
+            );
+            $_SESSION['carrito'][$clave]['precio'] = (float) $presentaciones[$unidadVenta];
 
 
             // Máximo 99 unidades
 
             if (
-                $_SESSION['carrito'][$id]['cantidad'] > 99
+                $_SESSION['carrito'][$clave]['cantidad'] > 99
             ) {
 
-                $_SESSION['carrito'][$id]['cantidad'] = 99;
+                $_SESSION['carrito'][$clave]['cantidad'] = 99;
             }
 
             return;
@@ -59,7 +83,9 @@ class Carrito
 
 
         // PRODUCTO NUEVO
-        $_SESSION['carrito'][$id] = [
+        $_SESSION['carrito'][$clave] = [
+
+            'clave' => $clave,
 
             'id' => $id,
 
@@ -67,29 +93,37 @@ class Carrito
 
             'descripcion' => $producto['descripcion'] ?? '',
 
-            'precio' => (float) $producto['precio'],
-
             'imagen' => $producto['imagen'],
 
             'categoria' => $producto['categoria'] ?? '',
 
-            'unidad_venta' => $producto['unidad_venta'] ?? 'unidad',
+            'unidad_venta' => $unidadVenta,
 
-            'cantidad' => $cantidad
+            'cantidad' => $cantidad,
+
+            'precio' => (float) $presentaciones[$unidadVenta]
         ];
     }
 
 
     // ACTUALIZAR CANTIDAD
-    public function actualizarCantidad($productoId, $cantidad)
+    public function actualizarCantidad($clave, $cantidad)
     {
         $this->inicializar();
 
-        $productoId = (int) $productoId;
-        $cantidad = (int) $cantidad;
+        $clave = (string) $clave;
+        if (!isset($_SESSION['carrito'][$clave])) {
+            return false;
+        }
 
+        if (is_numeric($cantidad) && (float) $cantidad <= 0) {
+            unset($_SESSION['carrito'][$clave]);
+            return true;
+        }
 
-        if (!isset($_SESSION['carrito'][$productoId])) {
+        $unidadVenta = $_SESSION['carrito'][$clave]['unidad_venta'] ?? 'unidad';
+        $cantidad = Producto::normalizarCantidad($cantidad, $unidadVenta);
+        if ($cantidad === false) {
             return false;
         }
 
@@ -98,7 +132,7 @@ class Carrito
 
         if ($cantidad <= 0) {
 
-            unset($_SESSION['carrito'][$productoId]);
+            unset($_SESSION['carrito'][$clave]);
 
             return true;
         }
@@ -111,26 +145,26 @@ class Carrito
         }
 
 
-        $_SESSION['carrito'][$productoId]['cantidad'] = $cantidad;
+        $_SESSION['carrito'][$clave]['cantidad'] = $cantidad;
 
         return true;
     }
 
 
     // ELIMINAR PRODUCTO
-    public function eliminar($productoId)
+    public function eliminar($clave)
     {
         $this->inicializar();
 
-        $productoId = (int) $productoId;
+        $clave = (string) $clave;
 
 
-        if (!isset($_SESSION['carrito'][$productoId])) {
+        if (!isset($_SESSION['carrito'][$clave])) {
             return false;
         }
 
 
-        unset($_SESSION['carrito'][$productoId]);
+        unset($_SESSION['carrito'][$clave]);
 
         return true;
     }
@@ -148,16 +182,7 @@ class Carrito
     {
         $this->inicializar();
 
-        $cantidad = 0;
-
-
-        foreach ($_SESSION['carrito'] as $item) {
-
-            $cantidad += (int) $item['cantidad'];
-        }
-
-
-        return $cantidad;
+        return count($_SESSION['carrito']);
     }
 
 
@@ -173,7 +198,7 @@ class Carrito
 
             $total +=
                 (float) $item['precio']
-                * (int) $item['cantidad'];
+                * (float) $item['cantidad'];
         }
 
 
@@ -199,7 +224,7 @@ class Carrito
 
         return
             (float) $item['precio']
-            * (int) $item['cantidad'];
+            * (float) $item['cantidad'];
     }
 
 

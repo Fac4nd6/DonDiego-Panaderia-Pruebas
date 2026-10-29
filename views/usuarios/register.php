@@ -4,7 +4,8 @@ $pageCss = "login.css";
 
 require '../../config/Database.php';
 require '../../config/Csrf.php';
-require '../../config/Brevo.php';
+require '../../config/RateLimiter.php';
+require '../../config/EmailService.php';
 require '../../config/Url.php';
 
 if (session_status() === PHP_SESSION_NONE) {
@@ -17,6 +18,10 @@ $error = '';
 $nombre = '';
 
 $email = '';
+
+$aceptaPoliticas = false;
+
+$correoPendiente = false;
 
 
 /* PROCESAR REGISTRO */
@@ -45,9 +50,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $passwordConfirmacion =
         $_POST['password_confirmacion'] ?? '';
 
+    $aceptaPoliticas =
+        ($_POST['acepta_politicas'] ?? '') === '1';
+
+        $registroLimitado = solicitudSuperaLimite(
+            $conn,
+            'register_ip',
+            (string) ($_SERVER['REMOTE_ADDR'] ?? 'unknown'),
+            8,
+            3600
+        );
+
 
     /* VALIDAR NOMBRE */
-    if (empty($nombre)) {
+        if ($registroLimitado) {
+            $error = 'Se alcanzó el límite de registros. Intentá nuevamente más tarde.';
+        } elseif (empty($nombre)) {
 
         $error =
             'El nombre completo es obligatorio.';
@@ -110,6 +128,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         $error =
             'Las contraseñas no coinciden.';
+    }
+
+
+    /* ACEPTAR TÉRMINOS Y PRIVACIDAD */
+    elseif (!$aceptaPoliticas) {
+
+        $error =
+            'Debés aceptar los Términos y condiciones y la Política de privacidad para registrarte.';
     }
 
 
@@ -354,7 +380,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                             /* ENVIAR CORREO */
                             $resultadoCorreo =
-                                enviarCorreoBrevo(
+                                enviarCorreoTransaccional(
                                     $email,
                                     $nombre,
                                     'Verificá tu correo electrónico - Don Diego',
@@ -366,38 +392,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                             if (
                                 !$resultadoCorreo['success']
                             ) {
-
-                                /*
-                                 * Eliminamos la cuenta para
-                                 * no dejarla sin posibilidad
-                                 * de verificación.
-                            */
-                                $stmt =
-                                    $conn->prepare(
-                                        "
-                                        DELETE FROM usuarios
-                                        WHERE email = ?
-                                        LIMIT 1
-                                        "
-                                    );
-
-
-                                if ($stmt) {
-
-                                    $stmt->bind_param(
-                                        "s",
-                                        $email
-                                    );
-
-                                    $stmt->execute();
-
-                                    $stmt->close();
-                                }
-
-
                                 $error =
                                     'No se pudo enviar el correo de verificación. '
-                                    . 'Intentá nuevamente más tarde.';
+                                    . 'La cuenta quedó pendiente; podés solicitar otro enlace.';
+                                $correoPendiente = true;
                             } else {
 
                                 /* REGENERAR CSRF */
@@ -489,6 +487,12 @@ require '../layouts/head.php';
 
                     </aside>
 
+                <?php endif; ?>
+
+                <?php if ($correoPendiente): ?>
+                    <p>
+                        <a href="<?= url('/reenviar-verificacion') ?>">Reenviar verificación</a>
+                    </p>
                 <?php endif; ?>
 
 
@@ -639,6 +643,36 @@ require '../layouts/head.php';
                             <small
                                 id="passwordMatch"
                                 class="password-match"></small>
+
+                        </div>
+
+
+                        <div class="politicas-aceptacion">
+
+                            <input
+                                type="checkbox"
+                                id="acepta_politicas"
+                                name="acepta_politicas"
+                                value="1"
+                                <?= $aceptaPoliticas ? 'checked' : '' ?>
+                                required>
+
+                            <label for="acepta_politicas">
+                                He leído y acepto los
+                                <a
+                                    href="<?= url('/terminos-y-condiciones') ?>"
+                                    target="_blank"
+                                    rel="noopener">
+                                    Términos y condiciones
+                                </a>
+                                y la
+                                <a
+                                    href="<?= url('/politica-de-privacidad') ?>"
+                                    target="_blank"
+                                    rel="noopener">
+                                    Política de privacidad
+                                </a>.
+                            </label>
 
                         </div>
 

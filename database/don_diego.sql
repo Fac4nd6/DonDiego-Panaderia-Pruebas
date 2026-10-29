@@ -58,7 +58,13 @@ CREATE TABLE `pedidos` (
   `direccion_entrega` varchar(255) NOT NULL,
   `metodo_pago` enum('efectivo') NOT NULL DEFAULT 'efectivo',
   `estado` enum('pendiente','confirmado','en_preparacion','listo','entregado','cancelado') NOT NULL DEFAULT 'pendiente',
-  `total` decimal(10,2) NOT NULL DEFAULT 0.00
+  `total` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `tipo` enum('normal','encargo') NOT NULL DEFAULT 'normal',
+  `nombre_cliente` varchar(150) DEFAULT NULL,
+  `telefono` varchar(30) DEFAULT NULL,
+  `observaciones` text DEFAULT NULL,
+  `fecha_entrega` date DEFAULT NULL,
+  `sucursal` varchar(150) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -97,9 +103,14 @@ CREATE TABLE `pedido_detalles` (
   `id` int(11) NOT NULL,
   `pedido_id` int(11) NOT NULL,
   `producto_id` int(11) NOT NULL,
-  `cantidad` int(11) NOT NULL,
+  `cantidad` decimal(10,1) NOT NULL,
+  `unidad_venta` varchar(30) NOT NULL DEFAULT 'unidad',
   `precio_unitario` decimal(10,2) NOT NULL,
-  `subtotal` decimal(10,2) NOT NULL
+  `subtotal` decimal(10,2) NOT NULL,
+  `seleccionada` tinyint(1) NOT NULL DEFAULT 0,
+  `estado_produccion` enum('pendiente','en_produccion','terminado') NOT NULL DEFAULT 'pendiente',
+  `sector` varchar(100) DEFAULT 'Por definir',
+  `sucursal` varchar(150) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -148,6 +159,8 @@ CREATE TABLE `productos` (
   `precio` decimal(10,2) NOT NULL,
   `stock` int(11) NOT NULL DEFAULT 100,
   `unidad_venta` varchar(30) NOT NULL DEFAULT 'unidad',
+  `presentaciones` text DEFAULT NULL,
+  `stocks_modalidades` text DEFAULT NULL,
   `categoria_id` int(11) NOT NULL,
   `imagen` varchar(255) DEFAULT NULL,
   `activo` tinyint(1) NOT NULL DEFAULT 1,
@@ -315,6 +328,68 @@ ALTER TABLE `pedido_detalles`
 --
 ALTER TABLE `productos`
   ADD CONSTRAINT `fk_producto_categoria` FOREIGN KEY (`categoria_id`) REFERENCES `categorias` (`id`) ON UPDATE CASCADE;
+
+--
+-- Actualización compatible para bases existentes.
+-- En instalaciones nuevas, las columnas ya están declaradas en los CREATE TABLE.
+-- MariaDB omite cada columna que ya existe.
+--
+ALTER TABLE `pedidos`
+  ADD COLUMN IF NOT EXISTS `tipo` enum('normal','encargo') NOT NULL DEFAULT 'normal',
+  ADD COLUMN IF NOT EXISTS `nombre_cliente` varchar(150) DEFAULT NULL,
+  ADD COLUMN IF NOT EXISTS `telefono` varchar(30) DEFAULT NULL,
+  ADD COLUMN IF NOT EXISTS `observaciones` text DEFAULT NULL,
+  ADD COLUMN IF NOT EXISTS `fecha_entrega` date DEFAULT NULL,
+  ADD COLUMN IF NOT EXISTS `sucursal` varchar(150) DEFAULT NULL;
+
+ALTER TABLE `pedido_detalles`
+  ADD COLUMN IF NOT EXISTS `seleccionada` tinyint(1) NOT NULL DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS `estado_produccion` enum('pendiente','en_produccion','terminado') NOT NULL DEFAULT 'pendiente',
+  ADD COLUMN IF NOT EXISTS `sector` varchar(100) DEFAULT 'Por definir',
+  ADD COLUMN IF NOT EXISTS `sucursal` varchar(150) DEFAULT NULL;
+
+-- Tablas de planificación de producción.
+-- Guardan instantáneas; crear una tanda no modifica pedidos ni pedido_detalles.
+CREATE TABLE IF NOT EXISTS `tandas_produccion` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `usuario_id` int(11) NOT NULL,
+  `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp(),
+  `titulo` varchar(150) DEFAULT NULL,
+  `destinos` text DEFAULT NULL,
+  `observaciones` text DEFAULT NULL,
+  `historial_metadatos` mediumtext DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_tandas_usuario` (`usuario_id`),
+  CONSTRAINT `fk_tanda_usuario` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `tandas_produccion_detalles` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `tanda_id` int(11) NOT NULL,
+  `pedido_detalle_id` int(11) NOT NULL,
+  `pedido_id` int(11) NOT NULL,
+  `producto_id` int(11) NOT NULL,
+  `producto_nombre` varchar(150) NOT NULL,
+  `cantidad` decimal(10,1) NOT NULL,
+  `unidad_venta` varchar(30) NOT NULL,
+  `sector` varchar(100) NOT NULL DEFAULT 'Por definir',
+  `sucursal` varchar(150) DEFAULT NULL,
+  `observaciones` text DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_tanda_linea_pedido` (`tanda_id`, `pedido_detalle_id`),
+  KEY `idx_tanda_detalle_origen` (`pedido_detalle_id`),
+  KEY `idx_tanda_detalle_pedido` (`pedido_id`),
+  KEY `idx_tanda_detalle_sector` (`tanda_id`, `sector`),
+  CONSTRAINT `fk_tanda_detalle_tanda` FOREIGN KEY (`tanda_id`) REFERENCES `tandas_produccion` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Metadatos de tandas para bases existentes; en instalaciones nuevas ya existen arriba.
+ALTER TABLE `tandas_produccion`
+  ADD COLUMN IF NOT EXISTS `titulo` varchar(150) DEFAULT NULL,
+  ADD COLUMN IF NOT EXISTS `destinos` text DEFAULT NULL,
+  ADD COLUMN IF NOT EXISTS `observaciones` text DEFAULT NULL,
+  ADD COLUMN IF NOT EXISTS `historial_metadatos` mediumtext DEFAULT NULL;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -21,3 +21,34 @@ function iniciar_sesion_segura()
     session_start();
 }
 
+function usuarioPuede($permiso, $rol = null)
+{
+    $rolActual = $rol ?? ($_SESSION['usuario_rol'] ?? null);
+    if ($rolActual === null) {
+        return false;
+    }
+
+    $permisosPorRol = [
+        'admin' => [
+            'ver_pedidos',
+            'ver_produccion',
+            'gestionar_pedidos',
+            'modificar_productos',
+            'modificar_precios',
+            'modificar_stock',
+            'configurar_modalidades',
+            'gestionar_produccion',
+            'ver_usuarios'
+        ],
+        'empleado' => [
+            'ver_pedidos',
+            'ver_produccion',
+            'gestionar_pedidos',
+            'gestionar_produccion'
+        ],
+        'cliente' => []
+    ];
+
+    return in_array($permiso, $permisosPorRol[$rolActual] ?? [], true);
+}
+

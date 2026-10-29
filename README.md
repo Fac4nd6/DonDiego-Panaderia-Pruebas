@@ -153,16 +153,18 @@ Permite:
 * Calcular el total.
 * Revisar los productos antes de confirmar el pedido.
 
-Cada producto tiene una presentación de venta configurable desde el área
-administrativa. Las opciones disponibles son:
+Cada producto puede tener varias modalidades de venta configurables desde el
+área administrativa. Cada modalidad mantiene su precio independiente.
+Las opciones disponibles son:
 
 * Unidad.
 * Docena.
 * Media docena.
 * Kilogramo.
 
-El stock indica la cantidad disponible de esa presentación. Por ejemplo, un
-stock de `10` con presentación `docena` representa 10 docenas disponibles.
+Unidad, media docena y docena comparten un único inventario contado en piezas:
+una docena descuenta 12 piezas y media docena descuenta 6. El inventario en
+kilos es independiente y admite cantidades con una cifra decimal, como `0,5 kg`.
 
 El carrito se mantiene mediante la sesión del usuario.
 
@@ -185,8 +187,8 @@ El proceso permite:
 * Confirmar el pedido.
 * Consultar posteriormente el pedido.
 
-Al confirmar un pedido, se abre WhatsApp con el detalle para contactar al
-comercio y la pestaña original se dirige automáticamente a **Mis pedidos**.
+Al confirmar un pedido, el cliente permanece en la web y accede al detalle del
+pedido registrado. La actualización de esa página no vuelve a enviar el pedido.
 
 Cada pedido tiene un **ID global**, por ejemplo `ID del pedido #40`. Este
 identificador permite localizar el pedido en el sistema y no representa la
@@ -252,6 +254,29 @@ Los usuarios autorizados pueden:
 * Consultar información del cliente.
 * Actualizar estados.
 * Gestionar los pedidos durante su procesamiento.
+
+## Planificación de producción
+
+El personal autorizado puede abrir **Planificación** desde la gestión de
+pedidos, filtrar por estado comercial y seleccionar varios pedidos. Los
+productos se agrupan automáticamente solo si coinciden producto, presentación
+y sector; la asignación normal toma el remanente completo y permite un ajuste
+parcial secundario por pedido de origen. El sistema conserva la distribución
+por pedido, el estado comercial, el sector guardado en cada línea y resta las
+cantidades ya comprometidas en otras tandas. El historial conserva las tandas
+y ofrece documentos agrupados por sector, imprimibles o guardables como PDF
+desde el navegador.
+La planificación es el único punto de entrada para crear tandas. Las columnas
+históricas de producción de `pedido_detalles` se conservan para bloquear
+duplicados de líneas enviadas anteriormente.
+
+El esquema completo de tandas, incluidos título, destinos, observaciones y su
+historial de edición, está en `database/don_diego.sql`. Para una base existente,
+ejecutar únicamente el bloque `ALTER TABLE tandas_produccion` que aparece al
+final del archivo; no importar el dump completo sobre datos existentes. El
+bloque agrega columnas idempotentes, no crea tablas ni modifica líneas de
+pedidos. Las tandas antiguas muestran un título automático hasta que se les
+asigne uno explícitamente.
 
 ---
 
@@ -361,6 +386,23 @@ archivo SQL, agregarla manualmente:
 ALTER TABLE productos
 ADD COLUMN unidad_venta VARCHAR(30) NOT NULL DEFAULT 'unidad'
 AFTER stock;
+```
+
+Para habilitar precios por presentación y guardar la presentación elegida en
+nuevos pedidos existentes, ejecutar también:
+
+```sql
+ALTER TABLE productos
+ADD COLUMN presentaciones TEXT DEFAULT NULL AFTER unidad_venta;
+
+ALTER TABLE pedido_detalles
+ADD COLUMN unidad_venta VARCHAR(30) NOT NULL DEFAULT 'unidad' AFTER cantidad;
+
+ALTER TABLE productos
+ADD COLUMN stocks_modalidades TEXT DEFAULT NULL AFTER presentaciones;
+
+ALTER TABLE pedido_detalles
+MODIFY COLUMN cantidad DECIMAL(10,1) NOT NULL;
 ```
 
 ---
@@ -581,7 +623,23 @@ config/Brevo.php
 
 Completar las credenciales correspondientes.
 
-Ejemplo:
+El servicio usa la API cuando `BREVO_API_KEY` está configurada y el transporte es `api`. El remitente debe estar registrado en Brevo. Se puede definir la clave por variable de entorno o en el archivo privado ignorado por Git. En el plan Free, Brevo publica un máximo de 300 envíos diarios.
+
+La plantilla incluye SMTP como transición explícita. Para seleccionarlo, configurar `BREVO_MAIL_TRANSPORT` como `smtp` y cargar sus credenciales. Un error de la API no activa SMTP automáticamente para evitar el envío duplicado.
+
+El envío por API requiere cURL y acceso HTTPS saliente desde el hosting. Confirmá ambos en InfinityFree antes de activar la migración en producción.
+
+Antes de desplegar el límite compartido de solicitudes, aplicar la migración aditiva una vez:
+
+```text
+database/migrations/20261028_rate_limit_buckets.sql
+```
+
+La tabla almacena categorías, hashes de sujetos, contadores y expiración; el código bloquea la acción sensible si el almacenamiento no está disponible. Hacer copia de seguridad y aplicar la migración antes de publicar el código.
+
+Los límites se aplican por IP a login, registro y reenvío, por IP/correo a recuperación, a los intentos del código y por usuario a pedidos. No se confía en `X-Forwarded-For` sin una configuración de proxy confiable.
+
+Ejemplo de configuración:
 
 ```php
 define(
@@ -608,9 +666,9 @@ Si una credencial real fue expuesta, debe revocarse y reemplazarse.
 
 ---
 
-## Configuración de pedidos y WhatsApp
+## WhatsApp de contacto
 
-Los pedidos se guardan en MySQL y luego se prepara un mensaje para contactar al comercio por WhatsApp. El mensaje incluye el ID global del pedido y la presentación de cada producto.
+WhatsApp se ofrece como canal opcional de contacto desde el footer y la sección de contacto. Los pedidos se crean y consultan dentro de la web.
 
 No requiere dependencias externas.
 

@@ -4,6 +4,191 @@ class Producto
 {
     private $db;
 
+    public static function obtenerPresentaciones($producto)
+    {
+        $permitidas = ['unidad', 'docena', 'media docena', 'kilogramo'];
+        $presentaciones = json_decode($producto['presentaciones'] ?? '', true);
+
+        if (!is_array($presentaciones) || empty($presentaciones)) {
+            $unidad = $producto['unidad_venta'] ?? 'unidad';
+            $precio = $producto['precio'] ?? 0;
+            return in_array($unidad, $permitidas, true)
+                ? [$unidad => (float) $precio]
+                : ['unidad' => (float) $precio];
+        }
+
+        $resultado = [];
+        foreach ($presentaciones as $unidad => $precio) {
+            if (in_array($unidad, $permitidas, true) && is_numeric($precio) && (float) $precio >= 0) {
+                $resultado[$unidad] = (float) $precio;
+            }
+        }
+
+        return $resultado;
+    }
+
+    public static function nombrePresentacion($unidad, $cantidad = 1)
+    {
+        $nombres = [
+            'unidad' => ['unidad', 'unidades'],
+            'docena' => ['docena', 'docenas'],
+            'media docena' => ['media docena', 'medias docenas'],
+            'kilogramo' => ['kilo', 'kilos']
+        ];
+        $opciones = $nombres[$unidad] ?? [$unidad, $unidad];
+
+        return (float) $cantidad === 1.0 ? $opciones[0] : $opciones[1];
+    }
+
+    public static function obtenerStocks($producto)
+    {
+        $stocks = json_decode($producto['stocks_modalidades'] ?? '', true);
+
+        if (!is_array($stocks) || empty($stocks)) {
+            $unidad = $producto['unidad_venta'] ?? 'unidad';
+            $stockAnterior = max(0, (int) ($producto['stock'] ?? 0));
+
+            if ($unidad === 'kilogramo') {
+                return ['unidad' => 0, 'kilogramo' => (float) $stockAnterior];
+            }
+
+            return [
+                'unidad' => $stockAnterior * self::factorPiezas($unidad),
+                'kilogramo' => 0.0
+            ];
+        }
+
+        $tieneStocksPorModalidad = array_key_exists('docena', $stocks)
+            || array_key_exists('media docena', $stocks);
+
+        if ($tieneStocksPorModalidad) {
+            $piezas = max(0, (int) ($stocks['unidad'] ?? 0))
+                + max(0, (int) ($stocks['docena'] ?? 0)) * 12
+                + max(0, (int) ($stocks['media docena'] ?? 0)) * 6;
+        } else {
+            $piezas = max(0, (int) ($stocks['unidad'] ?? 0));
+        }
+
+        $kilos = is_numeric($stocks['kilogramo'] ?? null)
+            ? max(0, round((float) $stocks['kilogramo'], 1))
+            : 0.0;
+
+        return ['unidad' => $piezas, 'kilogramo' => $kilos];
+    }
+
+    public static function factorPiezas($unidad)
+    {
+        return match ($unidad) {
+            'unidad' => 1,
+            'media docena' => 6,
+            'docena' => 12,
+            default => 1
+        };
+    }
+
+    public static function normalizarCantidad($cantidad, $unidad)
+    {
+        if ($unidad === 'kilogramo') {
+            if (
+                !is_numeric($cantidad) ||
+                !preg_match('/^\d+(?:\.\d)?$/', (string) $cantidad)
+            ) {
+                return false;
+            }
+
+            $cantidad = round((float) $cantidad, 1);
+            return $cantidad > 0 && $cantidad <= 99 ? $cantidad : false;
+        }
+
+        if (!is_numeric($cantidad)) {
+            return false;
+        }
+
+        $cantidadNumerica = (float) $cantidad;
+        if (
+            $cantidadNumerica !== floor($cantidadNumerica) ||
+            $cantidadNumerica <= 0 ||
+            $cantidadNumerica > 99
+        ) {
+            return false;
+        }
+
+        return (int) $cantidadNumerica;
+    }
+
+    public static function normalizarStock($stock, $base)
+    {
+        if ($base === 'kilogramo') {
+            if (
+                !is_numeric($stock) ||
+                !preg_match('/^\d+(?:\.\d)?$/', (string) $stock)
+            ) {
+                return false;
+            }
+
+            $stock = round((float) $stock, 1);
+            return $stock >= 0 && $stock <= 2147483647 ? $stock : false;
+        }
+
+        $stock = filter_var($stock, FILTER_VALIDATE_INT);
+        return $stock !== false && $stock >= 0 && $stock <= 2147483647
+            ? $stock
+            : false;
+    }
+
+    public static function consumoInventario($unidad, $cantidad)
+    {
+        if ($unidad === 'kilogramo') {
+            return ['base' => 'kilogramo', 'cantidad' => round((float) $cantidad, 1)];
+        }
+
+        return [
+            'base' => 'unidad',
+            'cantidad' => (int) $cantidad * self::factorPiezas($unidad)
+        ];
+    }
+
+    public static function stockDisponibleVenta($stocks, $unidad)
+    {
+        if ($unidad === 'kilogramo') {
+            return round((float) ($stocks['kilogramo'] ?? 0), 1);
+        }
+
+        return (int) floor(
+            (int) ($stocks['unidad'] ?? 0) / self::factorPiezas($unidad)
+        );
+    }
+
+    public static function tieneStock($producto)
+    {
+        $stocks = self::obtenerStocks($producto);
+        foreach (self::obtenerPresentaciones($producto) as $unidad => $_precio) {
+            if (self::stockDisponibleVenta($stocks, $unidad) > 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static function formatearCantidad($cantidad, $unidad)
+    {
+        if ($unidad !== 'kilogramo') {
+            return number_format((int) $cantidad, 0, ',', '.');
+        }
+
+        $valor = rtrim(rtrim(number_format((float) $cantidad, 1, ',', '.'), '0'), ',');
+        return $valor;
+    }
+
+    public static function stockCompatibilidad($stocks)
+    {
+        return max(
+            (int) ($stocks['unidad'] ?? 0),
+            (int) ceil((float) ($stocks['kilogramo'] ?? 0))
+        );
+    }
+
     public function __construct($db)
     {
         $this->db = $db;
@@ -21,6 +206,8 @@ class Producto
                 p.precio,
                 p.stock,
                 p.unidad_venta,
+                p.presentaciones,
+                p.stocks_modalidades,
                 p.imagen,
                 p.activo,
                 p.categoria_id,
@@ -52,6 +239,8 @@ class Producto
                 p.precio,
                 p.stock,
                 p.unidad_venta,
+                p.presentaciones,
+                p.stocks_modalidades,
                 p.imagen,
                 p.activo,
                 p.categoria_id,
@@ -89,6 +278,8 @@ class Producto
                 p.precio,
                 p.stock,
                 p.unidad_venta,
+                p.presentaciones,
+                p.stocks_modalidades,
                 p.imagen,
                 p.activo,
                 c.nombre AS categoria
@@ -157,6 +348,8 @@ class Producto
                 p.precio,
                 p.stock,
                 p.unidad_venta,
+                p.presentaciones,
+                p.stocks_modalidades,
                 p.imagen,
                 p.activo,
                 c.nombre AS categoria
@@ -192,7 +385,9 @@ class Producto
         $categoriaId,
         $imagen,
         $unidadVenta,
-        $stock
+        $stock,
+        $presentaciones,
+        $stocksModalidades
     ) {
         if (!is_int($stock) || $stock < 0) {
             return false;
@@ -207,10 +402,12 @@ class Producto
                 categoria_id,
                 imagen,
                 unidad_venta,
+                presentaciones,
+                stocks_modalidades,
                 stock,
                 activo
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, 1)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
         ";
 
         $stmt = $this->db->prepare($sql);
@@ -220,13 +417,15 @@ class Producto
         }
 
         $stmt->bind_param(
-            "ssdissi",
+            "ssdissssi",
             $nombre,
             $descripcion,
             $precio,
             $categoriaId,
             $imagen,
             $unidadVenta,
+            $presentaciones,
+            $stocksModalidades,
             $stock
         );
 
@@ -244,7 +443,9 @@ class Producto
         $imagen,
         $unidadVenta,
         $activo,
-        $stock
+        $stock,
+        $presentaciones,
+        $stocksModalidades
     ) {
         if (!is_int($stock) || $stock < 0) {
             return false;
@@ -259,6 +460,8 @@ class Producto
                 categoria_id = ?,
                 imagen = ?,
                 unidad_venta = ?,
+                presentaciones = ?,
+                stocks_modalidades = ?,
                 activo = ?,
                 stock = ?
             WHERE id = ?
@@ -271,13 +474,15 @@ class Producto
         }
 
         $stmt->bind_param(
-            "ssdissiii",
+            "ssdissssiii",
             $nombre,
             $descripcion,
             $precio,
             $categoriaId,
             $imagen,
             $unidadVenta,
+            $presentaciones,
+            $stocksModalidades,
             $activo,
             $stock,
             $id
@@ -359,6 +564,8 @@ class Producto
             p.precio,
             p.stock,
             p.unidad_venta,
+            p.presentaciones,
+            p.stocks_modalidades,
             p.imagen,
             p.categoria_id,
             c.nombre AS categoria

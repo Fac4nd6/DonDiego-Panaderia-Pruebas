@@ -1,6 +1,6 @@
 <?php
 
-$pageCss = "detalle-pedido.css";
+$pageCss = 'detalle-pedido.css';
 
 require __DIR__ . '/../layouts/head.php';
 
@@ -37,7 +37,7 @@ require __DIR__ . '/../layouts/head.php';
 
             <h1>
 
-                ID del pedido #<?= (int) $pedido['id'] ?>
+                <?= ($pedido['tipo'] ?? 'normal') === 'encargo' ? 'Pedido por encargo' : 'Pedido normal' ?> #<?= (int) $pedido['id'] ?>
 
             </h1>
 
@@ -323,7 +323,6 @@ require __DIR__ . '/../layouts/head.php';
 
                             <div class="detalle-producto">
 
-
                                 <div class="detalle-producto-info">
 
                                     <?php if (!empty($item['imagen'])): ?>
@@ -357,10 +356,10 @@ require __DIR__ . '/../layouts/head.php';
 
                                         <span>
 
-                                            <?= (int) $item['cantidad'] ?>
+                                            <?= htmlspecialchars(Producto::formatearCantidad($item['cantidad'], $item['unidad_venta'] ?? 'unidad'), ENT_QUOTES, 'UTF-8') ?>
 
                                             <?= htmlspecialchars(
-                                                $item['unidad_venta'] ?? 'unidad',
+                                                Producto::nombrePresentacion($item['unidad_venta'] ?? 'unidad', $item['cantidad']),
                                                 ENT_QUOTES,
                                                 'UTF-8'
                                             ) ?>
@@ -369,7 +368,7 @@ require __DIR__ . '/../layouts/head.php';
 
                                             $<?= number_format(
                                                     $item['precio_unitario'],
-                                                    0,
+                                                    2,
                                                     ',',
                                                     '.'
                                                 ) ?>
@@ -385,7 +384,7 @@ require __DIR__ . '/../layouts/head.php';
 
                                     $<?= number_format(
                                             $item['subtotal'],
-                                            0,
+                                            2,
                                             ',',
                                             '.'
                                         ) ?>
@@ -407,8 +406,6 @@ require __DIR__ . '/../layouts/head.php';
 
                 </div>
 
-
-
                 <!-- TOTAL -->
                 <div class="detalle-total">
 
@@ -420,7 +417,7 @@ require __DIR__ . '/../layouts/head.php';
 
                         $<?= number_format(
                                 $pedido['total'],
-                                0,
+                                2,
                                 ',',
                                 '.'
                             ) ?>

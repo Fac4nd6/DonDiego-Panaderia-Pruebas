@@ -5,6 +5,22 @@ $pageCss = "admin-productos-form.css";
 require __DIR__ . '/../layouts/head.php';
 
 $editando = !empty($producto);
+$opcionesUnidades = [
+    'unidad' => 'Unidad',
+    'docena' => 'Docena',
+    'media docena' => 'Media docena',
+    'kilogramo' => 'Kilogramo'
+];
+$presentacionesActuales = json_decode($producto['presentaciones'] ?? '', true);
+$stocksActuales = $editando
+    ? Producto::obtenerStocks($producto)
+    : ['unidad' => 100, 'kilogramo' => 0];
+if (!is_array($presentacionesActuales) || empty($presentacionesActuales)) {
+    $unidadActual = $producto['unidad_venta'] ?? 'unidad';
+    $presentacionesActuales = [
+        $unidadActual => $producto['precio'] ?? ''
+    ];
+}
 
 ?>
 
@@ -177,33 +193,29 @@ $editando = !empty($producto);
 
 
 
-                    <!-- PRECIO -->
+                    <!-- PRECIOS POR PRESENTACIÓN -->
                     <div class="form-grupo">
-
-                        <label for="precio">
-                            Precio
-                        </label>
-
-
-                        <div class="input-precio">
-
-                            <span>
-                                $
-                            </span>
-
-
-                            <input
-                                type="number"
-                                id="precio"
-                                name="precio"
-                                min="0"
-                                step="1"
-                                placeholder="0"
-                                value="<?= htmlspecialchars($producto['precio'] ?? '') ?>"
-                                required>
-
-                        </div>
-
+                        <label>Precio por presentación</label>
+                        <?php foreach ($opcionesUnidades as $unidad => $etiqueta): ?>
+                            <div
+                                data-precio-presentacion="<?= htmlspecialchars($unidad, ENT_QUOTES, 'UTF-8') ?>"
+                                <?= array_key_exists($unidad, $presentacionesActuales) ? '' : 'hidden' ?>>
+                                <label for="precio-<?= htmlspecialchars($unidad, ENT_QUOTES, 'UTF-8') ?>">
+                                    Precio por <?= htmlspecialchars($etiqueta, ENT_QUOTES, 'UTF-8') ?>
+                                </label>
+                                <div class="input-precio">
+                                    <span>$</span>
+                                    <input
+                                        type="number"
+                                        id="precio-<?= htmlspecialchars($unidad, ENT_QUOTES, 'UTF-8') ?>"
+                                        name="precios_unidad[<?= htmlspecialchars($unidad, ENT_QUOTES, 'UTF-8') ?>]"
+                                        min="0"
+                                        step="0.01"
+                                        placeholder="0"
+                                        value="<?= htmlspecialchars((string) ($presentacionesActuales[$unidad] ?? '')) ?>">
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
                     </div>
 
                 </div>
@@ -217,26 +229,43 @@ $editando = !empty($producto);
                     </div>
 
                     <div class="form-grupo">
-                        <label for="stock">Cantidad disponible</label>
-                        <input
-                            type="number"
-                            id="stock"
-                            name="stock"
-                            min="0"
-                            step="1"
-                            value="<?= htmlspecialchars($producto['stock'] ?? '100') ?>"
-                            required>
+                        <label for="unidad_venta">Se vende por</label>
+                        <div id="unidad_venta" class="modalidades-venta">
+                            <?php foreach ($opcionesUnidades as $unidad => $etiqueta): ?>
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        name="unidad_venta[]"
+                                        value="<?= htmlspecialchars($unidad, ENT_QUOTES, 'UTF-8') ?>"
+                                        <?= array_key_exists($unidad, $presentacionesActuales) ? 'checked' : '' ?>>
+                                    <?= htmlspecialchars($etiqueta, ENT_QUOTES, 'UTF-8') ?>
+                                </label>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
 
                     <div class="form-grupo">
-                        <label for="unidad_venta">Se vende por</label>
-                        <select id="unidad_venta" name="unidad_venta" required>
-                            <?php $unidadSeleccionada = $producto['unidad_venta'] ?? 'unidad'; ?>
-                            <option value="unidad" <?= $unidadSeleccionada === 'unidad' ? 'selected' : '' ?>>Unidad</option>
-                            <option value="docena" <?= $unidadSeleccionada === 'docena' ? 'selected' : '' ?>>Docena</option>
-                            <option value="media docena" <?= $unidadSeleccionada === 'media docena' ? 'selected' : '' ?>>Media docena</option>
-                            <option value="kilogramo" <?= $unidadSeleccionada === 'kilogramo' ? 'selected' : '' ?>>Kilogramo</option>
-                        </select>
+                        <label>Stock disponible</label>
+                        <div data-stock-presentacion="unidad">
+                            <label for="stock-unidad">Stock compartido en piezas (unidad, media docena y docena)</label>
+                            <input
+                                type="number"
+                                id="stock-unidad"
+                                name="stocks_modalidades[unidad]"
+                                min="0"
+                                step="1"
+                                value="<?= htmlspecialchars((string) $stocksActuales['unidad']) ?>">
+                        </div>
+                        <div data-stock-presentacion="kilogramo">
+                            <label for="stock-kilogramo">Stock disponible en kilos</label>
+                            <input
+                                type="number"
+                                id="stock-kilogramo"
+                                name="stocks_modalidades[kilogramo]"
+                                min="0"
+                                step="0.1"
+                                value="<?= htmlspecialchars((string) $stocksActuales['kilogramo']) ?>">
+                        </div>
                     </div>
 
                 </div>
@@ -475,6 +504,53 @@ $editando = !empty($producto);
 
     </main>
 
+
+<script>
+    const selectorUnidades = document.querySelectorAll('input[name="unidad_venta[]"]');
+    const camposPreciosUnidad = document.querySelectorAll('[data-precio-presentacion]');
+    const camposStockUnidad = document.querySelectorAll('[data-stock-presentacion]');
+
+    function actualizarCamposPrecios() {
+        const unidadesSeleccionadas = new Set(
+            Array.from(selectorUnidades)
+                .filter(opcion => opcion.checked)
+                .map(opcion => opcion.value)
+        );
+
+        camposPreciosUnidad.forEach(campo => {
+            const seleccionado = unidadesSeleccionadas.has(campo.dataset.precioPresentacion);
+            campo.hidden = !seleccionado;
+            campo.querySelector('input').required = seleccionado;
+        });
+
+        camposStockUnidad.forEach(campo => {
+            const seleccionado = campo.dataset.stockPresentacion === 'unidad'
+                ? ['unidad', 'docena', 'media docena'].some(unidad => unidadesSeleccionadas.has(unidad))
+                : unidadesSeleccionadas.has(campo.dataset.stockPresentacion);
+            campo.hidden = !seleccionado;
+            campo.querySelector('input').required = seleccionado;
+        });
+    }
+
+    selectorUnidades.forEach(opcion => {
+        opcion.addEventListener('change', actualizarCamposPrecios);
+    });
+
+    selectorUnidades[0]?.form.addEventListener('submit', evento => {
+        const haySeleccion = Array.from(selectorUnidades).some(opcion => opcion.checked);
+        if (!haySeleccion) {
+            evento.preventDefault();
+            selectorUnidades[0].setCustomValidity('Seleccioná al menos una modalidad de venta.');
+            selectorUnidades[0].reportValidity();
+        }
+    });
+
+    selectorUnidades.forEach(opcion => {
+        opcion.addEventListener('change', () => opcion.setCustomValidity(''));
+    });
+
+    actualizarCamposPrecios();
+</script>
 
 </body>
 

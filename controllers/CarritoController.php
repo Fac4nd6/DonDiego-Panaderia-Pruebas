@@ -85,10 +85,9 @@ if ($accion === 'agregar') {
     $productoId =
         (int) ($_POST['producto_id'] ?? 0);
 
-    $cantidad = filter_var(
-        $_POST['cantidad'] ?? null,
-        FILTER_VALIDATE_INT
-    );
+    $cantidadEntrada = $_POST['cantidad'] ?? null;
+
+    $unidadVenta = trim($_POST['unidad_venta'] ?? '');
 
 
     if ($productoId <= 0) {
@@ -96,12 +95,6 @@ if ($accion === 'agregar') {
         exit(
             'Producto no válido.'
         );
-    }
-
-
-    if ($cantidad === false || $cantidad <= 0 || $cantidad > 99) {
-        http_response_code(422);
-        exit('La cantidad solicitada no es válida.');
     }
 
 
@@ -126,23 +119,46 @@ if ($accion === 'agregar') {
         );
     }
 
-    $stock = (int) ($producto['stock'] ?? 0);
-
-    if ($stock <= 0) {
-        http_response_code(409);
-        exit('Este producto está agotado.');
+    $presentaciones = Producto::obtenerPresentaciones($producto);
+    if (!array_key_exists($unidadVenta, $presentaciones)) {
+        http_response_code(422);
+        exit('La presentación seleccionada no está disponible.');
     }
 
-    $cantidadActual = (int) ($carritoModel->obtener()[$productoId]['cantidad'] ?? 0);
-    if ($cantidadActual + $cantidad > $stock) {
-        http_response_code(409);
-        exit('No hay stock suficiente. Disponible: ' . $stock . ' unidades.');
+    $cantidad = Producto::normalizarCantidad($cantidadEntrada, $unidadVenta);
+    if ($cantidad === false) {
+        http_response_code(422);
+        exit('La cantidad solicitada no es válida.');
     }
 
+    $stocksPorModalidad = Producto::obtenerStocks($producto);
+    $consumoSolicitado = Producto::consumoInventario($unidadVenta, $cantidad);
+    $stock = (float) ($stocksPorModalidad[$consumoSolicitado['base']] ?? 0);
+
+    $cantidadReservada = 0;
+    foreach ($carritoModel->obtener() as $item) {
+        if ((int) ($item['id'] ?? 0) !== $productoId) {
+            continue;
+        }
+
+        $consumoExistente = Producto::consumoInventario(
+            $item['unidad_venta'] ?? 'unidad',
+            $item['cantidad'] ?? 0
+        );
+        if ($consumoExistente['base'] === $consumoSolicitado['base']) {
+            $cantidadReservada += $consumoExistente['cantidad'];
+        }
+    }
+
+    if ($cantidadReservada + $consumoSolicitado['cantidad'] > $stock) {
+        http_response_code(409);
+        exit('No hay stock suficiente para ' . Producto::nombrePresentacion($consumoSolicitado['base']) . '.');
+    }
 
     $carritoModel->agregar(
         $producto,
-        $cantidad
+        $cantidad,
+        $unidadVenta
     );
 
 
@@ -171,16 +187,18 @@ if ($accion === 'actualizar') {
     verificar_csrf();
 
 
-    $productoId =
-        (int) ($_POST['producto_id'] ?? 0);
+    $productoId = (int) ($_POST['producto_id'] ?? 0);
+    $lineaId = trim($_POST['linea_id'] ?? '');
 
-    $cantidad = filter_var(
-        $_POST['cantidad'] ?? null,
-        FILTER_VALIDATE_INT
-    );
+    $cantidadEntrada = $_POST['cantidad'] ?? null;
 
 
-    if ($productoId <= 0 || $cantidad === false || $cantidad <= 0 || $cantidad > 99) {
+    $carrito = $carritoModel->obtener();
+    if (
+        $productoId <= 0 ||
+        !isset($carrito[$lineaId]) ||
+        (int) ($carrito[$lineaId]['id'] ?? 0) !== $productoId
+    ) {
 
         exit(
             'Producto no válido.'
@@ -195,13 +213,42 @@ if ($accion === 'actualizar') {
         exit('Este producto ya no está disponible.');
     }
 
-    $stock = (int) ($producto['stock'] ?? 0);
-    if ($cantidad > $stock) {
+    $unidadVenta = (string) ($carrito[$lineaId]['unidad_venta'] ?? '');
+    $stocksPorModalidad = Producto::obtenerStocks($producto);
+    if (!array_key_exists($unidadVenta, Producto::obtenerPresentaciones($producto))) {
         http_response_code(409);
-        exit('La cantidad supera el stock disponible: ' . $stock . ' unidades.');
+        exit('La modalidad de este producto ya no está disponible.');
     }
 
-    if (!$carritoModel->actualizarCantidad($productoId, $cantidad)) {
+    $cantidad = Producto::normalizarCantidad($cantidadEntrada, $unidadVenta);
+    if ($cantidad === false) {
+        http_response_code(422);
+        exit('La cantidad solicitada no es válida.');
+    }
+
+    $consumoSolicitado = Producto::consumoInventario($unidadVenta, $cantidad);
+    $stock = (float) ($stocksPorModalidad[$consumoSolicitado['base']] ?? 0);
+    $cantidadOtrasPresentaciones = 0;
+    foreach ($carrito as $clave => $item) {
+        if (
+            $clave !== $lineaId &&
+            (int) ($item['id'] ?? 0) === $productoId
+        ) {
+            $consumoExistente = Producto::consumoInventario(
+                $item['unidad_venta'] ?? 'unidad',
+                $item['cantidad'] ?? 0
+            );
+            if ($consumoExistente['base'] === $consumoSolicitado['base']) {
+                $cantidadOtrasPresentaciones += $consumoExistente['cantidad'];
+            }
+        }
+    }
+    if ($consumoSolicitado['cantidad'] + $cantidadOtrasPresentaciones > $stock) {
+        http_response_code(409);
+        exit('La cantidad supera el stock disponible para esta modalidad.');
+    }
+
+    if (!$carritoModel->actualizarCantidad($lineaId, $cantidad)) {
 
         exit(
             'Producto no encontrado en el carrito.'
@@ -234,11 +281,10 @@ if ($accion === 'eliminar') {
     verificar_csrf();
 
 
-    $productoId =
-        (int) ($_POST['producto_id'] ?? 0);
+    $lineaId = trim($_POST['linea_id'] ?? '');
 
 
-    if ($productoId <= 0) {
+    if ($lineaId === '') {
 
         exit(
             'Producto no válido.'
@@ -246,9 +292,7 @@ if ($accion === 'eliminar') {
     }
 
 
-    $carritoModel->eliminar(
-        $productoId
-    );
+    $carritoModel->eliminar($lineaId);
 
 
     header(

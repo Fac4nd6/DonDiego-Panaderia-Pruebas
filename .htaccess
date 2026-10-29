@@ -9,6 +9,10 @@ RewriteRule ^ - [R=404,L]
 RewriteRule ^$ controllers/HomeController.php [END]
 RewriteRule ^productos/?$ controllers/CatalogoController.php [END,QSA]
 RewriteRule ^contacto/?$ views/contacto.php [END]
+RewriteRule ^terminos-y-condiciones/?$ views/politicas/terminos-y-condiciones.php [END]
+RewriteRule ^politica-de-privacidad/?$ views/politicas/privacidad.php [END]
+RewriteRule ^politica-de-pedidos/?$ views/politicas/pedidos.php [END]
+RewriteRule ^politica-de-entregas/?$ views/politicas/entregas.php [END]
 
 # Cuenta y autenticacion.
 RewriteRule ^login/?$ views/usuarios/login.php [END,QSA]
@@ -25,6 +29,7 @@ RewriteRule ^logout/?$ controllers/logout.php [END,QSA]
 RewriteRule ^carrito/?$ controllers/CarritoController.php [END,QSA]
 RewriteRule ^pedidos/?$ controllers/PedidoController.php [END,QSA]
 RewriteRule ^pedidos/crear/?$ controllers/PedidoController.php?accion=crear [END,QSA]
+RewriteRule ^pedidos/encargo/?$ controllers/PedidoController.php?accion=encargo [END,QSA]
 RewriteRule ^pedidos/detalle/?$ controllers/PedidoController.php?accion=ver [END,QSA]
 
 # Administracion.
@@ -34,3 +39,7 @@ RewriteRule ^admin/clientes/?$ controllers/ProductoController.php?accion=cliente
 RewriteRule ^admin/roles/?$ controllers/ProductoController.php?accion=roles [END,QSA]
 RewriteRule ^admin/pedidos/?$ controllers/PedidoController.php?accion=gestionar_pedidos [END,QSA]
 RewriteRule ^admin/pedidos/detalle/?$ controllers/PedidoController.php?accion=detalle_admin [END,QSA]
+RewriteRule ^admin/planificacion/?$ controllers/ProduccionController.php [END,QSA]
+RewriteRule ^admin/tandas/?$ controllers/ProduccionController.php?accion=historial [END,QSA]
+RewriteRule ^admin/tandas/detalle/?$ controllers/ProduccionController.php?accion=detalle [END,QSA]
+RewriteRule ^admin/tandas/imprimir/?$ controllers/ProduccionController.php?accion=imprimir [END,QSA]

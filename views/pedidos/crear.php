@@ -34,7 +34,6 @@ require __DIR__ . '/../layouts/header.php';
 
                 <form
                     method="POST"
-                    target="_blank"
                     action="<?= url('/pedidos/crear') ?>">
 
 
@@ -47,6 +46,8 @@ require __DIR__ . '/../layouts/header.php';
                                     ENT_QUOTES,
                                     'UTF-8'
                                 ) ?>">
+
+                    <input type="hidden" name="pedido_token" value="<?= htmlspecialchars($pedidoToken, ENT_QUOTES, 'UTF-8') ?>">
 
 
                     <!-- ACCIÓN -->
@@ -355,10 +356,10 @@ require __DIR__ . '/../layouts/header.php';
 
                                     <span>
 
-                                        <?= (int) $item['cantidad'] ?>
+                                        <?= htmlspecialchars(Producto::formatearCantidad($item['cantidad'], $item['unidad_venta'] ?? 'unidad'), ENT_QUOTES, 'UTF-8') ?>
 
                                         <?= htmlspecialchars(
-                                            $item['unidad_venta'] ?? 'unidad',
+                                            Producto::nombrePresentacion($item['unidad_venta'] ?? 'unidad', $item['cantidad']),
                                             ENT_QUOTES,
                                             'UTF-8'
                                         ) ?>
@@ -367,7 +368,7 @@ require __DIR__ . '/../layouts/header.php';
 
                                         $<?= number_format(
                                                 $item['precio'],
-                                                0,
+                                                2,
                                                 ',',
                                                 '.'
                                             ) ?>
@@ -382,7 +383,7 @@ require __DIR__ . '/../layouts/header.php';
                                     $<?= number_format(
                                             $item['precio']
                                                 * $item['cantidad'],
-                                            0,
+                                            2,
                                             ',',
                                             '.'
                                         ) ?>
@@ -411,7 +412,7 @@ require __DIR__ . '/../layouts/header.php';
 
                             $<?= number_format(
                                     $total,
-                                    0,
+                                    2,
                                     ',',
                                     '.'
                                 ) ?>
@@ -442,15 +443,6 @@ require __DIR__ . '/../layouts/header.php';
 
 
     <?php require __DIR__ . '/../layouts/footer.php'; ?>
-
-    <script>
-        window.addEventListener('storage', (evento) => {
-            if (evento.key === 'dondiego_pedido_confirmado') {
-                window.location.replace('<?= url('/pedidos') ?>');
-            }
-        });
-    </script>
-
 
 </body>
 

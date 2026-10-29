@@ -202,6 +202,32 @@ try {
         </div>
 
 
+        <!-- INFORMACIÓN -->
+        <div class="footer-column">
+
+            <h3>
+                Información
+            </h3>
+
+            <a href="<?= url('/terminos-y-condiciones') ?>">
+                Términos y condiciones
+            </a>
+
+            <a href="<?= url('/politica-de-privacidad') ?>">
+                Política de privacidad
+            </a>
+
+            <a href="<?= url('/politica-de-pedidos') ?>">
+                Política de pedidos
+            </a>
+
+            <a href="<?= url('/politica-de-entregas') ?>">
+                Política de entregas
+            </a>
+
+        </div>
+
+
         <!-- NOVEDADES -->
         <div class="footer-column">
 

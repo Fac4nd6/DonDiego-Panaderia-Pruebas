@@ -10,7 +10,7 @@
         name="viewport"
         content="width=device-width, initial-scale=1.0">
 
-    <title>Don Diego</title>
+    <title><?= htmlspecialchars($pageTitle ?? 'Don Diego', ENT_QUOTES, 'UTF-8') ?></title>
 
     <link rel="icon" href="<?= url('/public/img/logo-don2.png') ?>" type="image/x-icon">
 
@@ -104,6 +104,6 @@
         src="<?= url('/public/js/mobile.js') ?>"
         defer></script>
 
-    <script>window.APP_BASE_URL = <?= json_encode(url('')) ?>;</script>
+    <script>window.APP_BASE_URL = <?= json_encode(rtrim(url(''), '/')) ?>;</script>
 
 </head>

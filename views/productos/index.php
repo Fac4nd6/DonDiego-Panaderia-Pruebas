@@ -96,6 +96,10 @@ require __DIR__ . '/../layouts/header.php';
 
             </form>
 
+            <a href="<?= url('/pedidos/encargo') ?>" class="pedido-encargo-link">
+                ¿Necesitás una cantidad mayor? <strong>Solicitar pedido por encargo</strong>
+            </a>
+
         </section>
 
 
@@ -278,7 +282,7 @@ require __DIR__ . '/../layouts/header.php';
                                     </strong>
 
                                     <span>
-                                        <?= (int) $producto['stock'] > 0 ? 'Disponible' : 'Agotado' ?>
+                                        <?= Producto::tieneStock($producto) ? 'Disponible' : 'Agotado' ?>
                                     </span>
 
 
@@ -308,12 +312,24 @@ require __DIR__ . '/../layouts/header.php';
 
                                         data-precio="<?= (float) $producto['precio'] ?>"
 
-                                        data-stock="<?= (int) $producto['stock'] ?>"
+                                        data-stock="<?= Producto::stockCompatibilidad(Producto::obtenerStocks($producto)) ?>"
 
                                         data-unidad-venta="<?= htmlspecialchars(
                                                                 $producto['unidad_venta'] ?? 'unidad',
                                                                 ENT_QUOTES
                                                             ) ?>"
+
+                                        data-presentaciones="<?= htmlspecialchars(
+                                                                json_encode(Producto::obtenerPresentaciones($producto), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+                                                                ENT_QUOTES,
+                                                                'UTF-8'
+                                                            ) ?>"
+
+                                        data-stocks="<?= htmlspecialchars(
+                                                        json_encode(Producto::obtenerStocks($producto), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+                                                        ENT_QUOTES,
+                                                        'UTF-8'
+                                                    ) ?>"
 
                                         data-categoria="<?= htmlspecialchars(
                                                             $producto['categoria'],
@@ -325,7 +341,7 @@ require __DIR__ . '/../layouts/header.php';
                                                             ENT_QUOTES
                                                         ) ?>">
 
-                                        <?= (int) $producto['stock'] > 0 ? 'Ver producto' : 'Agotado' ?>
+                                        <?= Producto::tieneStock($producto) ? 'Ver producto' : 'Agotado' ?>
 
                                     </button>
 
@@ -484,12 +500,18 @@ require __DIR__ . '/../layouts/header.php';
                     </p>
 
 
-                    <!-- PRECIO -->
+                    <div id="detallePresentacionContenedor" class="detalle-presentacion" hidden>
+                        <span>¿Cómo querés comprarlo?</span>
+                        <div id="detallePresentacion" class="detalle-presentaciones" role="group" aria-label="Modalidad de compra"></div>
+                    </div>
 
+                    <!-- PRECIO -->
                     <strong
                         class="detalle-precio"
                         id="detallePrecio">
                     </strong>
+
+                    <span id="detallePrecioUnidad" class="detalle-precio-unidad"></span>
 
                     <span
                         class="detalle-stock"
@@ -517,9 +539,14 @@ require __DIR__ . '/../layouts/header.php';
                             </button>
 
 
-                            <span id="cantidadProducto">
-                                1
-                            </span>
+                            <input
+                                type="number"
+                                id="cantidadProducto"
+                                value="1"
+                                min="1"
+                                max="99"
+                                step="1"
+                                aria-label="Cantidad">
 
 
                             <button
