@@ -5,6 +5,7 @@ $pageCss = 'login.css';
 
 require '../../config/Database.php';
 require '../../config/Csrf.php';
+require '../../config/RateLimiter.php';
 require '../../config/Url.php';
 
 if (session_status() === PHP_SESSION_NONE) {
@@ -14,7 +15,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 $error = '';
 $mensaje = isset($_GET['enviado'])
-    ? 'Revisá tu correo e ingresá el código recibido.'
+    ? 'Si existe una cuenta verificada con ese correo, recibirás un código. Revisá también el correo no deseado.'
     : '';
 $email = $_SESSION['recuperacion_email'] ?? '';
 $codigo = trim($_POST['codigo'] ?? '');
@@ -84,7 +85,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verificar_csrf();
 
     if (($_POST['accion'] ?? '') === 'verificar_codigo') {
-        $usuario = obtenerUsuarioPorCodigo($conn, $email, $codigo);
+        $limitePorIp = solicitudSuperaLimite(
+            $conn,
+            'reset_code_ip',
+            (string) ($_SERVER['REMOTE_ADDR'] ?? 'unknown'),
+            10,
+            900
+        );
+        $limitePorEmail = $limitePorIp || solicitudSuperaLimite(
+            $conn,
+            'reset_code_email',
+            $email,
+            10,
+            900
+        );
+        $usuario = $limitePorEmail
+            ? null
+            : obtenerUsuarioPorCodigo($conn, $email, $codigo);
 
         if (!$usuario) {
             $error = 'El código no es válido o ya expiró.';
@@ -208,6 +225,9 @@ require '../layouts/head.php';
                 <?php endif; ?>
 
                 <footer class="form-footer">
+                    <?php if ($email && !$mostrarCambio): ?>
+                        <p><a href="<?= url('/recuperar-contrasena') ?>">Solicitar otro código</a></p>
+                    <?php endif; ?>
                     <p><a href="<?= url('/login') ?>">Volver a iniciar sesión</a></p>
                 </footer>
             </div>

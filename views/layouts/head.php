@@ -104,6 +104,6 @@
         src="<?= url('/public/js/mobile.js') ?>"
         defer></script>
 
-    <script>window.APP_BASE_URL = <?= json_encode(url('')) ?>;</script>
+    <script>window.APP_BASE_URL = <?= json_encode(rtrim(url(''), '/')) ?>;</script>
 
 </head>

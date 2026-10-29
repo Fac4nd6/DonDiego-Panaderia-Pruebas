@@ -5,7 +5,8 @@ $pageCss = 'login.css';
 
 require '../../config/Database.php';
 require '../../config/Csrf.php';
-require '../../config/Brevo.php';
+require '../../config/RateLimiter.php';
+require '../../config/EmailService.php';
 require '../../config/Url.php';
 
 if (session_status() === PHP_SESSION_NONE) {
@@ -26,20 +27,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = 'Ingresá un correo electrónico válido.';
     } else {
-        $stmt = $conn->prepare(
-            'SELECT id, nombre_completo FROM usuarios
-             WHERE email = ? AND email_verificado = 1 LIMIT 1'
+        $mensaje = 'Si existe una cuenta verificada con ese correo, recibirás un código para restablecer tu contraseña.';
+        $_SESSION['recuperacion_email'] = $email;
+
+        $limitePorIp = solicitudSuperaLimite(
+            $conn,
+            'reset_request_ip',
+            (string) ($_SERVER['REMOTE_ADDR'] ?? 'unknown'),
+            10,
+            3600
         );
 
-        if (!$stmt) {
-            $error = 'Ocurrió un error. Intentá nuevamente más tarde.';
-        } else {
-            $stmt->bind_param('s', $email);
-            $stmt->execute();
-            $usuario = $stmt->get_result()->fetch_assoc();
-            $stmt->close();
+        $limitePorEmail = $limitePorIp || solicitudSuperaLimite(
+            $conn,
+            'reset_request_email',
+            $email,
+            3,
+            3600
+        );
 
-            if ($usuario) {
+        if (!$limitePorEmail) {
+            $stmt = $conn->prepare(
+                'SELECT id, nombre_completo FROM usuarios
+                 WHERE email = ? AND email_verificado = 1 LIMIT 1'
+            );
+
+            if ($stmt) {
+                $stmt->bind_param('s', $email);
+                $stmt->execute();
+                $usuario = $stmt->get_result()->fetch_assoc();
+                $stmt->close();
+
+                if ($usuario) {
                 $codigo = (string) random_int(100000, 999999);
                 $codigoHash = password_hash($codigo, PASSWORD_DEFAULT);
                 $expira = date('Y-m-d H:i:s', time() + 900);
@@ -77,27 +96,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             </div>
                         </div>';
 
-                    $resultadoCorreo = enviarCorreoBrevo(
+                    $resultadoCorreo = enviarCorreoTransaccional(
                         $email,
                         $usuario['nombre_completo'],
                         'Restablecé tu contraseña - Don Diego',
-                        $contenido
+                        $contenido,
+                        false
                     );
 
                     if (!$resultadoCorreo['success']) {
-                        $error = 'No se pudo enviar el correo. Intentá nuevamente más tarde.';
+                        error_log('Password recovery email was not accepted by the configured transport.');
                     } else {
-                        $_SESSION['recuperacion_email'] = $email;
-                        header('Location: ' . url('/restablecer-contrasena?enviado=1'));
-                        exit;
+                        $mensaje = 'Si existe una cuenta verificada con ese correo, recibirás un código para restablecer tu contraseña.';
                     }
-                } else {
-                    $error = 'Ocurrió un error. Intentá nuevamente más tarde.';
                 }
-            } else {
-                $mensaje = 'Si existe una cuenta verificada con ese correo, recibirás un código para restablecer tu contraseña.';
             }
         }
+        }
+
+        header('Location: ' . url('/restablecer-contrasena?enviado=1'));
+        exit;
     }
 }
 

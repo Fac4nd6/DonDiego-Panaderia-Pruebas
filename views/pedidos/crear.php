@@ -34,7 +34,6 @@ require __DIR__ . '/../layouts/header.php';
 
                 <form
                     method="POST"
-                    target="_blank"
                     action="<?= url('/pedidos/crear') ?>">
 
 
@@ -47,6 +46,8 @@ require __DIR__ . '/../layouts/header.php';
                                     ENT_QUOTES,
                                     'UTF-8'
                                 ) ?>">
+
+                    <input type="hidden" name="pedido_token" value="<?= htmlspecialchars($pedidoToken, ENT_QUOTES, 'UTF-8') ?>">
 
 
                     <!-- ACCIÓN -->
@@ -442,15 +443,6 @@ require __DIR__ . '/../layouts/header.php';
 
 
     <?php require __DIR__ . '/../layouts/footer.php'; ?>
-
-    <script>
-        window.addEventListener('storage', (evento) => {
-            if (evento.key === 'dondiego_pedido_confirmado') {
-                window.location.replace('<?= url('/pedidos') ?>');
-            }
-        });
-    </script>
-
 
 </body>
 

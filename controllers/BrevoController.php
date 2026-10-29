@@ -1,7 +1,7 @@
 <?php
 
-// Mantiene una interfaz compatible para enviar correos con Brevo.
-require_once __DIR__ . '/../config/Brevo.php';
+// Mantiene una interfaz compatible para enviar correos transaccionales.
+require_once __DIR__ . '/../config/EmailService.php';
 
 class BrevoController
 {
@@ -11,7 +11,7 @@ class BrevoController
         $asunto,
         $html
     ) {
-        return enviarCorreoBrevo(
+        return enviarCorreoTransaccional(
             $destinatario,
             $nombreDestinatario,
             $asunto,

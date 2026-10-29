@@ -4,7 +4,8 @@ $pageCss = "login.css";
 
 require '../../config/Database.php';
 require '../../config/Csrf.php';
-require '../../config/Brevo.php';
+require '../../config/RateLimiter.php';
+require '../../config/EmailService.php';
 require '../../config/Url.php';
 
 if (session_status() === PHP_SESSION_NONE) {
@@ -19,6 +20,8 @@ $nombre = '';
 $email = '';
 
 $aceptaPoliticas = false;
+
+$correoPendiente = false;
 
 
 /* PROCESAR REGISTRO */
@@ -50,9 +53,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $aceptaPoliticas =
         ($_POST['acepta_politicas'] ?? '') === '1';
 
+        $registroLimitado = solicitudSuperaLimite(
+            $conn,
+            'register_ip',
+            (string) ($_SERVER['REMOTE_ADDR'] ?? 'unknown'),
+            8,
+            3600
+        );
+
 
     /* VALIDAR NOMBRE */
-    if (empty($nombre)) {
+        if ($registroLimitado) {
+            $error = 'Se alcanzó el límite de registros. Intentá nuevamente más tarde.';
+        } elseif (empty($nombre)) {
 
         $error =
             'El nombre completo es obligatorio.';
@@ -367,7 +380,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                             /* ENVIAR CORREO */
                             $resultadoCorreo =
-                                enviarCorreoBrevo(
+                                enviarCorreoTransaccional(
                                     $email,
                                     $nombre,
                                     'Verificá tu correo electrónico - Don Diego',
@@ -379,38 +392,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                             if (
                                 !$resultadoCorreo['success']
                             ) {
-
-                                /*
-                                 * Eliminamos la cuenta para
-                                 * no dejarla sin posibilidad
-                                 * de verificación.
-                            */
-                                $stmt =
-                                    $conn->prepare(
-                                        "
-                                        DELETE FROM usuarios
-                                        WHERE email = ?
-                                        LIMIT 1
-                                        "
-                                    );
-
-
-                                if ($stmt) {
-
-                                    $stmt->bind_param(
-                                        "s",
-                                        $email
-                                    );
-
-                                    $stmt->execute();
-
-                                    $stmt->close();
-                                }
-
-
                                 $error =
                                     'No se pudo enviar el correo de verificación. '
-                                    . 'Intentá nuevamente más tarde.';
+                                    . 'La cuenta quedó pendiente; podés solicitar otro enlace.';
+                                $correoPendiente = true;
                             } else {
 
                                 /* REGENERAR CSRF */
@@ -502,6 +487,12 @@ require '../layouts/head.php';
 
                     </aside>
 
+                <?php endif; ?>
+
+                <?php if ($correoPendiente): ?>
+                    <p>
+                        <a href="<?= url('/reenviar-verificacion') ?>">Reenviar verificación</a>
+                    </p>
                 <?php endif; ?>
 
 
