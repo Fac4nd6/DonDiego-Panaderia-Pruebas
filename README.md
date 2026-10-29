@@ -1,12 +1,10 @@
 # Don Diego Panadería 🍰
 
-Sistema web desarrollado para **Don Diego Panadería** como proyecto académico.
+Plataforma digital propia de **Don Diego Panadería**, desarrollada por Facundo Leites para organizar la venta y gestión de pedidos de la panadería.
 
-El objetivo del proyecto es desarrollar una plataforma web destinada principalmente a los comercios que trabajan con Don Diego, permitiéndoles consultar un catálogo digital, seleccionar productos y cantidades, realizar pedidos y consultar el estado e historial de sus pedidos.
+La plataforma está destinada principalmente a los comercios que trabajan con Don Diego. Permite consultar el catálogo, seleccionar productos y cantidades, realizar pedidos y consultar su estado e historial.
 
-El sistema también cuenta con un área administrativa destinada a la gestión de productos y pedidos.
-
-El proyecto utiliza una arquitectura organizada basada en el patrón **MVC (Model-View-Controller)**.
+Incluye un área de administración para gestionar productos, pedidos y planificación de producción. Está construida en PHP y organizada con el patrón **MVC (Model-View-Controller)**.
 
 ---
 
@@ -16,15 +14,13 @@ Don Diego Panadería cuenta con más de 20 años de funcionamiento y más de 25 
 
 Su principal actividad es la venta de productos de panadería y confitería. La empresa trabaja también con comercios que realizan pedidos de productos de manera frecuente.
 
-Actualmente, los comercios realizan principalmente sus pedidos mediante WhatsApp. Estos pedidos deben ser posteriormente ingresados manualmente por empleados de Don Diego en el sistema interno utilizado por la empresa.
-
-El proyecto busca digitalizar y organizar esta primera parte del proceso mediante una plataforma web.
+La plataforma centraliza la recepción y organización de pedidos de los comercios, reduciendo la carga manual de transcribirlos desde canales de contacto.
 
 ---
 
 # 🎯 Objetivo
 
-El objetivo principal es desarrollar una plataforma que permita a los comercios:
+La plataforma permite a los comercios:
 
 * Consultar un catálogo digital.
 * Visualizar los productos disponibles.
@@ -35,9 +31,7 @@ El objetivo principal es desarrollar una plataforma que permita a los comercios:
 * Consultar pedidos anteriores.
 * Consultar el estado de sus pedidos.
 
-Para Don Diego, el sistema busca facilitar la gestión de los pedidos recibidos y reducir la cantidad de información que debe ser transcrita manualmente desde WhatsApp.
-
-Como objetivo futuro, se analizará la posibilidad de integrar la plataforma con el sistema utilizado actualmente por Don Diego para automatizar aún más el proceso.
+Para Don Diego, facilita la gestión de los pedidos recibidos y reúne en un solo lugar la información necesaria para su preparación y seguimiento.
 
 ---
 
@@ -105,7 +99,7 @@ Dispone de funciones administrativas adicionales:
 
 # 📧 Verificación de correo
 
-El sistema incorpora un proceso de verificación de cuentas mediante correo electrónico.
+El sistema verifica las cuentas mediante correo electrónico y permite recuperar el acceso a una cuenta.
 
 Actualmente contempla:
 
@@ -116,6 +110,7 @@ Actualmente contempla:
 * Reenvío de verificación.
 * Límite de reenvíos.
 * Restricción de inicio de sesión para cuentas que no hayan sido verificadas.
+* Recuperación de contraseña mediante un código temporal.
 
 El envío de correos se realiza mediante la API de **Brevo**.
 
@@ -222,8 +217,6 @@ El sistema permite visualizar:
 
 También existe una vista específica para consultar el detalle de cada pedido.
 
-Una posible mejora futura es permitir repetir directamente un pedido anterior.
-
 ---
 
 # 🛠️ Administración
@@ -292,9 +285,7 @@ El método de efectivo forma parte del flujo de pedidos.
 
 # 🔐 Seguridad
 
-El proyecto incorpora diferentes mecanismos de seguridad.
-
-Actualmente se utilizan:
+La aplicación incorpora medidas de protección para las cuentas, los pedidos y los datos:
 
 * Consultas preparadas mediante `mysqli`.
 * `password_hash()` para almacenar contraseñas.
@@ -303,25 +294,11 @@ Actualmente se utilizan:
 * Tokens de verificación generados mediante `random_bytes()`.
 * Expiración de tokens.
 * Códigos de recuperación de un solo uso almacenados como hash.
-* Protección CSRF en todas las operaciones que modifican datos.
+* Protección CSRF en las operaciones que modifican datos.
 * Control de acceso mediante roles.
 * Validación de información recibida desde formularios.
 * Escape de información mostrada en HTML.
 * Restricción de pedidos según el usuario correspondiente.
-
-Durante la auditoría de seguridad también se detectaron aspectos que deben corregirse antes de utilizar el sistema en producción.
-
-Entre ellos:
-
-* Los filtros administrativos utilizan GET únicamente para consultar datos.
-* Configuración de MySQL de desarrollo que no debe utilizarse en producción.
-* Errores PHP visibles durante el desarrollo.
-* Revisión de credenciales y secretos.
-* Necesidad de realizar pruebas de seguridad adicionales.
-
-No se encontró una inyección SQL directa confirmada durante la auditoría realizada.
-
-Tampoco se encontró una vulnerabilidad IDOR evidente en el acceso de clientes a sus pedidos durante las pruebas realizadas.
 
 ---
 
@@ -343,7 +320,7 @@ config/
 
 `Brevo.example.php` sirve como referencia para configurar el servicio.
 
-`Brevo.php` debe mantenerse fuera del repositorio cuando contiene credenciales reales.
+`Brevo.php` contiene la configuración privada y debe mantenerse fuera del repositorio cuando incluye credenciales reales.
 
 > **Importante:** si una API Key real se encuentra expuesta, debe revocarse y reemplazarse inmediatamente.
 
@@ -434,9 +411,9 @@ DonDiego-Panaderia/
 │
 ├── config/
 │   ├── Brevo.example.php
-│   ├── Brevo.php
-│   ├── Csrf.php
+│   ├── EmailService.php
 │   ├── Database.php
+│   ├── Session.php
 │
 ├── controllers/
 │   ├── BrevoController.php
@@ -449,6 +426,7 @@ DonDiego-Panaderia/
 │   └── logout.php
 │
 ├── database/
+│   ├── migrations/
 │   └── don_diego.sql
 │
 ├── models/
@@ -461,8 +439,6 @@ DonDiego-Panaderia/
 │   ├── css/
 │   ├── img/
 │   └── js/
-│
-├
 │
 └── views/
     ├── admin/
@@ -495,10 +471,6 @@ Contiene las interfaces que se muestran al usuario.
 ### `config/`
 
 Contiene configuraciones y componentes necesarios para servicios externos y conexión con la base de datos.
-
-### `service/`
-
-Contiene servicios utilizados para comunicarse con sistemas externos.
 
 ### `public/`
 
@@ -603,7 +575,7 @@ $baseDatos = 'don_diego';
 
 Esta configuración está destinada al **entorno local de desarrollo**.
 
-Para producción se debe utilizar un usuario específico para la aplicación, con contraseña segura y permisos limitados.
+En un servidor, utilizar un usuario específico para la aplicación, con contraseña segura y permisos limitados.
 
 ---
 
@@ -627,7 +599,7 @@ El servicio usa la API cuando `BREVO_API_KEY` está configurada y el transporte 
 
 La plantilla incluye SMTP como transición explícita. Para seleccionarlo, configurar `BREVO_MAIL_TRANSPORT` como `smtp` y cargar sus credenciales. Un error de la API no activa SMTP automáticamente para evitar el envío duplicado.
 
-El envío por API requiere cURL y acceso HTTPS saliente desde el hosting. Confirmá ambos en InfinityFree antes de activar la migración en producción.
+El envío por API requiere cURL y acceso HTTPS saliente desde el servidor.
 
 Antes de desplegar el límite compartido de solicitudes, aplicar la migración aditiva una vez:
 
@@ -711,98 +683,6 @@ Para una instalación pública se recomienda utilizar:
 
 ---
 
-# 🧪 Cuentas de prueba
-
-El entorno de desarrollo puede contar con cuentas destinadas a las pruebas de los diferentes roles.
-
-| Rol        | Función                    |
-| ---------- | -------------------------- |
-| `admin`    | Administración del sistema |
-| `empleado` | Gestión de pedidos         |
-| `cliente`  | Realización de pedidos     |
-
-Las credenciales de prueba deben mantenerse únicamente en entornos de desarrollo.
-
-No deben utilizarse cuentas con contraseñas conocidas o datos ficticios en una instalación real.
-
----
-
-# 🧪 Estado del proyecto
-
-Actualmente el proyecto se encuentra en una **etapa avanzada de desarrollo**.
-
-## ✅ Implementado
-
-* Página principal.
-* Catálogo.
-* Categorías.
-* Productos destacados.
-* Productos recomendados.
-* Registro.
-* Inicio de sesión.
-* Cierre de sesión.
-* Recuperación de contraseña mediante código enviado por correo.
-* Gestión de cuenta.
-* Verificación de correo.
-* Reenvío de verificación.
-* Carrito.
-* Creación de pedidos.
-* Historial de pedidos.
-* Detalle de pedidos.
-* Cancelación de pedidos.
-* Estados de pedidos.
-* Panel administrativo.
-* Gestión de productos.
-* Gestión de pedidos.
-* Roles de usuario.
-* Selección de métodos de pago.
-* Integración inicial con Brevo.
-* Diseño responsive.
-
-## 🟡 En desarrollo / corrección
-
-* Transacciones para la creación de pedidos.
-* Validación final de productos y precios.
-* Pruebas completas responsive.
-* Pruebas automatizadas.
-
-## 🔴 Pendiente
-
-* Integración con el sistema interno de Don Diego.
-* Despliegue en un servidor público.
-* Configuración definitiva de producción.
-* Dominio y HTTPS.
-* Pruebas finales de seguridad.
-* Pruebas completas de pagos.
-
----
-
-# 🔒 Preparación para producción
-
-El proyecto está avanzado a nivel funcional. La configuración de producción se realizará al contratar el hosting y el dominio.
-
-Pendientes antes de publicar:
-
-* [ ] Revocar y reemplazar credenciales expuestas.
-* [ ] Utilizar variables de entorno para secretos.
-* [ ] Revisar el historial de Git.
-* [ ] Sincronizar completamente la base de datos de producción.
-* [ ] Utilizar un usuario MySQL específico.
-* [x] Implementar CSRF en todas las operaciones necesarias.
-* [x] Convertir acciones administrativas que modifican datos a `POST`.
-* [ ] Endurecer la configuración de sesiones en producción.
-* [ ] Desactivar `display_errors` y configurar logs.
-* [ ] Implementar transacciones en la creación de pedidos.
-* [ ] Validar productos, precios y stock nuevamente al confirmar.
-* [ ] Corregir y comprobar todas las rutas de imágenes.
-* [ ] Completar pruebas responsive en todas las páginas.
-* [ ] Crear pruebas automatizadas.
-* [ ] Configurar HTTPS.
-* [ ] Configurar copias de seguridad y monitoreo.
-* [ ] Realizar pruebas finales de seguridad.
-
----
-
 # 📱 Responsive y accesibilidad
 
 El sistema está diseñado para adaptarse a diferentes dispositivos.
@@ -823,108 +703,6 @@ Entre las funcionalidades responsive implementadas se encuentran:
 * Controles táctiles.
 * Diferentes presentaciones según el tamaño de pantalla.
 
-Durante la revisión se probaron Inicio, Catálogo, Login, Contacto y Carrito en una pantalla móvil de aproximadamente 390 px sin detectar overflow horizontal.
+# 👤 Responsable
 
-Todavía deben realizarse pruebas completas en diferentes resoluciones y en las páginas que requieren autenticación.
-
----
-
-# 🔍 Auditoría del proyecto
-
-Se realizó una auditoría estática del código para revisar:
-
-* Seguridad.
-* Autenticación.
-* Autorización.
-* Carrito.
-* Pedidos.
-* Productos.
-* Base de datos.
-* Vistas.
-* Responsive.
-* Configuración.
-
-La auditoría no modificó ni eliminó archivos del proyecto.
-
-La revisión permitió detectar problemas que deben solucionarse antes de una utilización en producción, además de confirmar diferentes mecanismos de seguridad y funcionalidades que ya se encuentran implementados.
-
----
-
-# 🧩 Mejoras futuras
-
-Entre las mejoras previstas se encuentran:
-
-* Integración con el sistema interno de Don Diego.
-* Repetición de pedidos anteriores.
-* Control de stock, si el negocio lo requiere.
-* Sistema de notificaciones.
-* Mejoras de accesibilidad.
-* Mejoras de rendimiento.
-* Paginación del catálogo.
-* Logs y monitoreo.
-* Pruebas automatizadas.
-* Mejoras adicionales de seguridad.
-* Despliegue en un servidor real.
-
----
-
-# 🌿 Flujo de trabajo con Git
-
-El proyecto utiliza diferentes ramas para organizar el desarrollo.
-
-```text
-main
-  ↑
-develop
-  ↑
-├── tarea individual
-
-
-### `main`
-
-Contiene la versión estable del proyecto.
-
-### `develop`
-
-Se utiliza para integrar los cambios realizados por los integrantes antes de incorporarlos a la versión estable.
-
-### Ramas individuales
-
-Cada integrante trabaja principalmente desde su propia rama.
-
-```text
-Rama individual
-      ↓
-   Commit
-      ↓
-    Push
-      ↓
-Pull Request
-      ↓
-  develop
-      ↓
-   Pruebas
-      ↓
-    main
-```
-
-Los cambios importantes deben integrarse mediante Pull Requests para facilitar la revisión y reducir conflictos.
-
----
-
-# 👥 Equipo
-
-* Thiago Cano
-* Facundo Leites
-* Constanza Ortiz
-* Matias Hernandes
-
----
-
-# 🎓 Proyecto académico
-
-Proyecto desarrollado como parte del proyecto final de **Bachillerato en Tecnologías de la Información**.
-
-## Don Diego Panadería 🍰
-
-La plataforma busca digitalizar el proceso de realización y gestión de pedidos de los comercios que trabajan con Don Diego, proporcionando una base para futuras mejoras e integraciones con los sistemas internos de la empresa.
+**Facundo Leites** es el único responsable y colaborador del proyecto.
