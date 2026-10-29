@@ -6,43 +6,6 @@
  */
 define('WHATSAPP_NUMERO', '59892155738');
 
-function crearMensajeWhatsApp(array $pedido, array $detalles): string
-{
-    $lineas = [
-        'Hola Don Diego,',
-        '',
-        'Realicé el pedido #' . (int) ($pedido['id'] ?? 0) . '.',
-        'Cliente: ' . trim((string) ($pedido['nombre_completo'] ?? '')),
-        '',
-        'Pedido:'
-    ];
-
-    foreach ($detalles as $detalle) {
-        $cantidad = (int) ($detalle['cantidad'] ?? 0);
-        $unidadVenta = Producto::nombrePresentacion(
-            trim((string) ($detalle['unidad_venta'] ?? 'unidad')),
-            $cantidad
-        );
-        $nombre = trim((string) ($detalle['nombre'] ?? 'Producto'));
-        $precio = number_format((float) ($detalle['precio_unitario'] ?? 0), 2, ',', '.');
-        $subtotal = number_format((float) ($detalle['subtotal'] ?? 0), 2, ',', '.');
-        $unidadSingular = Producto::nombrePresentacion(
-            trim((string) ($detalle['unidad_venta'] ?? 'unidad'))
-        );
-        $lineas[] = '- ' . $cantidad . ' ' . $unidadVenta . ' de ' . $nombre . ' - $' . $precio . ' por ' . $unidadSingular . ' - subtotal: $' . $subtotal;
-    }
-
-    $fecha = date('d/m/Y', strtotime((string) ($pedido['fecha_recepcion'] ?? '')));
-    $lineas[] = '';
-    $lineas[] = 'Total: $' . number_format((float) ($pedido['total'] ?? 0), 2, ',', '.');
-    $lineas[] = 'Fecha de recepción: ' . $fecha;
-    $lineas[] = 'Franja horaria: ' . trim((string) ($pedido['franja_horaria'] ?? ''));
-    $lineas[] = 'Dirección: ' . trim((string) ($pedido['direccion_entrega'] ?? ''));
-    $lineas[] = 'Método de pago: Efectivo';
-
-    return implode("\n", $lineas);
-}
-
 function crearUrlWhatsApp(string $mensaje): ?string
 {
     $numero = WHATSAPP_NUMERO;

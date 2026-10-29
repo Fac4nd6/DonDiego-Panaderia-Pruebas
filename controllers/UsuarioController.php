@@ -4,6 +4,7 @@ require_once __DIR__ . '/../config/Database.php';
 require_once __DIR__ . '/../config/Session.php';
 iniciar_sesion_segura();
 require_once __DIR__ . '/../config/Csrf.php';
+require_once __DIR__ . '/../config/RateLimiter.php';
 require_once __DIR__ . '/../models/Usuario.php';
 
 
@@ -45,6 +46,17 @@ class UsuarioController
                 'success' => false,
                 'error' =>
                     'El correo o la contraseña son incorrectos.'
+            ];
+        }
+
+        global $conn;
+        $ip = (string) ($_SERVER['REMOTE_ADDR'] ?? 'unknown');
+        if (solicitudSuperaLimite($conn, 'login_ip', $ip, 30, 900)) {
+            return [
+                'success' => false,
+                'error' =>
+                    'Demasiados intentos fallidos. '
+                    . 'Esperá unos minutos e intentá nuevamente.'
             ];
         }
 
@@ -106,9 +118,6 @@ class UsuarioController
 
 
         /* BUSCAR USUARIO */
-        global $conn;
-
-
         $usuarioModel =
             new Usuario($conn);
 

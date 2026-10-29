@@ -21,6 +21,7 @@ if (!isset($_SESSION['usuario_id'])) {
 
 // CONFIGURACIÓN CSRF
 require_once __DIR__ . '/../config/Csrf.php';
+require_once __DIR__ . '/../config/RateLimiter.php';
 
 
 // MODELOS
@@ -28,10 +29,6 @@ require_once __DIR__ . '/../config/Database.php';
 require_once __DIR__ . '/../models/Pedido.php';
 require_once __DIR__ . '/../models/Carrito.php';
 require_once __DIR__ . '/../models/Producto.php';
-
-
-require_once __DIR__ . '/../config/whatsapp.php';
-require_once __DIR__ . '/../models/Usuario.php';
 
 
 // INSTANCIAR MODELOS
@@ -481,6 +478,29 @@ if ($accion === 'crear') {
             exit;
         }
 
+        $ahora = time();
+        $_SESSION['pedidos_checkout_tokens'] ??= [];
+        foreach ($_SESSION['pedidos_checkout_tokens'] as $token => $registroToken) {
+            if (($ahora - (int) ($registroToken['creado'] ?? 0)) > 7200) {
+                unset($_SESSION['pedidos_checkout_tokens'][$token]);
+            }
+        }
+
+        $pedidoToken = bin2hex(random_bytes(32));
+        $_SESSION['pedidos_checkout_tokens'][$pedidoToken] = [
+            'creado' => $ahora,
+            'pedido_id' => 0,
+            'usuario_id' => (int) $_SESSION['usuario_id']
+        ];
+        if (count($_SESSION['pedidos_checkout_tokens']) > 10) {
+            $_SESSION['pedidos_checkout_tokens'] = array_slice(
+                $_SESSION['pedidos_checkout_tokens'],
+                -10,
+                null,
+                true
+            );
+        }
+
         require __DIR__ . '/../views/pedidos/crear.php';
 
         exit;
@@ -489,6 +509,29 @@ if ($accion === 'crear') {
 
     // VERIFICAR CSRF
     verificar_csrf();
+
+    $pedidoToken = trim((string) ($_POST['pedido_token'] ?? ''));
+    if (!preg_match('/^[a-f0-9]{64}$/', $pedidoToken)) {
+        exit('El formulario de pedido expiró. Volvé a cargarlo e intentá nuevamente.');
+    }
+
+    $registroToken = $_SESSION['pedidos_checkout_tokens'][$pedidoToken] ?? null;
+    if (
+        !is_array($registroToken) ||
+        (int) ($registroToken['usuario_id'] ?? 0) !== (int) $_SESSION['usuario_id']
+    ) {
+        exit('El formulario de pedido no es válido. Volvé a cargarlo e intentá nuevamente.');
+    }
+
+    if ((int) ($registroToken['pedido_id'] ?? 0) > 0) {
+        header('Location: ' . url('/pedidos/detalle?id=' . (int) $registroToken['pedido_id']));
+        exit;
+    }
+
+    if ((time() - (int) ($registroToken['creado'] ?? 0)) > 7200) {
+        unset($_SESSION['pedidos_checkout_tokens'][$pedidoToken]);
+        exit('El formulario de pedido expiró. Volvé a cargarlo e intentá nuevamente.');
+    }
 
 
     // OBTENER CARRITO
@@ -505,6 +548,11 @@ if ($accion === 'crear') {
     // USUARIO
     $usuarioId =
         (int) $_SESSION['usuario_id'];
+
+    if (solicitudSuperaLimite($conn, 'create_order_user', (string) $usuarioId, 5, 600)) {
+        http_response_code(429);
+        exit('Se alcanzó el límite de pedidos. Intentá nuevamente más tarde.');
+    }
 
 
     // COMPROBAR PEDIDOS PENDIENTES
@@ -735,34 +783,9 @@ if ($accion === 'crear') {
         exit('No pudimos completar el pedido en este momento. Revisá tu carrito e intentá nuevamente.');
     }
 
-    $pedido = $pedidoModel->obtenerPorId($pedidoId, $usuarioId);
-    $usuario = (new Usuario($conn))->obtenerPorId($usuarioId);
-    if ($pedido && $usuario) {
-        // El aviso usa datos del cliente consultados desde MySQL, no del formulario.
-        $pedido['nombre_completo'] = $usuario['nombre_completo'];
-    }
-    $detallesGuardados = $pedidoModel->obtenerDetalles($pedidoId);
-    $mensaje = crearMensajeWhatsApp($pedido ?: [], $detallesGuardados);
-    $whatsappUrl = crearUrlWhatsApp($mensaje);
-
+    $_SESSION['pedidos_checkout_tokens'][$pedidoToken]['pedido_id'] = (int) $pedidoId;
     $carritoModel->vaciar();
-
-    if ($whatsappUrl === null) {
-        exit('El pedido #' . $pedidoId . ' fue creado correctamente. Configurá el número de WhatsApp para contactar al comercio.');
-    }
-
-    $pedidosUrl = url('/pedidos');
-
-    header('Content-Type: text/html; charset=UTF-8');
-    echo '<!doctype html><html lang="es"><head><meta charset="UTF-8"><title>Pedido confirmado</title></head><body>';
-    echo '<script>';
-    echo 'const pedidosUrl = ' . json_encode($pedidosUrl, JSON_UNESCAPED_SLASHES) . ';';
-    echo 'const whatsappUrl = ' . json_encode($whatsappUrl, JSON_UNESCAPED_SLASHES) . ';';
-    echo 'localStorage.setItem("dondiego_pedido_confirmado", Date.now().toString());';
-    echo 'if (window.opener && !window.opener.closed) { window.opener.location.href = pedidosUrl; }';
-    echo 'window.location.replace(whatsappUrl);';
-    echo '</script>';
-    echo '<p>Pedido confirmado. Abriendo WhatsApp...</p></body></html>';
+    header('Location: ' . url('/pedidos/detalle?id=' . $pedidoId));
     exit;
 }
 

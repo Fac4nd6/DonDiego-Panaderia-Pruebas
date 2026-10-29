@@ -187,8 +187,8 @@ El proceso permite:
 * Confirmar el pedido.
 * Consultar posteriormente el pedido.
 
-Al confirmar un pedido, se abre WhatsApp con el detalle para contactar al
-comercio y la pestaña original se dirige automáticamente a **Mis pedidos**.
+Al confirmar un pedido, el cliente permanece en la web y accede al detalle del
+pedido registrado. La actualización de esa página no vuelve a enviar el pedido.
 
 Cada pedido tiene un **ID global**, por ejemplo `ID del pedido #40`. Este
 identificador permite localizar el pedido en el sistema y no representa la
@@ -623,7 +623,23 @@ config/Brevo.php
 
 Completar las credenciales correspondientes.
 
-Ejemplo:
+El servicio usa la API cuando `BREVO_API_KEY` está configurada y el transporte es `api`. El remitente debe estar registrado en Brevo. Se puede definir la clave por variable de entorno o en el archivo privado ignorado por Git. En el plan Free, Brevo publica un máximo de 300 envíos diarios.
+
+La plantilla incluye SMTP como transición explícita. Para seleccionarlo, configurar `BREVO_MAIL_TRANSPORT` como `smtp` y cargar sus credenciales. Un error de la API no activa SMTP automáticamente para evitar el envío duplicado.
+
+El envío por API requiere cURL y acceso HTTPS saliente desde el hosting. Confirmá ambos en InfinityFree antes de activar la migración en producción.
+
+Antes de desplegar el límite compartido de solicitudes, aplicar la migración aditiva una vez:
+
+```text
+database/migrations/20261028_rate_limit_buckets.sql
+```
+
+La tabla almacena categorías, hashes de sujetos, contadores y expiración; el código bloquea la acción sensible si el almacenamiento no está disponible. Hacer copia de seguridad y aplicar la migración antes de publicar el código.
+
+Los límites se aplican por IP a login, registro y reenvío, por IP/correo a recuperación, a los intentos del código y por usuario a pedidos. No se confía en `X-Forwarded-For` sin una configuración de proxy confiable.
+
+Ejemplo de configuración:
 
 ```php
 define(
@@ -650,9 +666,9 @@ Si una credencial real fue expuesta, debe revocarse y reemplazarse.
 
 ---
 
-## Configuración de pedidos y WhatsApp
+## WhatsApp de contacto
 
-Los pedidos se guardan en MySQL y luego se prepara un mensaje para contactar al comercio por WhatsApp. El mensaje incluye el ID global del pedido y la presentación de cada producto.
+WhatsApp se ofrece como canal opcional de contacto desde el footer y la sección de contacto. Los pedidos se crean y consultan dentro de la web.
 
 No requiere dependencias externas.
 
